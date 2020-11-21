@@ -1,0 +1,29 @@
+"name" => "court jester",
+
+"mutes" => [
+
+  "0:33:24.424" , "0:33:26.448", "profanity", "deitys", "Sent by the [deitys] and for you alone",
+  "0:41:25.884" , "0:41:32.1", "profanity", "deitys", "that you have been sent here by the [deitys], To do that you must go to her room and [make love]",
+  "0:45:28.670" , "0:45:30.578", "profanity", "deitys", "and lovers are not sent by the [deitys]",
+  "0:45:43.037" , "0:45:46.298", "profanity", "deitys", "The [deitys] who sent you have also provided a means for our escape",
+  "0:41:51.573" , "0:41:54.586", "profanity", "make love", "Not me you fool Now go [make love]",
+  "1:07:55.761" , "1:07:58.782", "profanity", "idiot", "Eh don't tug it [idiot] Well that's very considerate of you my dear",
+  "1:25:48.334" , "1:25:51.656", "profanity", "idiot", "Take that horse and put it back under that [idiot]",
+ 
+],
+
+"blank_outs" => [
+"0:54:55.0", "0:55:10.0", "kissing princess' arms",
+  "0:21:10.00", "0:23:45.00", "kissing scene",
+  "38:14.0", "38:21.0", "inspect wenches",
+  "1:09:20.00", "1:10:40.00", "pretending to kiss the king", # inaccurate still!
+],
+
+"volume_name" => "JESTER",
+"disk_unique_id" => "a0eadedd|449cd867",
+"dvd_title_track" => "1",
+# "closing thoughts" => "still...",
+"dvd_title_track_length" => 6065.4,
+"dvd_start_offset" => 0.19,
+"dvd_nav_packet_offset" => [0.433333, 0.521644],
+"timestamps_relative_to" => ["dvd_start_offset","29.97"],

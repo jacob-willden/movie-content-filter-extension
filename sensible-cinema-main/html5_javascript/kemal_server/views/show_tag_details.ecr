@@ -1,0 +1,150 @@
+<% content_for "header" do %>
+  <% specs = url.image_specs(ImageSize::Medium) %>
+  <% if specs %> <!-- TODO accomodate png here :| -->
+    <!-- make it show up for facebook first time -->
+    <meta property="og:image" content="https://playitmyway.org<%= url.sized_relative_url(ImageSize::Medium) %>" />
+    <meta property="og:image:width" content="<%= specs[:width] %>"/>
+    <meta property="og:image:height" content="<%= specs[:height] %>"/>
+  <% end %>
+<% end %>
+<h1>Our editing details for <br/>[<%= url.name_with_episode %>]</h1>
+
+<br/>
+<h2><a href="<%= url.url %>" target="_blank">
+click here to watch <%= url.name_with_episode %> 
+<% if url.edit_passes_completed < 2 %>
+ (partially edited)
+<% else %>
+ edited
+<% end %>
+</a></h2>
+<br/>
+<a href="/">&lt;&lt; back to list of all movies</a>
+<br/>
+<%= url.image_tag style: "", size: ImageSize::VerySmall, postpend_html: "<br/>" %> <!-- at least we high high dps -->
+<h4>Our Details:</h4>
+<br/>
+Things we found in this movie:
+<br/>
+<%= tags_by_category_with_size(url) %>
+<hr/>
+<% if editor?(env) %>
+  Editor: <a href=/edit_url/<%= url.id %>>modify these movie details</a>
+<% end %>
+
+<br/>
+
+<hr/>
+<h3>Personalize your playback!</h3>
+You can tweak or change which of these content tags gets edited out, to your liking, click <a href=/personalized_edit_list/<%= url.id %>>here</a>.
+
+<% if url.tag_edit_lists(env).size > 0 %>
+  Appears you have a personalized list for this movie!
+<% end %>
+
+<hr/>
+<br/>
+<h3>Tags for this movie</h3><a  name="tags"></a>
+If you'd like to see the internal details of <b>all</b> tags, click <a href=/show_tag_details/<%= url.id %>?show_tag_details=true#tags>here</a>.
+<br/>
+
+<table class="table table-striped" style="width: auto; color: black;">
+  <thead>
+    <tr>
+      <th>start - end</th>
+      <th>duration&nbsp;&nbsp;&nbsp;</th>
+      <th>default action</th>
+      <th>category</th>
+      <th>subcategory</th>
+      <th>age</th>
+      <th>impact to story</th>
+      <th>modify</th>
+      <% if show_tag_details %>
+        <th>details</th>
+        <th>delete</th>      
+      <% end %>
+    </tr>
+  </thead>
+<% tags = url.tags; url.tags.each do |tag|  %>
+  <tr>
+  <td>
+    <%= seconds_to_human tag.start %> - 
+    <%= seconds_to_human tag.endy %>
+    <% if tag2 = tag.overlaps_any?(tags) %>
+      (overlaps with tag starting at <%= seconds_to_human tag2.start %>)
+    <% end %>
+  </td>
+  <td><%= seconds_to_human tag.duration %></td>
+  <td><%= tag.default_action %>
+    <%= "(disabled)" unless tag.default_enabled %>
+  </td>
+  <td><%= tag.category %></td>
+  <td>
+      <%= tag.subcategory %>
+      <%= "(lip readable)" if tag.lip_readable %>
+      <%= "lewdness level: #{tag.lewdness_level} (out of ??)" if tag.lewdness_level > 0 %> <!-- TODO names here! -->
+  </td>
+  <td>
+    <% if tag.age_maybe_ok > 0 %>
+      not OK age <%= tag.age_maybe_ok %> and under
+    <% end %>
+  </td>
+  <td><%= tag.impact_to_movie if tag.impact_to_movie != 0 %></td>
+  <td><a href=/edit_tag/<%= tag.id %>>modify tag</a></td>
+  <% if show_tag_details %>
+    <td><%= tag.details %>
+      <% if tag.popup_text_after.size > 0 %>
+         Popup: <%= tag.popup_text_after %>
+      <% end %>
+    </td>
+    <td><a href=/delete_tag/<%= tag.id %> target=_blank>delete</a></td>
+  <% end %>
+  </tr>
+<% end %>
+
+</table>
+<% if  url.tag_count == 0 %>
+none yet, add one now!<br/><br/>
+<% end %>
+
+<% if editor?(env) %>
+  You're an editor: <a href=/add_new_tag/<%= url.id %>>Add additional content tags for this movie &#10133;<!-- thick plus --> </a>
+  <br/>
+<% end %>
+  Feedback on edits for this movie click <a href=http://freeldssheetmusic.org/questions/ask?pre_fill=<%= URI.encode_www_form "feedback for:" + url.name_with_episode %> target="_blank">here</a>.
+<br/>
+
+<table class="table table-striped" style="width: auto; color: black;">
+  <thead>
+  </thead>
+  <tbody>
+    <%= table_row_or_nothing("URL", url.url) %>
+    <%= table_row_or_nothing("Alternate URL", url.amazon_second_url) %>
+    <%= table_row_or_nothing("Synopsis", url.details) %>
+    <% if url.amazon? %>
+      <%= table_row_or_nothing("prime?", url.human_readable_company) %>
+    <% end %>
+    <%= table_row_or_nothing("Editing status most recent pass", url.most_recent_pass_discovery_level_string) %>
+    <%= table_row_or_nothing("Num passes done", url.edit_passes_completed) %>
+    <%= table_row_or_nothing("Why watch edited?", url.sell_it_edited) %>
+    <!-- internal_editing_notes ... -->
+    <%= table_row_or_nothing("Editor advisory:", url.stuff_not_edited_out) %>
+    <%= table_row_or_nothing("Age recommendation after edited:", url.age_recommendation_after_edited) %>
+    <%= table_row_or_nothing("Price to rent/purchase", url.cost_string) %>
+    <% if url.total_time > 0 %>
+      <%= table_row_or_nothing("Total movie time", seconds_to_human url.total_time) %>
+    <% end %>
+    <%= table_row_or_nothing("Good movie rating (out of 10)", url.good_movie_rating) %>
+    <%= table_row_or_nothing("Our local review", url.review) %>
+    <%= table_row_or_nothing("Wholesome_uplifting_level (out of 10)", url.wholesome_uplifting_level) %>
+    <%= table_row_or_nothing("Wholesome review", url.wholesome_review) %>
+    <%= table_row_or_nothing("Genre", url.genre) %>
+    <%= table_row_or_nothing("Original MPAA Rating", url.original_rating) %>
+    <%= table_row_or_nothing("Download Count", url.count_downloads) %>
+    <%= table_row_or_nothing("Added to our system", url.create_timestamp) %>
+  </tbody>
+</table>
+
+<br/>
+<br/>
+<a href=/for_current_just_settings_json?<%= url.url_lookup_params %>>...</a>

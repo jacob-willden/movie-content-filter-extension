@@ -1,0 +1,109 @@
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.1&appId=16593771297&autoLogAppEvents=1';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<!-- they said "ideally right after body tag" hrm... -->
+
+    <div class="hero-section">
+        <div id="social-media-icons">
+            <div class="grid-y">
+                <div class="cell small-3">
+                    <a href="https://www.facebook.com/Play-it-My-Way-1812282865478777/#!" target="_blank"><img src="images/facebook.small.png" alt="Facebook"></a>
+                </div>
+                <div class="cell small-3">
+                    <a href="https://twitter.com/goodness_plus"><img src="images/twitter.small.png" alt="Twitter"></a>
+                </div>
+                <!--div class="cell small-3 ">
+                    <a href=""><img src="images/instagram.75x75.png" alt="Instagram" style="opacity: 0.4;"> </a>
+                </div-->
+            </div>
+        </div>
+
+        
+        <ul class="cb-slideshow">
+            <li><span>Image 01</span></li>
+            <li><span>Image 02</span></li>
+            <li><span>Image 03</span></li>
+            <li><span>Image 04</span></li>
+        </ul>
+        
+        <div class="action-box">
+
+         <input id="get_app_button_id" class="plugin_installed_class button get-app" type="submit" value="App successfully installed, you can watch without worry now!" style="display: none; white-space: normal;"> 
+
+            <h3>Sit back and Relax!</h3>
+            <h4>Our FREE app lets you skip profanity/violence/smut, etc. in movies you stream*!</h4>
+            <p class="italic">Your movies. Play them your way.</p>
+
+            <form action="/installation">
+                <div class="center">
+                    <% if chrome_desktop?(env) %>
+                      <input id="get_app_button_id" onclick="window.location = 'https://chrome.google.com/webstore/detail/play-it-my-way/ionkpaepibbmmhcijkhmamakpeclkdml'; return false;"  class="button get-app plugin_not_installed_class" type="submit" value="GET OUR FREE APP" > 
+                    <% else %>
+                      <input id="get_app_button_id" class="button get-app" type="submit" value="CHECK OUT OUR FREE APP" style="white-space: normal;"> 
+                    <% end %>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <p>You know how you might watch a new release by streaming it on Amazon?  Or if you have prime, watch a free movie or TV show?  Our Chrome web browser extension plugs into you playback, so when you watch them on amazon, it skips the bad parts, the stuff you don't want!  Family friendly!  This allows you to kick back and relax and gives you power to control what you view.  *Compatible with Amazon and Youtube on desktop chrome browser.</p>
+
+    <div class="mid-bar">
+        <h4>Our latest additions you can watch filtered:</h4>
+    </div>
+
+    <div class="grid-x grid-padding-x small-up-3 medium-up-5 large-up-8">
+      <% most_recent.each_with_index { |movie, idx| %>
+        <div class="cell <%= idx > 4 ? "show-for-large" : idx > 2 ? "show-for-medium" : "" %>">
+          <% box_style = "" %>
+          <%= want_name = false; render "views/_box_movie_nik.ecr" %> 
+        </div>
+     <% } %>
+    </div>
+    <div class="mid-bar">
+        <h4>A sample of a few more random movies from our library you can watch filtered</h4>
+    </div>
+
+    <div class="grid-x grid-padding-x small-up-3 medium-up-5 large-up-8">
+      <% all_urls_done.shuffle.last(4).each_with_index { |movie, idx| %>
+        <div class="cell <%= idx > 4 ? "show-for-large" : idx > 2 ? "show-for-medium" : "" %>">
+          <% box_style = "" %>
+          <%= want_name = false; render "views/_box_movie_nik.ecr" %> 
+        </div>
+     <% } %>
+    </div>
+
+<h4>Browse our full library of edited movies and TV shows!</h4>
+<br/>
+<% all = get_movies_sorted 
+  all.each{|category|  %>
+    <a href="/browse/<%= category[:type] %>" class="button get-app"><%= category[:title] %> (<%= category[:urls].size %>)</a>
+    <br/>
+<% } %>
+<br/>
+<h3>Genres:</h3>
+<%  genres = all_urls_done.select{|u| u.genre.presence}.group_by{|url| url.genre}.to_a.sort_by{|genre, urls| genre}
+  genres.each{ |genre, urls| %>
+    <a href="/genre/<%= URI.encode_www_form genre %>" class="button get-app"><%= genre %> (<%= urls.size %>)</a>
+<% } %>
+<br/>
+Play it my way is a way of watching the movies you love without...the stuff you prefer to skip.  We aim to make our service a free, high quality way to watch edited streaming movies online!  Install the app, and watch some movies!  You can watch edited youtubes on your mobile device and plug your computer into your TV to relax and watch some movies with a family tonight, checkout our collection, above!
+<br/>
+Our latest news, like our facebook page!<br/>
+<div style="max-width: 80%"> <!-- don't let it get too big, confusing on how to scroll past it... -->
+<div class="fb-page" data-href="https://www.facebook.com/Play-it-My-Way-1812282865478777/?ref=bookmarks" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/Play-it-My-Way-1812282865478777/?ref=bookmarks" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/Play-it-My-Way-1812282865478777/?ref=bookmarks">Play it My Way</a></blockquote></div>
+</div>
+<br/>
+Got more questions? Visit our <a href=/faq>FAQ</a>.
+<br/>Enjoy your movies!
+
+<script>
+function runOnceWhenDetectChromeExtension() {
+}
+</script>

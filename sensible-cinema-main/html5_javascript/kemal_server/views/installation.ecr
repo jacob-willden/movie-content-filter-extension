@@ -1,0 +1,40 @@
+<% content_for "header" do %>
+<% end %>
+
+<h2>Installation:</h2>
+<br>
+<% if mobile?(env) %>
+      The <b>Play it My Way</b> app works on desktop/laptop/chromebook computers.  You can even plug your computer into your TV!
+      <br/>
+      You can't install the app on your current device, but you can watch our free <a href="/browse/youtubes">edited youtubes</a> right now on your mobile device!
+      <br/>
+      You can also browse our collection and see which movies/TV you'd like to watch edited later, and add them to your <a href=/watchlist>watchlist</a>.
+      <br/>
+      Browse <a href="/browse/youtubes">edited youtubes</a> or <a href=/>edited movies/TV</a>.
+      <br/>
+      Just google "play it my way" when you come back tonight on your computer, to install the app and watch movies!
+    <% if android_mobile?(env) %>
+      <!-- android used to have an app... :| -->
+    <% else %>
+      <!--Looks like you're on iOS, nice! -->
+    <% end %>
+    <br/>
+    <br/>
+    Or enter your email address here to subscribe, we'll send you a link to the website, as well as periodic updates:
+    <form action=/subscribe method=POST >
+      <input type="text" name="email_to_send_to" placeholder="yourname@site.com" />
+      <input type="submit" value="Send me an email!">
+    </form>
+    <br/>
+<% else %>
+    <!-- desktop of some kind... -->   
+        <% if chrome_desktop?(env) %>
+          <script> <!-- pull the trigger! -->
+window.location.href = 'https://chrome.google.com/webstore/detail/play-it-my-way/ionkpaepibbmmhcijkhmamakpeclkdml';
+          </script>
+        <% else %>
+          <!-- some other kind of desktop browser... -->
+          <h2>In order for our free chrome app to work, you'll need to first switch to the <a href=https://www.google.com/chrome/>Chrome web browser</a>, then come back to this site (playitmyway.org -- remember "play it my way!"), click <a href=https://www.google.com/chrome/>here to continue</a>!</h2>
+        <% end %>
+        <br/>
+<% end %>

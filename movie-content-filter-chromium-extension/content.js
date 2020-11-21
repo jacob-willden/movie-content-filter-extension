@@ -2,7 +2,7 @@
     Movie Content Filter Browser Extension Project
     By Jacob Willden
 
-    @source: 
+    @source: https://github.com/jacob-willden/movie-content-filter-extension/
     @source: https://github.com/fruiz500/VideoSkip-extension/
     @source: https://github.com/rdp/sensible-cinema/
 

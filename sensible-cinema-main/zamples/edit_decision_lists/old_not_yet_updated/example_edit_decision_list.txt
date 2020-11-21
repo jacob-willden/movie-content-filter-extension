@@ -1,0 +1,14 @@
+# prototype file, don't use this, see the other examples
+# {
+#    "dvd_title_track":1,
+#    "title":"Bob's Big Plan",
+#    "blank_outs":[
+# 
+#    ],
+#    "other notes":"could use more nit-picking of the
+# song, as some parts seem all right in the end"
+# }
+
+#29:00 30:00 blank # {"category":"profanity","details":"beaver darn","level":3,"type":"da..","category":"profanity"}
+
+#{"category":"profanity","details":"beaver darn","start":"29:00","level":3,"end":"30:00","type":"da..","category":"profanity","style":"blank"}

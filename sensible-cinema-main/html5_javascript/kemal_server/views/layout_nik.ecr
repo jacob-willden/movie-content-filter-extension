@@ -1,0 +1,188 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% action = env.request.path.split("/")[-1]; english_action = action.gsub("_", " ").split.map{|word| word.capitalize}.join(" ") %>
+    <title>
+      <%= " DEV |" if is_dev? %>
+      <% if env.response.title.present? %>
+        <%= env.response.title %>
+        (Play it My Way)
+      <% elsif action.present? %>
+        <%= " #{english_action}" %> (Play it My Way)
+      <% else %>
+        Filter streamed movies for Free | Play it your way! Amazon and Youtube Edited.
+      <% end %>
+    </title>
+ 
+    <link rel="stylesheet" href="/css/foundation.css">
+    <link rel="stylesheet" href="/css/app.css">
+
+     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+    <link rel="icon" type="image/png" href="/images/camera.128.png"  sizes="128x128" />
+    <link rel="icon" type="image/png" href="/images/camera.32.png"  sizes="32x32" />
+    <link href="https://fonts.googleapis.com/css?family=Bitter:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Istok+Web" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> <!-- load it early, I'm too lazy to want to have to worry about whether it's installed yet or not... -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/js/vendor/what-input.js"></script> <!-- used by foundation??? -->
+    <script src="/js/vendor/foundation.min.js"></script>
+
+    <%= yield_content "header" %>
+</head>
+
+<body>
+    <% if env.session.string?("flash") %>
+      <p class="" style="padding: 10px;">
+         <span style="font-size: 30px;"><%= out = env.session.string("flash"); env.session.delete_string("flash"); out %> </span>
+      </p>
+    <% end %>
+    <div data-sticky-container>
+
+        <!-- Hamburger Menu for Small Screens -->
+        <div data-sticky data-options="marginTop:0;" data-sticky-on="small"> <!-- don't bug out mobile https://github.com/zurb/foundation-sites/issues/11098 -->
+            <div class="title-bar" data-responsive-toggle="responsive-menu" data-hide-for="medium">
+                <button class="menu-icon" type="button" data-toggle="responsive-menu"></button>
+                 <a href="/">
+                   <img id="logo" src="/images/camera-logo.png" alt="logo">
+                   <div class="title-bar-title">Play It My Way</div>
+                 </a>
+                 <%= yield_content "navbar" %>
+            </div>
+
+            <!-- Top Bar for All Screens -->
+            <div class="top-bar" id="responsive-menu" data-margin-top="0" data-sticky>
+                <div class="top-bar-left">
+                    <ul class="menu vertical medium-horizontal dropdown" data-responsive-menu="accordion medium-dropdown">
+                        <li class="show-for-medium">
+                            <a href="/"><img id="logo-words" src="/images/camera-logo-side-words.png" alt="play it my way"> </a>
+                        </li>
+                        <li class="is-dropdown-submenu-parent">
+                            <a href="">Browse</a>
+                            <ul class="menu dropdown" data-dropdown-menu>
+                                <% cats = get_movies_sorted 
+                                   cats.each{ |category| %>
+
+                                  <% want_bold = action == category[:type] %>
+                                  <%= "<big><b>" if want_bold %>
+                                    <li><a href="/browse/<%= category[:type] %>"><%= category[:title] %> </a></li>
+                                  <%= "</b></big>" if want_bold %>
+
+                                <% } %>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a href="/questions">About</a>
+                        </li>
+                        <li class="show-for-large">
+                            <a href="/supporter"><img id="donate" src="/images/donate-button.gif"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="top-bar-right">
+                    <ul class="medium-horizontal menu align-left" data-responsive-menu="drilldown medium-dropdown">
+                        <li class="show-for-small">
+                                <div id="search-wrapper">
+                                    <input id="search_id" type="text" name="q" value="" placeholder="Search Our Collection" size="15" /></div>
+                                <div id="search-icon">
+                                    <img src="/images/search-icon.png">
+                                </div>
+                        </li>
+                        <li>
+                          <% if logged_in?(env) %>
+                            <a id="log-out" href="/logout">
+                              Log Out <%= logged_in_user(env).name.split.first %> <%= "(admin)" if admin?(env) %>
+                            </a>
+                          <% else %>
+                            <a id="log-in" href="/login">Log In</a>
+                          <% end %>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%= render "views/_installed_js.ecr" %> <!-- several wanted it LOL, go first so it can be overridden -->
+
+  <%= content %>
+
+    <div style="clear: both;"></div> <!-- some do, some don't need this? -->
+    <hr/>
+    Support a cause you believe in, become a Play it my way supporter <a href=/supporter>click here!</a>  <a href="/supporter"><img id="donate" src="/images/donate-button.gif"></a>
+    <br/>
+    <% unless logged_in?(env) %>
+    Create a <a href=/login>login</a> and get updates of our newest movie filters!
+    <% end %>
+
+    <footer>
+        <div class="grid-x">
+            <div class="cell auto">
+                <a href="/">Home/Browse</a>
+            </div>
+            <div class="cell auto">
+                <a href="/support">Contact</a>
+            </div>
+            <div class="cell auto">
+                <a href="">Privacy</a>
+            </div>
+            <div class="cell auto">
+                <a href="/installation">Install</a>
+            </div>
+            <div class="cell auto">
+                <a href="/jobs"><%= currently_hiring? ? "We're Hiring!" : "Volunteers wanted" %></a>
+            </div>
+            <div class="cell auto">
+                &copy; 2020 Goodness Plus LLC
+            </div>
+        </div>
+    </footer>
+
+<script>
+  $(document).foundation(); // I think this initializes the foundation world...so has to be after everything is setup/created in the DOM :|
+</script>
+
+
+<% if !editor?(env) %>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-4531218-7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-4531218-7');
+</script>
+
+<% end %>
+
+<% all_urls = get_all_urls %>
+
+<script>
+  $( function() {
+    var allMovies = <%= all_urls.map{|url| {label: HTML.unescape(url.name_with_episode), link_name: url.name_with_episode.gsub(" ", "_"), relative_url: relative_movie_url(url)}}.to_json %>;
+    var allGenres = <%= all_urls.select{|u| u.genre.presence}.group_by{|url| url.genre}.keys.map{ |genre| {label: HTML.unescape(genre) + " (genre)", relative_url: "/genre/" + URI.encode_www_form(genre)}}.to_json %>;
+    $( "#search_id" ).autocomplete({
+      source: allMovies.concat(allGenres),
+      minLength: 2,
+      change: function(event, ui) { // runs on blur I think...
+        if (ui.item == null) {
+         event.currentTarget.value = 'Unknown, please select from list';  // it'll say this when they click the search button, which is still crup...
+         setTimeout(function(){ event.currentTarget.value =''; event.currentTarget.focus(); }, 2000);
+        }
+      },
+      select: function( event, ui ) { // they selected item from a dropdown
+          window.location.href = ui.item.relative_url;
+      },
+    });
+  } );
+</script>
+
+</body>
+
+</html>

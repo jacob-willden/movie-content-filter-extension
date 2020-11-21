@@ -1,0 +1,17 @@
+# comments can go after a # on any line, for example this one.
+
+
+"mutes" => [
+  "0:00:0.0", "0:01:30.0", "some raucous music",
+],
+
+"blank_outs" => [
+  #"00:03:00.0" , "00:04:00.0", "violence", "of some sort",
+],
+
+"name" => "Turn Around Alma Younger",
+#"disk_unique_id" => "",
+
+"dvd_title_track" => "3", 
+"not edited out stuff" => "closing credit song loud, also there is a bit of violence [kicking] around 11:00",
+"mplayer_dvd_splits" => [], 

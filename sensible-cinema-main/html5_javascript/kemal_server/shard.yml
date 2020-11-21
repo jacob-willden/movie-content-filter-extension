@@ -1,0 +1,20 @@
+name: kemal_server
+version: 0.1.0
+
+authors:
+  - rogerdpack <rogerpack2005@gmail.com>
+
+license: MIT
+
+dependencies:
+  kemal:
+    github: sdogruyol/kemal
+    branch: master
+  kemal-session:
+    github: kemalcr/kemal-session
+    branch: master
+  db:
+    github: crystal-lang/crystal-db
+  mysql:
+    github: crystal-lang/crystal-mysql
+    branch: master

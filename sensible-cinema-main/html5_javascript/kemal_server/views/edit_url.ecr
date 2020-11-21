@@ -1,0 +1,212 @@
+<h1>Editing details for <%= url.name_with_episode %></h1>
+
+<style>
+select {
+  width: auto;
+}
+</style>
+
+<form action="/save_url" enctype="multipart/form-data" method="POST">
+
+<% if url.id != 0 %>
+  <input type="hidden" name="id" value="<%= url.id %>">
+<% end %>
+
+movie name or series name ex: Awakenings or "Avatar Season 3":
+<input type="text" name="name" size="150" value="<%= url.name %>"/>
+<br/>
+<br/>
+
+url:
+<input type="text" name="url" size="150" value="<%= url.url %>"/>
+<br/>
+<br/>
+
+details (brief synopsis [no spoilers], etc.) try to make up your own here instead of copy-pasting from other websites:
+<br/>
+<textarea name="details" rows="2" cols="150" ><%= url.details %></textarea>
+<br/>
+<br/>
+
+episode_number (if any):<input type="text" name="episode_number" size="5" value="<%= url.episode_number if url.episode_number != 0 %>"/> episode_name (if any):<input type="text" name="episode_name" size="50" value="<%= url.episode_name %>"/>
+<br/>
+<br/>
+
+<div style="<%= "display: none;" unless (url.amazon? || url.url =~ /playitmyway.org/) %>">
+  amazon second url:
+  <% if !url.amazon_second_url.present? %>
+    This is kind of a weird one.  Amazon in their system "sometimes" has  two different URL's that can lead to the same movie or series.
+    <br/>For series', you might find its different second url by clicking the "series" dropdown to select the series you're watching (i.e. if you're on season 1, go to season 2, then back to season 1), versus finding it through normal amazon search.
+    <br/>For movies, it will have one url if you click to play it from "Your video library" or "your watch list" and possibly another different url if you search for the movie in the amazon search bar.
+    <br/>See <a href=/images/amazon_second_url.png target=_blank >here</a> for an example.
+  <% end %>
+  <br/>So if you can discover its second url, enter it here: <input type="text" name="amazon_second_url" size="150" value="<%= url.amazon_second_url %>"/>
+  <br/>Some even have a third url, if you find one, enter it here: <input type="text" name="amazon_third_url" size="150" value="<%= url.amazon_third_url %>"/>
+  <br/>
+  <br/>
+  amazon_prime_free_type (if part of any subscription model):
+  <select name="amazon_prime_free_type" id='amazon_prime_free_type'>
+    <option value="">none (purchase/rent only)</option>
+    <option value="Prime">free with prime</option>
+    <option value="Add-on">free with prime plus an add-on subscription</option>
+  </select>
+  <script>
+  document.getElementById('amazon_prime_free_type').value = '<%= url.amazon_prime_free_type %>';
+  </script>
+  <br/>
+  <br/>
+</div>
+
+most_recent_pass_discovery_level
+<select name="most_recent_pass_discovery_level" id="most_recent_pass_discovery_level"> 
+  <% most_recent_pass_levels.each { |name, options| %>
+   <option value="<%= options[0] %>"><%= options[1] %></option>
+  <% } %>
+</select>
+<script>
+  document.getElementById('most_recent_pass_discovery_level').value = '<%= url.most_recent_pass_discovery_level %>';
+</script>
+<br/>
+<br/>
+
+number of edit passes that have been completed to date:
+<select name="edit_passes_completed" id="edit_passes_completed"> 
+  <% (1..10).each {|option| %>
+   <option value="<%= option %>"><%= option %></option>
+  <% } %>
+</select>
+<script>
+  document.getElementById('edit_passes_completed').value = '<%= url.edit_passes_completed %>';
+</script>
+<br/>
+<br/>
+
+internal_editing_notes ("got to minute 45", "only did the mutes so far", "violence at end could use grooming", "too much is cut at beginning, needs groming")
+<br/>
+<textarea name="internal_editing_notes" rows="1" cols="150" ><%= url.internal_editing_notes %></textarea>
+<br/>
+<br/>
+
+stuff not edited out (either on purpose or haven't gotten to it yet, for customers to know: ex still has some scary scenes that may not be appropriate for children, or 'still has some bare midriffs not edited') If movie's inappropriate for children, mention why here.
+<br/>
+<textarea name="stuff_not_edited_out" rows="1" cols="150" ><%= url.stuff_not_edited_out  %></textarea>
+<br/>
+<br/>
+
+age_recommendation_after_edited (just loose estimate like "around age 10" choose 10)
+<select name="age_recommendation_after_edited" id="age_recommendation_after_edited"> 
+  <% (1..17).each {|option| %>
+   <option value="<%= option %>"><%= option %></option>
+  <% } %>
+</select>
+<script>
+  document.getElementById('age_recommendation_after_edited').value = '<%= url.age_recommendation_after_edited %>';
+</script>
+<br/>
+<br/>
+
+sell_it_edited, like "Watch without the crude jokes" mostly for movies where it's not obvious why editing would even be useful.
+<br/>
+<textarea name="sell_it_edited" rows="1" cols="150" ><%= url.sell_it_edited %></textarea>
+<br/>
+<br/>
+
+good_movie_rating (out of 10, kind of like "out of 10 stars" on IMDB)
+<input type="text" name="good_movie_rating" size="5" value="<%= url.good_movie_rating if url.good_movie_rating > 0 %>"/>
+<br/>
+<br/>
+
+Our local review of this movie (no spoilers, explain the good movie rating)<br/>
+Ex: "This movie is part of a series that is...Keanu Reeves does a good job, but plot is lacking."
+<br/>
+<textarea name="review" rows="2" cols="150" ><%= url.review %></textarea>
+<br/>
+<br/>
+
+wholesome_uplifting_level (out of 10)
+<input type="text" name="wholesome_uplifting_level" size="5" value="<%= url.wholesome_uplifting_level if url.wholesome_uplifting_level > 0 %>"/>
+<br/>
+<br/>
+
+Our wholesome review (explain wholesome/uplifting level)<br/>
+Ex: "A little dark, even edited", "a good question to discuss as a family afterward would be..." "Just a normal entertaining movie, neither uplifting nor spiritually negative" "Inspiring"
+<br/>
+<textarea name="wholesome_review" rows="2" cols="150" ><%= url.wholesome_review %></textarea>
+<br/>
+<br/>
+
+streaming costs (ex: "2.99"), enter 0 if that option not available (ex: part of subscription site that doesn't charge per video (youtube)).  This is cost *without* having amazon prime.
+<br/>
+rental cost (SD) <input type="text" name="rental_cost_sd" size="5" value="<%= url.rental_cost_sd if url.rental_cost_sd %>"/>$
+<br/>
+rental cost (HD): <input type="text" name="rental_cost" size="5" value="<%= url.rental_cost if url.rental_cost %>"/>$
+<br/>
+purchase cost (SD) <input type="text" name="purchase_cost_sd" size="5" value="<%= url.purchase_cost_sd if url.purchase_cost_sd %>"/>$
+<br/> 
+purchase cost (HD) <input type="text" name="purchase_cost" size="5" value="<%= url.purchase_cost if url.purchase_cost %>"/>$
+<br/>
+<br/>
+
+main genre:
+  <select name="genre" id='genre'>
+    <option value="">unknown</option>
+    <% all_genres.each{| genre | %>
+      <option value="<%= HTML.escape(genre) %>"><%= HTML.escape genre %></option>
+    <% } %>
+   </select> 
+   <script>
+
+function htmlDecode(input)
+{
+  var doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
+
+   document.getElementById('genre').value = htmlDecode("<%= url.genre %>"); // gah ...
+   </script>
+<br/>
+<br/>
+
+original MPAA/TV rating, if any:
+  <select name="original_rating" id='original_rating'>
+    <option value="">unknown/none/NR</option>
+    <% ["G", "PG", "PG-13", "R", "TV-Y", "TV-Y7", "TV-Y7-FV", "TV-G", "TV-PG", "TV-14", "TV-MA"].each{| name|  %>
+      <option value="<%= name %>"><%= name %></option>
+    <% } %>
+   </select>    
+   <script>
+   document.getElementById('original_rating').value = '<%= url.original_rating %>';
+   </script>
+<br/>
+<br/>
+
+Url for an image/picture for this movie:
+<br/>
+<% if url.image_local_filename.present? %>
+  <br/>This will override its current image: <%= url.image_tag "style='max-height: 210px; max-width: 100px;'", ImageSize::Medium %>
+<br/>
+<% end %>
+You can <a href=https://www.google.com/search?tbm=isch&q=<%= google_search_string(url) %> target="_blank">search</a>
+ for an image, wikipedia seems a good source.  Click on "search" then click on an image then select "view image" to find its url, ex: https://upload.wikimedia.org/Indiana_Jones_Doom.jpg
+<br/> then enter that complete url address here (like "http://somewhere/some_image.jpg"):
+<input type="text" name="image_url" size="150" placeholder="http://wikipedia.org/.../some_image.jpg" value=""/> <!-- value empty on purpose --> 
+<br/>
+
+<br/>
+total movie length <!-- (netflix needs this, others can survive without it but still useful if possible) -->
+<input type="text" name="total_time" size="40" value="<%= seconds_to_human url.total_time %>"/>
+<br/>
+
+<br/>
+<input type="submit" value="Update Movie Info" class="btn btn-primary" class_means="blue" />
+</form>
+
+<br/><a href="/show_tag_details/<%= url.id %>"><< back to movie page</a> (if you made any changes, hit "Update movie info" or changes will be lost)
+<br/>
+
+<a href=http://freeldssheetmusic.org/questions/ask?pre_fill=<%= URI.encode_www_form "Request to delete url #{url.name} #{url.id}" %> target="_blank" onClick="alert('redirecting you to another website where you can fill out a form to request its deletion...');">delete this movie from system</a>
+
+<br/>
+
+<h4>Subtitles</h4>
+You can also auto add "lots" of mute content tags automatically by giving PlayItMyWay a subtitle file this movie, and it will scan it for profanities, <a href=/mass_upload_from_subtitle_file/<%= url.id %>>click here</a> for instructions.

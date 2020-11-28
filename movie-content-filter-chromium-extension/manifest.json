@@ -2,7 +2,7 @@
     "name": "Movie Content Filter",
     "version": "0.0.0.1",
     "manifest_version": 2,
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "storage"],
     "content_scripts": [{
         "all_frames": true, 
         "js": ["content.js"],
@@ -10,5 +10,8 @@
             "https://smile.amazon.com/*", "https://www.amazon.com/*", "https://www.primevideo.com/*",
             "https://www.netflix.com/watch/*", "https://www.disneyplus.com/video/*"
         ]
-    }]
+    }],
+    "browser_action": {
+        "default_popup": "popup.html"
+    }
 }

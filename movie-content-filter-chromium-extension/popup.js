@@ -39,6 +39,8 @@
 
 var filterToggleCheckbox = document.querySelector("#toggle-filters-checkbox");
 var userIDTextbox = document.querySelector("#user-preferences-id");
+var findUserButton = document.querySelector("#find-user-preferences");
+var preferencesMessageArea = document.querySelector("#user-preferences-message-area");
 
 function filterToggleCheckboxChanged(event) {
     if(filterToggleCheckbox.checked) {
@@ -51,6 +53,36 @@ function filterToggleCheckboxChanged(event) {
     }
 }
 
+function findUserID() {
+    var userIDs = ["PmrqC", "ghBnb", "T3GDJ"]; // dummy values for now
+
+    // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
+    // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
+    var santizedIDValue = (userIDTextbox.value).replace(/[^0-9a-z]/gi, '');
+    
+    userIDTextbox.value = santizedIDValue; // Show santized string in the input box
+
+    // Validate the input so the length is between 1 and 15 characters
+    if((userIDTextbox.value).length < 1) {
+        preferencesMessageArea.innerText = "Error: Needs alphanumeric characters";
+        return null;
+    }
+    if ((userIDTextbox.value).length > 15) { // max length is arbitrary for now
+        preferencesMessageArea.innerText = "Error: Needs to be shorter";
+        return null;
+    }
+
+    for(var i = 0; i < userIDs.length; i++) {
+        if(santizedIDValue == userIDs[i]) {
+            return userIDs[i];
+        }
+    }
+
+    // If the entered ID doesn't match any IDs in the database
+    preferencesMessageArea.innerText = "Couldn't find it";
+    return null;
+}
+
 function restoreSettingsFormOptions() {
     chrome.storage.sync.get(['filterToggle'], function(result) {
         if(result.filterToggle == true) {
@@ -61,7 +93,20 @@ function restoreSettingsFormOptions() {
         }
         //alert("Checkbox value: " + result.filterToggle);
     });
+    chrome.storage.sync.get(['mcfPrefsID'], function(result) {
+        if(typeof (result.mcfPrefsID) === 'string') {
+            userIDTextbox.value = result.mcfPrefsID;
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
 filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
+findUserButton.addEventListener('click', function() {
+    var myUserID = findUserID();
+    if(myUserID != null) {
+        preferencesMessageArea.innerText = "Found it";
+        chrome.storage.sync.set({mcfPrefsID: myUserID});
+        // set filter values
+    }
+});

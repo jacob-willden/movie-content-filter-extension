@@ -107,6 +107,10 @@ findUserButton.addEventListener('click', function() {
     if(myUserID != null) {
         preferencesMessageArea.innerText = "Found it";
         chrome.storage.sync.set({mcfPrefsID: myUserID});
-        // set filter values
+        
+        // Set filter values
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions"});
+        });
     }
 });

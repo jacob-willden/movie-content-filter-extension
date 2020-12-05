@@ -7,8 +7,26 @@
         "all_frames": true, 
         "js": ["content.js"],
         "matches": [
-            "https://smile.amazon.com/*", "https://www.amazon.com/*", "https://www.primevideo.com/*",
-            "https://www.netflix.com/watch/*", "https://www.disneyplus.com/video/*"
+            "https://*.amazon.com/*", 
+            "https://www.primevideo.com/*",
+            "https://*.amazon.com.br/*",
+            "https://*.amazon.ca/*",
+            "https://*.amazon.com.mx/*",
+            "https://*.amazon.in/*",
+            "https://*.amazon.co.jp/*",
+            "https://*.amazon.sg/*",
+            "https://*.amazon.com.tr/*",
+            "https://*.amazon.ae/*",
+            "https://*.amazon.fr/*",
+            "https://*.amazon.de/*",
+            "https://*.amazon.it/*",
+            "https://*.amazon.nl/*",
+            "https://*.amazon.es/*",
+            "https://*.amazon.se/*",
+            "https://*.amazon.co.uk/*",
+            "https://*.amazon.com.au/*",
+            "https://www.netflix.com/watch/*", 
+            "https://www.disneyplus.com/video/*"
         ]
     }],
     "browser_action": {

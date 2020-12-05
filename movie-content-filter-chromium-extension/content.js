@@ -72,19 +72,51 @@ function filterScript() {
 
     function applyFilters() {
         console.log("fetching cuts");
-        cuts = [ // Some dummy values for now
-            {"startTime": 40, "endTime": 42, "category": "", "severity": "", "action": "mute"},
-            {"startTime": 47, "endTime": 49, "category": "", "severity": "", "action": "blank"},
-            {"startTime": 54, "endTime": 56, "category": "", "severity": "", "action": "skip"}
+        var cuts = [ // Some dummy values for now
+            {"startTime": 40, "endTime": 42, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
+            {"startTime": 47, "endTime": 49, "category": "gambling", "severity": 1, "action": "blank", "enabled": true},
+            {"startTime": 54, "endTime": 56, "category": "gambling", "severity": 1, "action": "skip", "enabled": true},
+            {"startTime": 61, "endTime": 63, "category": "tedious", "severity": 2, "action": "mute", "enabled": true},
+            {"startTime": 68, "endTime": 70, "category": "tedious", "severity": 2, "action": "blank", "enabled": true},
+            {"startTime": 75, "endTime": 77, "category": "tedious", "severity": 2, "action": "skip", "enabled": true},
+            {"startTime": 82, "endTime": 84, "category": "warfare", "severity": 3, "action": "mute", "enabled": true},
+            {"startTime": 89, "endTime": 91, "category": "warfare", "severity": 3, "action": "blank", "enabled": true},
+            {"startTime": 96, "endTime": 98, "category": "warfare", "severity": 3, "action": "skip", "enabled": true}
         ];
-        for(var i = 0; i < cuts.length; i++) {
-            console.log(cuts[i]);
+        //for(var i = 0; i < cuts.length; i++) {
+        //    console.log(cuts[i]);
+        //}
+
+        var myPreferences = { // Dummy values for now
+            "gambling": 3,
+            "tedious": 2,
+            "warfare": 1
+        };
+
+        var prevAction = '';
+
+        // Function modified from isSkipped function from "videoskip.js" from VideoSkip
+        function isTagApplied(tagCategory, tagSeverity) { 
+            return (tagSeverity + myPreferences[tagCategory] > 3);
+        }
+
+        // Determine which filter tags should be set, based on user preferences
+        function setActions() {
+            for(var i = 0; i < cuts.length; i++) {
+                cuts[i].enabled = isTagApplied(cuts[i].category, cuts[i].severity) ? true : false;
+            }
         }
 
         // Maybe add currentUrlNotIframe() function from "edited_generic_player.js" from Sensible Cinema later?
 
-        var prevAction = '';
-        // var switches = [];
+        function isThisAmazon() {
+            if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
         // Function derived from "edited_generic_player.js" from Sensible Cinema
         function isAmazonTenSecondsOff() {
@@ -100,7 +132,7 @@ function filterScript() {
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
         function getCurrentTime() {
-            if (serviceName == 'www.amazon.com' || serviceName == 'smile.amazon.com') {
+            if(isThisAmazon() == true) {
                 if (isAmazonTenSecondsOff()) {
                     return myVideo.currentTime - 10; // not sure why they did this :|
                 } 
@@ -132,7 +164,7 @@ function filterScript() {
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.seek(' + time*1000 + ')');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
-            if (serviceName == 'www.amazon.com' || serviceName == 'smile.amazon.com') {
+            if(isThisAmazon() == true) {
                 if (isAmazonTenSecondsOff()) {
                     myVideo.currentTime = time + 10;
                 } 
@@ -145,6 +177,15 @@ function filterScript() {
             }
         }
 
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if(request.message == "set_filter_actions") {
+                    alert("got set filter actions message");
+                    setActions();
+                }
+            }
+        );
+
         //to skip video during playback, also collect data for auto sync
         myVideo.ontimeupdate = function() {
             var action = '', startTime, endTime;
@@ -152,8 +193,10 @@ function filterScript() {
                 startTime = cuts[i].startTime;
                 endTime = cuts[i].endTime;
                 if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
-                    action = cuts[i].action;
-                    break;
+                    if(cuts[i].enabled == true) {
+                        action = cuts[i].action;
+                        break;
+                    }
                 } 
                 else {
                     action = '';
@@ -205,6 +248,12 @@ chrome.storage.sync.get(['filterToggle'], function(result) {
 });
 
 //chrome.storage.onChanged.addListener(function() {});
+
+/* enabled = cuts[i].enabled;
+if(enabled == false) {
+    console.log
+    break;
+} */
 
 
 /* Next Todos: 

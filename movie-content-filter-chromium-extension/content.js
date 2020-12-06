@@ -87,30 +87,40 @@ function filterScript() {
         //    console.log(cuts[i]);
         //}
 
-        var myPreferences = { // Dummy values for now
-            "gambling": 3,
-            "tedious": 2,
-            "warfare": 1
-        };
+        var userPrefs = [ // dummy values for now
+            {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
+            {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
+            {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
+        ];
 
         var prevAction = '';
 
         // Function modified from isSkipped function from "videoskip.js" from VideoSkip
-        function isTagApplied(tagCategory, tagSeverity) { 
+        function isTagApplied(myPreferences, tagCategory, tagSeverity) { 
             return (tagSeverity + myPreferences[tagCategory] > 3);
         }
 
         // Determine which filter tags should be set, based on user preferences
-        function setActions() {
+        function setActions(userID) {
+            for(var i = 0; i < userPrefs.length; i++) {
+                if(userPrefs[i].id == userID) {
+                    var myPreferences = userPrefs[i];
+                }
+            }
+            
             for(var i = 0; i < cuts.length; i++) {
-                cuts[i].enabled = isTagApplied(cuts[i].category, cuts[i].severity) ? true : false;
+                cuts[i].enabled = isTagApplied(myPreferences, cuts[i].category, cuts[i].severity) ? true : false;
+            }
+
+            for(var i = 0; i < cuts.length; i++) { // for testing
+                console.log(cuts[i]);
             }
         }
 
         // Maybe add currentUrlNotIframe() function from "edited_generic_player.js" from Sensible Cinema later?
 
         function isThisAmazon() {
-            if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain
+            if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain or subdomain
                 return true;
             }
             else {
@@ -180,11 +190,26 @@ function filterScript() {
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 if(request.message == "set_filter_actions") {
-                    alert("got set filter actions message");
-                    setActions();
+                    //console.log("got set filter actions message:" + request.preferences);
+                    chrome.storage.sync.set({mcfPrefsID: request.userID});
+                    setActions(request.userID);
                 }
             }
         );
+
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if(request.message == "request_filter_id_list") {
+                    sendResponse({filterIDList: userPrefs});
+                }
+            }
+        );
+
+        chrome.storage.sync.get(['mcfPrefsID'], function(result) {
+            if(typeof(result.mcfPrefsID) === 'string') {
+                setActions(result.mcfPrefsID);
+            }
+        });
 
         //to skip video during playback, also collect data for auto sync
         myVideo.ontimeupdate = function() {

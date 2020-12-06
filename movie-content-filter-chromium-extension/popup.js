@@ -42,6 +42,12 @@ var userIDTextbox = document.querySelector("#user-preferences-id");
 var findUserButton = document.querySelector("#find-user-preferences");
 var preferencesMessageArea = document.querySelector("#user-preferences-message-area");
 
+var userPrefs = [ // dummy values for now
+    {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
+    {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
+    {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
+];
+
 function filterToggleCheckboxChanged(event) {
     if(filterToggleCheckbox.checked) {
         // set filter toggle to true
@@ -54,8 +60,6 @@ function filterToggleCheckboxChanged(event) {
 }
 
 function findUserID() {
-    var userIDs = ["PmrqC", "ghBnb", "T3GDJ"]; // dummy values for now
-
     // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
     // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
     var santizedIDValue = (userIDTextbox.value).replace(/[^0-9a-z]/gi, '');
@@ -67,15 +71,32 @@ function findUserID() {
         preferencesMessageArea.innerText = "Error: Needs alphanumeric characters";
         return null;
     }
-    if ((userIDTextbox.value).length > 15) { // max length is arbitrary for now
+    if((userIDTextbox.value).length > 15) { // max length is arbitrary for now
         preferencesMessageArea.innerText = "Error: Needs to be shorter";
         return null;
     }
 
-    for(var i = 0; i < userIDs.length; i++) {
-        if(santizedIDValue == userIDs[i]) {
-            return userIDs[i];
+    for(var i = 0; i < userPrefs.length; i++) {
+        if(santizedIDValue == userPrefs[i].id) {
+            return userPrefs[i].id;
         }
+    }
+
+    var foundID = null;
+
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {message: "request_filter_id_list"}, function(response) {
+            var idList = response.filterIDList;
+            for(var i = 0; i < idList.length; i++) {
+                if(santizedIDValue == idList[i]) {
+                    foundID = idList[i];
+                }
+            }
+        });
+    });
+
+    if(foundID != null) {
+        return foundID;
     }
 
     // If the entered ID doesn't match any IDs in the database
@@ -91,26 +112,26 @@ function restoreSettingsFormOptions() {
         else if (result.filterToggle == false) {
             filterToggleCheckbox.checked = false;
         }
-        //alert("Checkbox value: " + result.filterToggle);
+        //console.log("Checkbox value: " + result.filterToggle);
     });
     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-        if(typeof (result.mcfPrefsID) === 'string') {
+        if(typeof(result.mcfPrefsID) === 'string') {
             userIDTextbox.value = result.mcfPrefsID;
         }
     });
 }
 
-document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
-filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
-findUserButton.addEventListener('click', function() {
+function setFilterActions() {
     var myUserID = findUserID();
     if(myUserID != null) {
         preferencesMessageArea.innerText = "Found it";
-        chrome.storage.sync.set({mcfPrefsID: myUserID});
-        
         // Set filter values
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions"});
+            chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions", userID: myUserID});
         });
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
+filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
+findUserButton.addEventListener('click', setFilterActions);

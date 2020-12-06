@@ -82,23 +82,6 @@ function findUserID() {
         }
     }
 
-    var foundID = null;
-
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {message: "request_filter_id_list"}, function(response) {
-            var idList = response.filterIDList;
-            for(var i = 0; i < idList.length; i++) {
-                if(santizedIDValue == idList[i]) {
-                    foundID = idList[i];
-                }
-            }
-        });
-    });
-
-    if(foundID != null) {
-        return foundID;
-    }
-
     // If the entered ID doesn't match any IDs in the database
     preferencesMessageArea.innerText = "Couldn't find it";
     return null;

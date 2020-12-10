@@ -5,7 +5,17 @@
     JavaScript code in this page.
 
     This file is part of the Movie Content Filter Browser Extension Project.
+    
     Copyright (C) 2020 Jacob Willden
+
+    Some of the code below was modified from example code from 
+    the extension options tutorial on the Chrome Developer website 
+    (https://developer.chrome.com/extensions/options), released 
+    under the Creative Commons Attribution 3.0 license 
+    (http://creativecommons.org/licenses/by/3.0/).
+
+    "Movie Content Filter" Website Copyright (C) delight.im
+    Website Link: https://www.moviecontentfilter.com/
 
     The Movie Content Filter Browser Extension Project is free software: 
     you can redistribute it and/or modify it under the terms of the GNU
@@ -24,17 +34,8 @@
     You should have recieved a copy of the GNU General Public License
     along with this project. Otherwise, see: https://www.gnu.org/licenses/
 
-    Also, some of the code below was modified from the extension options 
-    tutorial on the Chrome Developer website 
-    (https://developer.chrome.com/extensions/options), 
-    released under the Creative Commons Attribution 3.0 license 
-    (http://creativecommons.org/licenses/by/3.0/).
-
     @licend  The above is the entire license notice for the 
     JavaScript code in this page.
-
-    "Movie Content Filter" Website Copyright (C) delight.im
-    Website Link: https://www.moviecontentfilter.com/
 */
 
 var filterToggleCheckbox = document.querySelector("#toggle-filters-checkbox");
@@ -51,11 +52,11 @@ var userPrefs = [ // dummy values for now
 function filterToggleCheckboxChanged(event) {
     if(filterToggleCheckbox.checked) {
         // set filter toggle to true
-        chrome.storage.sync.set({filterToggle: true});
+        chrome.storage.sync.set({mcfFilterOn: true});
     }
     else {
         // set filter toggle to false
-        chrome.storage.sync.set({filterToggle: false});
+        chrome.storage.sync.set({mcfFilterOn: false});
     }
 }
 
@@ -88,14 +89,14 @@ function findUserID() {
 }
 
 function restoreSettingsFormOptions() {
-    chrome.storage.sync.get(['filterToggle'], function(result) {
-        if(result.filterToggle == true) {
+    chrome.storage.sync.get(['mcfFilterOn'], function(result) {
+        if(result.mcfFilterOn == true) {
             filterToggleCheckbox.checked = true;
         }
-        else if (result.filterToggle == false) {
+        else if (result.mcfFilterOn == false) {
             filterToggleCheckbox.checked = false;
         }
-        //console.log("Checkbox value: " + result.filterToggle);
+        //console.log("Checkbox value: " + result.mcfFilterOn);
     });
     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
         if(typeof(result.mcfPrefsID) === 'string') {

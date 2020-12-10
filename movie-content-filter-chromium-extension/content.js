@@ -6,25 +6,29 @@
     @licstart  The following is the entire license notice for the
     JavaScript code in this page.
 
-    Movie Content Filter Browser Extension Project
+    This file is part of the Movie Content Filter Browser Extension Project.
+    
     Copyright (C) 2020 Jacob Willden
 
     Most of the code below was derived and modified from several source 
     code files in the VideoSkip extension repository (source link above), 
     including "content1.js", "content2.js", and "videoskip.js". 
-    Basically the rest of the code below was derived and modified from 
+    Various other parts of the code below were derived and modified from 
     the "edited_generic_player.js" and "contentscript.js" source code 
     files in the "chrome_extension" folder in the "html5_javascript" 
     folder from the Sensible Cinema (Play It My Way) repository 
-    (source link above).
+    (source link above), and they are explicitly labled as so.
 
     VideoSkip Source Code Copyright (C) 2020 Francisco Ruiz
     (Released Under the GNU General Public License (GNU GPL))
     Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
     (Released Under the Lesser General Public License (LGPL))
 
-    Source code modified and derived by Jacob Willden
+    Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020
+
+    "Movie Content Filter" Website Copyright (C) delight.im
+    Website Link: https://www.moviecontentfilter.com/
 
     The Movie Content Filter Browser Extension Project is free software: 
     you can redistribute it and/or modify it under the terms of the GNU
@@ -45,9 +49,6 @@
 
     @licend  The above is the entire license notice for the 
     JavaScript code in this page.
-
-    "Movie Content Filter" Website Copyright (C) delight.im
-    Website Link: https://www.moviecontentfilter.com/
 */
 
 function filterScript() {
@@ -117,7 +118,36 @@ function filterScript() {
             }
         }
 
+        // Displays a notice to comply with the United States Family Movie Act of 2005
+        function displayLegalNotice() {
+            // Modified from both content1.js and content2.js
+
+            var performanceDisclaimerArea = document.createElement('span');
+
+            // Set styles
+            performanceDisclaimerArea.style.display = "block";
+            performanceDisclaimerArea.style.color = "white";
+            performanceDisclaimerArea.style.fontFamily = "sans-serif";
+            performanceDisclaimerArea.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            performanceDisclaimerArea.style.fontSize = "large";
+            performanceDisclaimerArea.style.textAlign = "center";
+            performanceDisclaimerArea.style.zIndex = myVideo.style.zIndex + 1 | 1;
+            performanceDisclaimerArea.style.position = 'absolute';
+            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + 'px';
+            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + 'px';
+            performanceDisclaimerArea.style.width = (myVideo.offsetWidth - 20) + "px";
+
+            myVideo.parentNode.insertBefore(performanceDisclaimerArea, myVideo);
+            var performanceDisclaimerText = document.createTextNode("Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.");
+            performanceDisclaimerArea.appendChild(performanceDisclaimerText);
+
+            setTimeout(function() {
+                performanceDisclaimerArea.style.visibility = 'hidden';
+            }, 6000);
+        }
+
         // Maybe add currentUrlNotIframe() function from "edited_generic_player.js" from Sensible Cinema later?
+        // Definitely add blankScreenIfWithinHeartOfSkip() and some other functions below it later
 
         function isThisAmazon() {
             if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain or subdomain
@@ -211,6 +241,8 @@ function filterScript() {
             }
         });
 
+        displayLegalNotice();
+
         //to skip video during playback, also collect data for auto sync
         myVideo.ontimeupdate = function() {
             var action = '', startTime, endTime;
@@ -266,19 +298,11 @@ function filterScript() {
 }
 
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
-chrome.storage.sync.get(['filterToggle'], function(result) {
-    if(result.filterToggle == true) {
+chrome.storage.sync.get(['mcfFilterOn'], function(result) {
+    if(result.mcfFilterOn == true) {
         filterScript();
     }
 });
-
-//chrome.storage.onChanged.addListener(function() {});
-
-/* enabled = cuts[i].enabled;
-if(enabled == false) {
-    console.log
-    break;
-} */
 
 
 /* Next Todos: 
@@ -286,7 +310,6 @@ if(enabled == false) {
 * Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function?)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip
 * Add i_muted_it and i_hid_it variables from Sensible Cinema (probably video_ever_initialized too)
-* Add localization matches for Amazon URLs (e.g. amazon.co.uk or amazon.de)
 * Ensure that "the technology provides a clear and conspicuous notice at 
 the beginning of each performance that the performance of the motion 
 picture is altered from the performance intended by the director or 

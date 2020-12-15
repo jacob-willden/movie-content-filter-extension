@@ -38,6 +38,8 @@
     JavaScript code in this page.
 */
 
+"use strict";
+
 var filterToggleCheckbox = document.querySelector("#toggle-filters-checkbox");
 var userIDTextbox = document.querySelector("#user-preferences-id");
 var findUserButton = document.querySelector("#find-user-preferences");
@@ -49,7 +51,7 @@ var userPrefs = [ // dummy values for now
     {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
 ];
 
-function filterToggleCheckboxChanged(event) {
+function filterToggleCheckboxChanged() {
     if(filterToggleCheckbox.checked) {
         // set filter toggle to true
         chrome.storage.sync.set({mcfFilterOn: true});
@@ -109,6 +111,8 @@ function setFilterActions() {
     var myUserID = findUserID();
     if(myUserID != null) {
         preferencesMessageArea.innerText = "Found it";
+        chrome.storage.sync.set({mcfPrefsID: myUserID});
+
         // Set filter values
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions", userID: myUserID});

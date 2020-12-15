@@ -51,6 +51,8 @@
     JavaScript code in this page.
 */
 
+"use strict";
+
 function filterScript() {
 
     console.log("starting content script");
@@ -221,19 +223,19 @@ function filterScript() {
             function(request, sender, sendResponse) {
                 if(request.message == "set_filter_actions") {
                     //console.log("got set filter actions message:" + request.preferences);
-                    chrome.storage.sync.set({mcfPrefsID: request.userID});
                     setActions(request.userID);
                 }
             }
         );
 
-        chrome.runtime.onMessage.addListener(
+        // Probably unnecessary
+/*         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 if(request.message == "request_filter_id_list") {
                     sendResponse({filterIDList: userPrefs});
                 }
             }
-        );
+        ); */
 
         chrome.storage.sync.get(['mcfPrefsID'], function(result) {
             if(typeof(result.mcfPrefsID) === 'string') {
@@ -241,6 +243,7 @@ function filterScript() {
             }
         });
 
+        // if enabled tags > 0?
         displayLegalNotice();
 
         //to skip video during playback, also collect data for auto sync
@@ -313,6 +316,7 @@ chrome.storage.sync.get(['mcfFilterOn'], function(result) {
 * Ensure that "the technology provides a clear and conspicuous notice at 
 the beginning of each performance that the performance of the motion 
 picture is altered from the performance intended by the director or 
-copyright holder of the motion picture" (United States Family Movie Act of 2005)
+copyright holder of the motion picture" (United States Family Movie Act of 2005),
+and only if filters are available for the specific video
 * Roger Pack says timeupdate isn't "granular enough for much", but VideoSkip uses it?
 */

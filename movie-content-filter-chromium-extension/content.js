@@ -56,8 +56,15 @@
 function filterScript() {
 
     console.log("starting content script");
+    var filtersEnabled = true;
     var myVideo = null;
     var serviceName = window.location.hostname;
+
+    var userPrefs = [ // dummy values for now
+        {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
+        {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
+        {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
+    ];
 
     // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
     function findFirstVideoTagOrNull() {
@@ -73,7 +80,7 @@ function filterScript() {
         return null;
     }
 
-    function applyFilters() {
+    function applyFilters(myPreferencesID) {
         console.log("fetching cuts");
         var cuts = [ // Some dummy values for now
             {"startTime": 40, "endTime": 42, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
@@ -90,33 +97,27 @@ function filterScript() {
         //    console.log(cuts[i]);
         //}
 
-        var userPrefs = [ // dummy values for now
-            {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
-            {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
-            {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
-        ];
-
         var prevAction = '';
-
-        // Function modified from isSkipped function from "videoskip.js" from VideoSkip
-        function isTagApplied(myPreferences, tagCategory, tagSeverity) { 
-            return (tagSeverity + myPreferences[tagCategory] > 3);
-        }
 
         // Determine which filter tags should be set, based on user preferences
         function setActions(userID) {
+            console.log("setting filter actions");
             for(var i = 0; i < userPrefs.length; i++) {
                 if(userPrefs[i].id == userID) {
                     var myPreferences = userPrefs[i];
                 }
             }
             
+            // Modified from isSkipped function from "videoskip.js" from VideoSkip
             for(var i = 0; i < cuts.length; i++) {
-                cuts[i].enabled = isTagApplied(myPreferences, cuts[i].category, cuts[i].severity) ? true : false;
-            }
-
-            for(var i = 0; i < cuts.length; i++) { // for testing
-                console.log(cuts[i]);
+                var tagCategory = cuts[i].category;
+                var tagSeverity = cuts[i].severity;
+                if(tagSeverity + myPreferences[tagCategory] > 3) {
+                    cuts[i].enabled = true;
+                }
+                else {
+                    cuts[i].enabled = false;
+                }
             }
         }
 
@@ -134,9 +135,9 @@ function filterScript() {
             performanceDisclaimerArea.style.fontSize = "large";
             performanceDisclaimerArea.style.textAlign = "center";
             performanceDisclaimerArea.style.zIndex = myVideo.style.zIndex + 1 | 1;
-            performanceDisclaimerArea.style.position = 'absolute';
-            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + 'px';
-            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + 'px';
+            performanceDisclaimerArea.style.position = "absolute";
+            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
+            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + "px";
             performanceDisclaimerArea.style.width = (myVideo.offsetWidth - 20) + "px";
 
             myVideo.parentNode.insertBefore(performanceDisclaimerArea, myVideo);
@@ -144,7 +145,7 @@ function filterScript() {
             performanceDisclaimerArea.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
-                performanceDisclaimerArea.style.visibility = 'hidden';
+                performanceDisclaimerArea.style.visibility = "hidden";
             }, 6000);
         }
 
@@ -225,29 +226,32 @@ function filterScript() {
                     //console.log("got set filter actions message:" + request.preferences);
                     setActions(request.userID);
                 }
+                if(request.message == "filter_checkbox_changed") {
+                    chrome.storage.sync.get(['mcfFilterOn'], function(result) {
+                        if(result.mcfFilterOn == true) {
+                            filtersEnabled = true;
+                        }
+                        else {
+                            filtersEnabled = false;
+                        }
+                    });
+                }
+                /* if(request.message == "request_filter_id_list") { // Probably unnecessary?
+                    sendResponse({filterIDList: userPrefs});
+                } */
             }
         );
 
-        // Probably unnecessary
-/*         chrome.runtime.onMessage.addListener(
-            function(request, sender, sendResponse) {
-                if(request.message == "request_filter_id_list") {
-                    sendResponse({filterIDList: userPrefs});
-                }
-            }
-        ); */
-
-        chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-            if(typeof(result.mcfPrefsID) === 'string') {
-                setActions(result.mcfPrefsID);
-            }
-        });
+        setActions(myPreferencesID);
 
         // if enabled tags > 0?
         displayLegalNotice();
 
         //to skip video during playback, also collect data for auto sync
         myVideo.ontimeupdate = function() {
+            if(filtersEnabled == false) {
+                return;
+            }
             var action = '', startTime, endTime;
             for(var i = 0; i < cuts.length; i++) { //find out what action to take, according to timing and setting in cuts object
                 startTime = cuts[i].startTime;
@@ -287,30 +291,71 @@ function filterScript() {
         }
     }
 
+    function checkPreferencesID() {
+        function validateIDInput(input) {
+            if(typeof(input) !== 'string') {
+                return null;
+            }
+            // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
+            // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
+            var santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
+        
+            // Validate the input so the length is between 1 and 15 characters
+            if((santizedIDValue).length < 1) {
+                return null;
+            }
+            if((santizedIDValue).length > 25) { // max length is arbitrary for now
+                return null;
+            }
+            return santizedIDValue;
+        }
+
+        chrome.storage.sync.get(['mcfPrefsID'], function(result) {
+            var validatedID = validateIDInput(result.mcfPrefsID);
+            if(validatedID != null) {
+                applyFilters(validatedID);
+            }
+        });
+    }
+
     // Function derived and modified from "contentscript.js" from Sensible Cinema
     var interval = setInterval(function() {
         myVideo = findFirstVideoTagOrNull();
         if (myVideo != null) {
             console.log("found video tag");
             clearInterval(interval);
-            console.log("running applyFilters function now");
-            applyFilters();
+            checkPreferencesID();
         }
     }, 50); // initial delay 50ms but me thinks not too bad, still responsive enough :)
 
 }
 
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
-chrome.storage.sync.get(['mcfFilterOn'], function(result) {
-    if(result.mcfFilterOn == true) {
-        filterScript();
+function checkIfFiltersActive() {
+    chrome.storage.sync.get(['mcfFilterOn'], function(result) {
+        if(result.mcfFilterOn == true) {
+            filterScript();
+        }
+    });
+}
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if(request.message == "set_filter_actions") {
+            checkIfFiltersActive();
+        }
+        if(request.message == "filter_checkbox_changed") {
+            checkIfFiltersActive();
+        }
     }
-});
+);
+
+checkIfFiltersActive();
 
 
 /* Next Todos: 
 * Why is Amazon buffer different than 10 seconds (Advertisements before videos? Check Sensible Cinema)
-* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function?)
+* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip
 * Add i_muted_it and i_hid_it variables from Sensible Cinema (probably video_ever_initialized too)
 * Ensure that "the technology provides a clear and conspicuous notice at 

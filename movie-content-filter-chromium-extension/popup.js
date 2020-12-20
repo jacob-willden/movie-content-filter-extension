@@ -60,22 +60,39 @@ function filterToggleCheckboxChanged() {
         // set filter toggle to false
         chrome.storage.sync.set({mcfFilterOn: false});
     }
+    // Send message to content script saying checkbox changed
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {message: "filter_checkbox_changed"});
+    });
 }
 
-function findUserID() {
+function validateIDInput(input) {
+    if(typeof(input) !== 'string') {
+        return null;
+    }
     // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
     // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
-    var santizedIDValue = (userIDTextbox.value).replace(/[^0-9a-z]/gi, '');
-    
-    userIDTextbox.value = santizedIDValue; // Show santized string in the input box
+    var myIDValue = (input).replace(/[^0-9a-z]/gi, '');
+
+    userIDTextbox.value = myIDValue; // Show santized string in the input box
 
     // Validate the input so the length is between 1 and 15 characters
-    if((userIDTextbox.value).length < 1) {
+    if((myIDValue).length < 1) {
         preferencesMessageArea.innerText = "Error: Needs alphanumeric characters";
         return null;
     }
-    if((userIDTextbox.value).length > 15) { // max length is arbitrary for now
+    if((myIDValue).length > 25) {
+        
         preferencesMessageArea.innerText = "Error: Needs to be shorter";
+        return null;
+    } // maximum length is arbitrary for now, appears to already be enforced by the maxlength HTML attribute
+
+    return myIDValue;
+}
+
+function findUserID() {
+    var santizedIDValue = validateIDInput(userIDTextbox.value);
+    if(santizedIDValue == null) {
         return null;
     }
 
@@ -101,8 +118,9 @@ function restoreSettingsFormOptions() {
         //console.log("Checkbox value: " + result.mcfFilterOn);
     });
     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-        if(typeof(result.mcfPrefsID) === 'string') {
-            userIDTextbox.value = result.mcfPrefsID;
+        var resultID = validateIDInput(result.mcfPrefsID);
+        if(resultID != null) {
+            userIDTextbox.value = resultID;
         }
     });
 }

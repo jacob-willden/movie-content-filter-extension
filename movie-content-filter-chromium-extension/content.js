@@ -152,6 +152,23 @@ function filterScript() {
         // Maybe add currentUrlNotIframe() function from "edited_generic_player.js" from Sensible Cinema later?
         // Definitely add blankScreenIfWithinHeartOfSkip() and some other functions below it later
 
+        // From videoskip.js
+        function fromHMS(timeString) {
+            timeString = timeString.replace(/,/,".");			//in .srt format decimal seconds use a comma
+            var time = timeString.split(":");
+            if(time.length == 3) {							//has hours
+                return parseInt(time[0])*3600 + parseInt(time[1])*60 + parseFloat(time[2]);
+            }
+            else if(time.length == 2){					//minutes and seconds
+                return parseInt(time[0])*60 + parseFloat(time[1]);
+            }
+            else {											//only seconds
+                return parseFloat(time[0]);
+            }
+        }
+
+        // Amazon-specific functions
+
         function isThisAmazon() {
             if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain or subdomain
                 return true;
@@ -173,14 +190,81 @@ function filterScript() {
             }
         }
 
+        // Function created by Jacob Willden
+        function isWatchingAmazonAdvertisement() {
+            var adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
+            if(adIndicator != null) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        // Function created by Jacob Willden
+        function getAmazonTruncatedActualDuration(timeIndicator) {
+            console.log("the full text: " + timeIndicator.innerText);
+            var bothTimesArray = timeIndicator.innerText.split("/");
+            console.log(bothTimesArray);
+            var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
+            var remainingTime = fromHMS(bothTimesArray[1].replace(/[^0-9:]/g, ''));
+            // The regular expressions above are to remove any characters that aren't digits or colons
+            console.log("elapsedTime: " + elapsedTime + " remainingTime: " + remainingTime);
+
+            var truncatedActualDuration = elapsedTime + remainingTime;
+            return truncatedActualDuration;
+        }
+        
+        // Function source: https://www.includehelp.com/code-snippets/get-the-decimal-part-of-a-floating-number-in-javascript.aspx
+        function getDecimalFromFloat(number) {
+            return (number - Math.floor(number));
+        }
+        
+        var durationDifference = 0;
+        var setForAmazonAdvertisement = false;
+        
+        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
+        function checkAmazonVideoStatus() {
+            if(isWatchingAmazonAdvertisement() == true) {
+                if(setForAmazonAdvertisement == false) {
+                    setForAmazonAdvertisement = true;
+                    // Ad is playing
+                    console.log("ad just started");
+                }
+            }
+            else {
+                if(setForAmazonAdvertisement == true) {
+                    setForAmazonAdvertisement = false;
+                    // Ad is over, now you can check for truncatedActualDuration
+                    console.log("ad just ended");
+
+                    var checkForTimeIndicator = setInterval(function() {
+                        var timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
+                        if((timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times
+                            console.log(timeIndicator);
+                            clearInterval(checkForTimeIndicator);
+
+                            // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
+                            // This assumes that ad durations are always integers (will want to test this more)
+                            var realDuration = getAmazonTruncatedActualDuration(timeIndicator) + parseFloat(getDecimalFromFloat(myVideo.duration).toFixed(3));
+                            durationDifference = myVideo.duration - realDuration;
+                        }
+                    }, 100);
+                }
+            }
+        }
+
+        // End of Amazon-specific functions
+
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
         function getCurrentTime() {
             if(isThisAmazon() == true) {
                 if (isAmazonTenSecondsOff()) {
-                    return myVideo.currentTime - 10; // not sure why they did this :|
+                    return myVideo.currentTime - durationDifference - 10; // not sure why they did this :|
+                    // Note: Haven't been able to test with the old Amazon player yet, so isAmazonTenSecondsOff may or may not still be necessary
                 } 
                 else {
-                    return myVideo.currentTime;
+                    return myVideo.currentTime - durationDifference;
                 }
             } 
             else {
@@ -207,12 +291,13 @@ function filterScript() {
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.seek(' + time*1000 + ')');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
-            if(isThisAmazon() == true) {
+            else if(isThisAmazon() == true) {
                 if (isAmazonTenSecondsOff()) {
-                    myVideo.currentTime = time + 10;
+                    myVideo.currentTime = time + durationDifference + 10;
+                    // Note: Haven't been able to test with the old Amazon player yet, so isAmazonTenSecondsOff may or may not still be necessary
                 } 
                 else {
-                    myVideo.currentTime = time;
+                    myVideo.currentTime = time + durationDifference;
                 }
             } 
             else { //everyone else is HTML5 compliant
@@ -242,12 +327,17 @@ function filterScript() {
             }
         );
 
+        // If the video is on Amazon, check for advertisement
+        if(isThisAmazon()) {
+            setInterval(checkAmazonVideoStatus, 5); // Should this be stopped?
+        }
+
         setActions(myPreferencesID);
 
         // if enabled tags > 0?
         displayLegalNotice();
 
-        //to skip video during playback, also collect data for auto sync
+        // Execute filters during playback, derived from anonymous function in "content2.js" from VideoSkip
         myVideo.ontimeupdate = function() {
             if(filtersEnabled == false) {
                 return;
@@ -270,15 +360,15 @@ function filterScript() {
                 return;
             } 
             else if(action == 'skip') {
-                console.log("skipping");
+                console.log("skipping: " + getCurrentTime());
                 goToTime(endTime);
             } 
             else if(action == 'blank') {
-                console.log("blanking");
+                console.log("blanking: " + getCurrentTime());
                 myVideo.style.opacity = 0;
             } 
             else if(action == 'mute') {
-                console.log("muting");
+                console.log("muting: " + getCurrentTime());
                 myVideo.muted = true;
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
             } 

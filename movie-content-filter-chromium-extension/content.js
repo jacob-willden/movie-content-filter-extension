@@ -83,15 +83,15 @@ function filterScript() {
     function applyFilters(myPreferencesID) {
         console.log("fetching cuts");
         var cuts = [ // Some dummy values for now
-            {"startTime": 40, "endTime": 42, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
-            {"startTime": 47, "endTime": 49, "category": "gambling", "severity": 1, "action": "blank", "enabled": true},
-            {"startTime": 54, "endTime": 56, "category": "gambling", "severity": 1, "action": "skip", "enabled": true},
-            {"startTime": 61, "endTime": 63, "category": "tedious", "severity": 2, "action": "mute", "enabled": true},
-            {"startTime": 68, "endTime": 70, "category": "tedious", "severity": 2, "action": "blank", "enabled": true},
-            {"startTime": 75, "endTime": 77, "category": "tedious", "severity": 2, "action": "skip", "enabled": true},
-            {"startTime": 82, "endTime": 84, "category": "warfare", "severity": 3, "action": "mute", "enabled": true},
-            {"startTime": 89, "endTime": 91, "category": "warfare", "severity": 3, "action": "blank", "enabled": true},
-            {"startTime": 96, "endTime": 98, "category": "warfare", "severity": 3, "action": "skip", "enabled": true}
+            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
+            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank", "enabled": true},
+            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip", "enabled": true},
+            {"startTime": 31, "endTime": 33, "category": "tedious", "severity": 2, "action": "mute", "enabled": true},
+            {"startTime": 38, "endTime": 40, "category": "tedious", "severity": 2, "action": "blank", "enabled": true},
+            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "skip", "enabled": true},
+            {"startTime": 52, "endTime": 54, "category": "warfare", "severity": 3, "action": "mute", "enabled": true},
+            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 3, "action": "blank", "enabled": true},
+            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "skip", "enabled": true}
         ];
         //for(var i = 0; i < cuts.length; i++) {
         //    console.log(cuts[i]);
@@ -337,9 +337,9 @@ function filterScript() {
         // if enabled tags > 0?
         displayLegalNotice();
 
-        // Execute filters during playback, derived from anonymous function in "content2.js" from VideoSkip
+        // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
         myVideo.ontimeupdate = function() {
-            if(filtersEnabled == false) {
+            if((filtersEnabled == false) || (setForAmazonAdvertisement == true)) {
                 return;
             }
             var action = '', startTime, endTime;
@@ -444,10 +444,9 @@ checkIfFiltersActive();
 
 
 /* Next Todos: 
-* Why is Amazon buffer different than 10 seconds (Advertisements before videos? Check Sensible Cinema)
 * Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip
-* Add i_muted_it and i_hid_it variables from Sensible Cinema (probably video_ever_initialized too)
+* Add video_ever_initialized variable from Sensible Cinema (probably i_muted_it and i_hid_it too)
 * Ensure that "the technology provides a clear and conspicuous notice at 
 the beginning of each performance that the performance of the motion 
 picture is altered from the performance intended by the director or 

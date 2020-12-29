@@ -1,5 +1,6 @@
 /*
     @source: https://github.com/jacob-willden/movie-content-filter-extension/
+    @source: https://github.com/rdp/sensible-cinema/
 
     @licstart  The following is the entire license notice for the
     JavaScript code in this page.
@@ -7,6 +8,18 @@
     This file is part of the Movie Content Filter Browser Extension Project.
     
     Copyright (C) 2020 Jacob Willden
+
+    Some of the code below was derived and modified from the 
+    "edited_generic_player.js" source code file in the "chrome_extension" 
+    folder in the "html5_javascript" folder from the Sensible Cinema 
+    (Play It My Way) repository (source link above), and they are 
+    explicitly labled as so.
+
+    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
+    (Released Under the Lesser General Public License (LGPL))
+
+    Afformentioned source code derived and modified by Jacob Willden
+    Start Date of Derivation/Modification: December 28, 2020
 
     Some of the code below was modified from example code from 
     the extension options tutorial on the Chrome Developer website 
@@ -40,10 +53,12 @@
 
 "use strict";
 
-var filterToggleCheckbox = document.querySelector("#toggle-filters-checkbox");
-var userIDTextbox = document.querySelector("#user-preferences-id");
-var findUserButton = document.querySelector("#find-user-preferences");
-var preferencesMessageArea = document.querySelector("#user-preferences-message-area");
+var filterToggleCheckbox = document.getElementById("toggle-filters-checkbox");
+var userIDTextbox = document.getElementById("user-preferences-id");
+var findUserButton = document.getElementById("find-user-preferences");
+var preferencesMessageArea = document.getElementById("user-preferences-message-area");
+var safeSeekSlider = document.getElementById("safe-seek-slider");
+var safeSeekDisplayValue = document.getElementById("safe-seek-display-value");
 
 var userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
@@ -133,9 +148,14 @@ function setFilterActions() {
 
         // Set filter values
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions", userID: myUserID});
+            chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions"});
         });
     }
+}
+
+// Derived and Modified from "edited_generic_player.js" from Sensible Cinema
+function setupSafeSeekOnce() {
+
 }
 
 document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);

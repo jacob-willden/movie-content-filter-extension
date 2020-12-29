@@ -55,7 +55,7 @@
 
 function filterScript() {
 
-    console.log("starting content script");
+    console.log("starting filter script");
     var filtersEnabled = true;
     var myVideo = null;
     var serviceName = window.location.hostname;
@@ -78,6 +78,24 @@ function filterScript() {
         // don't *want* to work with iframes from the plugin side since they'll get their own edited playback copy
         // hopefully this is enough to prevent double loading (once windows.document, one iframe if they happen to be allowed :|
         return null;
+    }
+
+    function validateIDInput(input) {
+        if(typeof(input) !== 'string') {
+            return null;
+        }
+        // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
+        // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
+        var santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
+    
+        // Validate the input so the length is between 1 and 15 characters
+        if((santizedIDValue).length < 1) {
+            return null;
+        }
+        if((santizedIDValue).length > 25) { // max length is arbitrary for now
+            return null;
+        }
+        return santizedIDValue;
     }
 
     function applyFilters(myPreferencesID) {
@@ -309,8 +327,14 @@ function filterScript() {
             function(request, sender, sendResponse) {
                 if(request.message == "set_filter_actions") {
                     //console.log("got set filter actions message:" + request.preferences);
-                    setActions(request.userID);
+                    chrome.storage.sync.get(['mcfPrefsID'], function(result) {
+                        var validatedID = validateIDInput(result.mcfPrefsID);
+                        if(validatedID != null) {
+                            setActions(validatedID);
+                        }
+                    });
                 }
+                
                 if(request.message == "filter_checkbox_changed") {
                     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
                         if(result.mcfFilterOn == true) {
@@ -382,24 +406,6 @@ function filterScript() {
     }
 
     function checkPreferencesID() {
-        function validateIDInput(input) {
-            if(typeof(input) !== 'string') {
-                return null;
-            }
-            // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
-            // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
-            var santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
-        
-            // Validate the input so the length is between 1 and 15 characters
-            if((santizedIDValue).length < 1) {
-                return null;
-            }
-            if((santizedIDValue).length > 25) { // max length is arbitrary for now
-                return null;
-            }
-            return santizedIDValue;
-        }
-
         chrome.storage.sync.get(['mcfPrefsID'], function(result) {
             var validatedID = validateIDInput(result.mcfPrefsID);
             if(validatedID != null) {
@@ -417,14 +423,13 @@ function filterScript() {
             checkPreferencesID();
         }
     }, 50); // initial delay 50ms but me thinks not too bad, still responsive enough :)
-
 }
 
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
 function checkIfFiltersActive() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
         if(result.mcfFilterOn == true) {
-            filterScript();
+            filterScript(); 
         }
     });
 }
@@ -446,7 +451,7 @@ checkIfFiltersActive();
 /* Next Todos: 
 * Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip
-* Add video_ever_initialized variable from Sensible Cinema (probably i_muted_it and i_hid_it too)
+* Add i_muted_it and i_hid_it variables from Sensible Cinema
 * Ensure that "the technology provides a clear and conspicuous notice at 
 the beginning of each performance that the performance of the motion 
 picture is altered from the performance intended by the director or 

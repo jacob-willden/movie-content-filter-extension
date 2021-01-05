@@ -1,5 +1,6 @@
 /*
     @source: https://github.com/jacob-willden/movie-content-filter-extension/
+    @source: https://github.com/fruiz500/VideoSkip-extension/
     @source: https://github.com/rdp/sensible-cinema/
 
     @licstart  The following is the entire license notice for the
@@ -9,12 +10,16 @@
     
     Copyright (C) 2020 Jacob Willden
 
-    Some of the code below was derived and modified from the 
-    "edited_generic_player.js" source code file in the "chrome_extension" 
-    folder in the "html5_javascript" folder from the Sensible Cinema 
-    (Play It My Way) repository (source link above), and they are 
-    explicitly labled as so.
+    Some of the code below was derived from the "videoskip.js" source code 
+    file in the VideoSkip extension repository (source link above), and 
+    it is explicitly labled as so. Some other parts of the code below was 
+    derived and modified from the "edited_generic_player.js" source code 
+    file in the "chrome_extension" folder in the "html5_javascript" folder 
+    from the Sensible Cinema (Play It My Way) repository (source link above), 
+    and it is explicitly labled as so.
 
+    VideoSkip Source Code Copyright (C) 2020 Francisco Ruiz
+    (Released Under the GNU General Public License (GNU GPL))
     Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
     (Released Under the Lesser General Public License (LGPL))
 
@@ -58,7 +63,7 @@ var userIDTextbox = document.getElementById("user-preferences-id");
 var findUserButton = document.getElementById("find-user-preferences");
 var preferencesMessageArea = document.getElementById("user-preferences-message-area");
 var safeSeekSlider = document.getElementById("safe-seek-slider");
-var safeSeekDisplayValue = document.getElementById("safe-seek-display-value");
+var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
 
 var userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
@@ -153,10 +158,78 @@ function setFilterActions() {
     }
 }
 
-// Derived and Modified from "edited_generic_player.js" from Sensible Cinema
-function setupSafeSeekOnce() {
-
+// Derived from "videoskip.js" from VideoSkip
+//to put seconds into hour:minute:second format
+function toHMS(seconds) {
+	var hours = Math.floor(seconds / 3600);
+	seconds -= hours * 3600;
+    var minutes = Math.floor(seconds / 60);
+    minutes = (minutes >= 10) ? minutes : "0" + minutes;
+    seconds = Math.floor((seconds % 60) * 100) / 100;			//precision is 0.01 s
+    seconds = (seconds >= 10) ? seconds : "0" + seconds;
+    return hours + ":" + minutes + ":" + seconds;
 }
+
+// Derived from "edited_generic_player.js" from Sensible Cinema
+function addListenerMulti(element, eventNames, listener) {
+    var events = eventNames.split(' ');
+    for(var i = 0, iLen = events.length; i < iLen; i++) {
+        element.addEventListener(events[i], listener, false);
+    }
+}
+
+function requestCurrentTime() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {message: "request_current_time"}, function(response) {
+            return response.myCurrentTime;
+        });
+    });
+}
+
+function requestDuration() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {message: "request_duration"}, function(response) {
+            return response.myDuration;
+        });
+    });
+}
+
+var isSafeSeekSliderBeingDragged = false; // see the seek_dragger_being_dragged variable from "edited_generic_player.js"
+
+// Derived and Modified from "edited_generic_player.js"
+function updateSafeSeekTime() {
+    if(!isSafeSeekSliderBeingDragged) {
+        var currentTime = requestCurrentTime();
+        safeSeekSlider.value = currentTime / requestDuration() * 100;
+        if(safeSeekDisplayValueArea.innerText != toHMS(currentTime)) {
+            safeSeekDisplayValueArea.innerText = toHMS(currentTime);
+        }
+    } // else let the mouse movement change it only...it's about to seek soon'ish...
+}
+
+// Derived and Modified from "edited_generic_player.js"
+function setupSafeSeekOnce() {
+    addListenerMulti(safeSeekSlider, "mousedown touchstart", function() {
+        isSafeSeekSliderBeingDragged = true;
+    });
+    
+    addListenerMulti(safeSeekSlider, "mouseup touchend", function() {
+        isSafeSeekSliderBeingDragged = false;
+        //seekToPercentage(this.value);
+    });
+
+    addListenerMulti(safeSeekSlider, "mousemove touchmove", function() {
+        if (isSafeSeekSliderBeingDragged) {
+            var desiredTimeInSeconds = requestDuration() / 100.0 * this.value;
+            safeSeekDisplayValueArea.innerText = toHMS(desiredTimeInSeconds);
+            // but don't seek yet :)
+         }
+    });
+
+    setInterval(updateSafeSeekTime, 250); // only 4/sec because ... uh...
+}
+
+//setupSafeSeekOnce();
 
 document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
 filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);

@@ -17,7 +17,7 @@
     the "edited_generic_player.js" and "contentscript.js" source code 
     files in the "chrome_extension" folder in the "html5_javascript" 
     folder from the Sensible Cinema (Play It My Way) repository 
-    (source link above), and they are explicitly labled as so.
+    (source link above), and it is explicitly labled as so.
 
     VideoSkip Source Code Copyright (C) 2020 Francisco Ruiz
     (Released Under the GNU General Public License (GNU GPL))
@@ -53,7 +53,10 @@
 
 "use strict";
 
+var filterScriptAlreadyRunning = false; // To prevent the script from running twice (may need to modify for Amazon TV shows?)
+
 function filterScript() {
+    filterScriptAlreadyRunning = true;
 
     console.log("starting filter script");
     var filtersEnabled = true;
@@ -171,6 +174,7 @@ function filterScript() {
         // Definitely add blankScreenIfWithinHeartOfSkip() and some other functions below it later
 
         // From videoskip.js
+        // hour:minute:second string to decimal seconds
         function fromHMS(timeString) {
             timeString = timeString.replace(/,/,".");			//in .srt format decimal seconds use a comma
             var time = timeString.split(":");
@@ -185,10 +189,10 @@ function filterScript() {
             }
         }
 
-        // Amazon-specific functions
+        // Amazon and IMDb TV-specific functions
 
-        function isThisAmazon() {
-            if(serviceName.includes('.amazon.')) { // This includes any Amazon top-level domain or subdomain
+        function isThisAmazon() { // Or IMDb TV, since they use the same engine
+            if(serviceName.includes('amazon') || serviceName.includes('imdb')) { // This includes any Amazon top-level domain or subdomain
                 return true;
             }
             else {
@@ -283,12 +287,25 @@ function filterScript() {
                 } 
                 else {
                     return myVideo.currentTime - durationDifference;
+/*                     var bothTimesArray = timeIndicator.innerText.split("/");
+                    var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
+                    return elapsedTime + fractionTime; // Need to fetch fraction time from currentTime */
                 }
             } 
             else {
                 return myVideo.currentTime;
             }
         }
+
+        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
+        function getDuration() {
+            if(isThisAmazon() == true) {
+                return myVideo.duration - durationDifference;
+            }
+            else {
+                return myVideo.duration;
+            }
+        } // Not sure if isAmazonTenSecondsOff() should be checked too yet
 
         //by Naveen at StackOverflow, we use it to execute seek on Netflix
         // https://stackoverflow.com/questions/9602022/chrome-extension-retrieving-global-variable-from-webpage
@@ -345,6 +362,17 @@ function filterScript() {
                         }
                     });
                 }
+
+                if(request.message == "request_current_time") {
+                    var requestedCurrentTime = getCurrentTime();
+                    sendResponse({myCurrentTime: requestedCurrentTime});
+                }
+
+                if(request.message == "request_duration") {
+                    var requestedDuration = getDuration();
+                    sendResponse({myDuration: requestedDuration});
+                }
+
                 /* if(request.message == "request_filter_id_list") { // Probably unnecessary?
                     sendResponse({filterIDList: userPrefs});
                 } */
@@ -397,6 +425,7 @@ function filterScript() {
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
             } 
             else {
+                // Check if videoNotBuffering before unhiding video?
                 myVideo.style.opacity =  '';
                 myVideo.muted = false;
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'showing';
@@ -429,7 +458,9 @@ function filterScript() {
 function checkIfFiltersActive() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
         if(result.mcfFilterOn == true) {
-            filterScript(); 
+            if(filterScriptAlreadyRunning == false) {
+                filterScript();
+            } 
         }
     });
 }
@@ -450,7 +481,7 @@ checkIfFiltersActive();
 
 /* Next Todos: 
 * Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement)
-* Troubleshoot Netflix crashing when the user scrubs to inside a skip
+* Troubleshoot Netflix crashing when the user scrubs to inside a skip (could possibly be solved with safe seek?)
 * Add i_muted_it and i_hid_it variables from Sensible Cinema
 * Ensure that "the technology provides a clear and conspicuous notice at 
 the beginning of each performance that the performance of the motion 

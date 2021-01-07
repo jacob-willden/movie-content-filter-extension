@@ -189,16 +189,25 @@ function filterScript() {
             }
         }
 
-        // Amazon and IMDb TV-specific functions
-
-        function isThisAmazon() { // Or IMDb TV, since they use the same engine
-            if(serviceName.includes('amazon') || serviceName.includes('imdb')) { // This includes any Amazon top-level domain or subdomain
+        function isThisAmazon() {
+            if(serviceName.includes('amazon')) { // This includes any Amazon top-level domain or subdomain
                 return true;
             }
             else {
                 return false;
             }
         }
+
+        function isThisIMDbTV() {
+            if(serviceName.includes('imdb')) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        // Amazon specific functions
 
         // Function derived from "edited_generic_player.js" from Sensible Cinema
         function isAmazonTenSecondsOff() {
@@ -225,13 +234,13 @@ function filterScript() {
 
         // Function created by Jacob Willden
         function getAmazonTruncatedActualDuration(timeIndicator) {
-            console.log("the full text: " + timeIndicator.innerText);
+            //console.log("the full text: " + timeIndicator.innerText);
             var bothTimesArray = timeIndicator.innerText.split("/");
-            console.log(bothTimesArray);
+            //console.log(bothTimesArray);
             var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
             var remainingTime = fromHMS(bothTimesArray[1].replace(/[^0-9:]/g, ''));
             // The regular expressions above are to remove any characters that aren't digits or colons
-            console.log("elapsedTime: " + elapsedTime + " remainingTime: " + remainingTime);
+            //console.log("elapsedTime: " + elapsedTime + " remainingTime: " + remainingTime);
 
             var truncatedActualDuration = elapsedTime + remainingTime;
             return truncatedActualDuration;
@@ -244,6 +253,7 @@ function filterScript() {
         
         var durationDifference = 0;
         var setForAmazonAdvertisement = false;
+        var timeIndicator;
         
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
         function checkAmazonVideoStatus() {
@@ -261,9 +271,9 @@ function filterScript() {
                     console.log("ad just ended");
 
                     var checkForTimeIndicator = setInterval(function() {
-                        var timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
+                        timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
                         if((timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times
-                            console.log(timeIndicator);
+                            //console.log(timeIndicator);
                             clearInterval(checkForTimeIndicator);
 
                             // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
@@ -278,20 +288,28 @@ function filterScript() {
 
         // End of Amazon-specific functions
 
+        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
+        function checkIfVideoElementChanged() {
+            var oldVideoElement = myVideo;
+            myVideo = findFirstVideoTagOrNull() || myVideo; // refresh it in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
+            if(myVideo != oldVideoElement) {
+                console.log("video element changed...");
+            }
+        }
+
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
         function getCurrentTime() {
-            if(isThisAmazon() == true) {
-                if (isAmazonTenSecondsOff()) {
-                    return myVideo.currentTime - durationDifference - 10; // not sure why they did this :|
-                    // Note: Haven't been able to test with the old Amazon player yet, so isAmazonTenSecondsOff may or may not still be necessary
-                } 
-                else {
-                    return myVideo.currentTime - durationDifference;
-/*                     var bothTimesArray = timeIndicator.innerText.split("/");
-                    var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
-                    return elapsedTime + fractionTime; // Need to fetch fraction time from currentTime */
-                }
-            } 
+            if(isThisAmazon() == true) { // Only works if all ads are integer lengths
+                return myVideo.currentTime - durationDifference;                
+            }
+            if(isThisIMDbTV) { // Only works if all ads are integer lengths
+                var bothTimesArray = timeIndicator.innerText.split("/");
+                var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
+                var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
+                var myActualTime = elapsedTimeInteger + myTimeDecimal;
+                //console.log(myActualTime);
+                return myActualTime;
+            }
             else {
                 return myVideo.currentTime;
             }
@@ -326,15 +344,12 @@ function filterScript() {
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.seek(' + time*1000 + ')');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
-            else if(isThisAmazon() == true) {
-                if (isAmazonTenSecondsOff()) {
-                    myVideo.currentTime = time + durationDifference + 10;
-                    // Note: Haven't been able to test with the old Amazon player yet, so isAmazonTenSecondsOff may or may not still be necessary
-                } 
-                else {
-                    myVideo.currentTime = time + durationDifference;
-                }
-            } 
+            else if(isThisAmazon()) {
+                myVideo.currentTime = time + durationDifference;
+            }
+            else if(isThisIMDbTV()) {
+                myVideo.currentTime = (myVideo.currentTime - getCurrentTime()) + time;
+            }
             else { //everyone else is HTML5 compliant
                 myVideo.currentTime = time;
             }
@@ -379,9 +394,10 @@ function filterScript() {
             }
         );
 
-        // If the video is on Amazon, check for advertisement
-        if(isThisAmazon()) {
-            setInterval(checkAmazonVideoStatus, 5); // Should this be stopped?
+        // If the video is on Amazon or IMDb, check for advertisement(s)
+        if(isThisAmazon() || isThisIMDbTV()) {
+            setInterval(checkAmazonVideoStatus, 5); // Keep interval going in case there's another ad (for IMDb, may be able to clear it for Amazon)
+            //setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
         }
 
         setActions(myPreferencesID);
@@ -480,7 +496,7 @@ checkIfFiltersActive();
 
 
 /* Next Todos: 
-* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement)
+* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement?)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip (could possibly be solved with safe seek?)
 * Add i_muted_it and i_hid_it variables from Sensible Cinema
 * Ensure that "the technology provides a clear and conspicuous notice at 

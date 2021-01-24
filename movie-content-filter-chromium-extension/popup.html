@@ -41,15 +41,19 @@
 
     <body>
         <h1>Movie Content Filter Extension</h1>
-        <label for="toggle-filters-checkbox">Toggle Filters</label>
-        <input type="checkbox" id="toggle-filters-checkbox" name="toggle-filters-checkbox">
+        <label for="toggle-filters-checkbox">
+            <input type="checkbox" id="toggle-filters-checkbox" name="toggle-filters-checkbox">
+            Toggle Filters
+        </label>
         <br>
-        <label for="user-preferences-id">Your Filter Preferences ID</label>
-        <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25">
-        <button id="find-user-preferences" name="find-user-preferences">Find</button>
+        <label for="user-preferences-id">Your Filter Preferences ID
+            <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25">
+        </label>
+        <button id="find-user-preferences" name="find-user-preferences">Get ID</button>
         <p id="user-preferences-message-area"></p>
-        <label for="safe-seek-slider">Safe Seek Slider</label>
-        <input type="range" min="0" max="100" step="1" value="0" id="safe-seek-slider">
+        <label for="safe-seek-slider">Safe Seek Slider
+            <input type="range" min="0" max="100" step="1" value="0" id="safe-seek-slider">
+        </label>
         <span id="safe-seek-display-value"></span>
     </body>
 </html>

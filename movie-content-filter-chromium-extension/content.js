@@ -302,7 +302,7 @@ function filterScript() {
             if(isThisAmazon() == true) { // Only works if all ads are integer lengths
                 return myVideo.currentTime - durationDifference;                
             }
-            if(isThisIMDbTV) { // Only works if all ads are integer lengths
+            if(isThisIMDbTV() == true) { // Only works if all ads are integer lengths
                 var bothTimesArray = timeIndicator.innerText.split("/");
                 var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
                 var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);

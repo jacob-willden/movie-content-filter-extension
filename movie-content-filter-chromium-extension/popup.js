@@ -158,6 +158,10 @@ function setFilterActions() {
     }
 }
 
+// Safe Seek Functions
+
+/* 
+
 // Derived from "videoskip.js" from VideoSkip
 //to put seconds into hour:minute:second format
 function toHMS(seconds) {
@@ -229,7 +233,11 @@ function setupSafeSeekOnce() {
     setInterval(updateSafeSeekTime, 250); // only 4/sec because ... uh...
 }
 
-//setupSafeSeekOnce();
+setupSafeSeekOnce(); 
+
+*/
+
+// End of Safe Seek Functions
 
 document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
 filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);

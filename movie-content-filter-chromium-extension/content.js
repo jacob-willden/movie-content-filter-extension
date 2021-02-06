@@ -65,8 +65,8 @@ function filterScript() {
 
     var userPrefs = [ // dummy values for now
         {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
-        {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
-        {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
+        {"id": "ghBnb", "gambling": 4, "tedious": 1, "warfare": 3},
+        {"id": "T3GDJ", "gambling": 1, "tedious": 1, "warfare": 1}
     ];
 
     // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
@@ -133,7 +133,7 @@ function filterScript() {
             for(var i = 0; i < cuts.length; i++) {
                 var tagCategory = cuts[i].category;
                 var tagSeverity = cuts[i].severity;
-                if(tagSeverity + myPreferences[tagCategory] > 3) {
+                if(tagSeverity >= myPreferences[tagCategory]) {
                     cuts[i].enabled = true;
                 }
                 else {

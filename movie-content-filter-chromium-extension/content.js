@@ -71,16 +71,31 @@ function filterScript() {
 
     // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
     function findFirstVideoTagOrNull() {
-        var all = document.getElementsByTagName("video");
-            // look for first "real" playing vid as it were [byu.tv needs this, it has two, first is an ad player, i.e. wrong one]
-        for(var i = 0, len = all.length; i < len; i++) {
-            if (all[i].currentTime > 0) {
-                return all[i];
-            } 
+        if(serviceName.includes('tv.apple.com')) {
+            try {
+                var foundVideo = document.querySelector("apple-tv-plus-player").shadowRoot.querySelector("amp-video-player-internal").shadowRoot.querySelector("amp-video-player").shadowRoot.querySelector("video");
+                if(foundVideo) {
+                    return foundVideo;
+                }
+                return null;
+            }
+            catch {
+                //console.log("Apple TV video element not found. Video probably not opened yet");
+                return null;
+            }
         }
-        // don't *want* to work with iframes from the plugin side since they'll get their own edited playback copy
-        // hopefully this is enough to prevent double loading (once windows.document, one iframe if they happen to be allowed :|
-        return null;
+        else {
+            var all = document.getElementsByTagName("video");
+            // look for first "real" playing vid as it were [byu.tv needs this, it has two, first is an ad player, i.e. wrong one]
+            for(var i = 0, len = all.length; i < len; i++) {
+                if (all[i].currentTime > 0) {
+                    return all[i];
+                } 
+            }
+            // don't *want* to work with iframes from the plugin side since they'll get their own edited playback copy
+            // hopefully this is enough to prevent double loading (once windows.document, one iframe if they happen to be allowed :|
+            return null;
+        }
     }
 
     function validateIDInput(input) {
@@ -200,6 +215,15 @@ function filterScript() {
 
         function isThisIMDbTV() {
             if(serviceName.includes('imdb')) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        function isThisAppleTV() {
+            if(serviceName.includes('apple')) {
                 return true;
             }
             else {
@@ -337,6 +361,9 @@ function filterScript() {
                 //console.log(myActualTime);
                 return myActualTime;
             }
+            if(isThisAppleTV()) {
+                return myVideo.currentTime + 0.5;
+            }
             else {
                 return myVideo.currentTime;
             }
@@ -376,6 +403,9 @@ function filterScript() {
             }
             else if(isThisIMDbTV()) {
                 myVideo.currentTime = (myVideo.currentTime - getCurrentTime()) + time;
+            }
+            else if(isThisAppleTV()) {
+                myVideo.currentTime = time - 0.5;
             }
             else { //everyone else is HTML5 compliant
                 myVideo.currentTime = time;

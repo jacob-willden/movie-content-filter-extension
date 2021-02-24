@@ -553,13 +553,9 @@ checkIfFiltersActive();
 
 
 /* Next Todos: 
-* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement?)
+* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement??)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip (could possibly be solved with safe seek?)
-* Add i_muted_it and i_hid_it variables from Sensible Cinema
-* Ensure that "the technology provides a clear and conspicuous notice at 
-the beginning of each performance that the performance of the motion 
-picture is altered from the performance intended by the director or 
-copyright holder of the motion picture" (United States Family Movie Act of 2005),
-and only if filters are available for the specific video
+* Add i_muted_it and i_hid_it variables from Sensible Cinema?
+* Run filter script only if filters are available and active for the specific video
 * Roger Pack says timeupdate isn't "granular enough for much", but VideoSkip uses it?
 */

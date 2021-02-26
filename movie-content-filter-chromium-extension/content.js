@@ -118,6 +118,7 @@ function filterScript() {
 
     function applyFilters(myPreferencesID) {
         console.log("fetching cuts");
+        var oldVideoSource = myVideo.src;
         var cuts = [ // Some dummy values for now
             {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
             {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank", "enabled": true},
@@ -341,10 +342,10 @@ function filterScript() {
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
-            var oldVideoElement = myVideo;
             myVideo = findFirstVideoTagOrNull() || myVideo; // refresh it in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
-            if(myVideo != oldVideoElement) {
+            if(myVideo.src != oldVideoSource) {
                 console.log("video element changed...");
+                oldVideoSource = myVideo.src;
             }
         }
 
@@ -454,13 +455,16 @@ function filterScript() {
         // If the video is on a website with video advertisements
         if(isThisAmazon() || isThisIMDbTV() || isThisYoutube()) {
             setInterval(checkVideoStatus, 10); // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon)
-            //setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
         }
 
         setActions(myPreferencesID);
 
         // if enabled tags > 0?
         displayLegalNotice();
+
+        setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
+
+        //setInterval(function() {console.log(myVideo.currentTime);}, 1000);
 
         // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
         myVideo.ontimeupdate = function() {
@@ -553,7 +557,7 @@ checkIfFiltersActive();
 
 
 /* Next Todos: 
-* Check if extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement??)
+* Make extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement??)
 * Troubleshoot Netflix crashing when the user scrubs to inside a skip (could possibly be solved with safe seek?)
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?
 * Run filter script only if filters are available and active for the specific video

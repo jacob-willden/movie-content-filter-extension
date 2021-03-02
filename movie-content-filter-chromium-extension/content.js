@@ -146,14 +146,14 @@ function filterScript() {
             }
             
             // Modified from isSkipped function from "videoskip.js" from VideoSkip
-            for(var i = 0; i < cuts.length; i++) {
-                var tagCategory = cuts[i].category;
-                var tagSeverity = cuts[i].severity;
+            for(var j = 0; j < cuts.length; j++) {
+                var tagCategory = cuts[j].category;
+                var tagSeverity = cuts[j].severity;
                 if(tagSeverity >= myPreferences[tagCategory]) {
-                    cuts[i].enabled = true;
+                    cuts[j].enabled = true;
                 }
                 else {
-                    cuts[i].enabled = false;
+                    cuts[j].enabled = false;
                 }
             }
         }
@@ -244,7 +244,7 @@ function filterScript() {
         // Amazon-specific functions
 
         // Function derived from "edited_generic_player.js" from Sensible Cinema
-        function isAmazonTenSecondsOff() {
+/*         function isAmazonTenSecondsOff() {
             // the new way has both webPlayerContainer and webPlayerUIContainer, old lacks latter [and is 10s off]
             var x = document.getElementsByClassName("webPlayerUIContainer");
             if (x.length > 0) {
@@ -253,7 +253,7 @@ function filterScript() {
             else {
                 return true; // old
             }
-        }
+        } */
 
         var adIndicator = null;
 
@@ -342,11 +342,19 @@ function filterScript() {
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
-            myVideo = findFirstVideoTagOrNull() || myVideo; // refresh it in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
-            if(myVideo.src != oldVideoSource) {
-                console.log("video element changed...");
-                oldVideoSource = myVideo.src;
+            var newVideo = findFirstVideoTagOrNull(); // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
+            if(newVideo) {
+                myVideo = newVideo;
+                if(myVideo.src != oldVideoSource) {
+                    console.log("new video element found");
+                    oldVideoSource = myVideo.src;
+                    // New video, check for new filters
+                    displayLegalNotice();
+                }
             }
+            else {
+                console.log("video element changed to null");
+            }  
         }
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema

@@ -1,3 +1,0 @@
-[submodule "lib/jruby-swing-helpers"]
-	path = lib/jruby-swing-helpers
-	url = https://github.com/rdp/ruby_simple_gui_creator.git

@@ -1,9 +1,0 @@
-mutes:
-  # none yet
-  
-blank_outs:
-  10:22.5 : 10:24 # dancing mardi gras girl on a float with tight clothes.
-
-title: All Dogs Go to Heaven
-source: DVD/vlc
-not_yet_listed: a good quantity of name calling "moron", a scary dream where Charly is shown pergatory.

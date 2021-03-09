@@ -1,13 +1,19 @@
 # movie-content-filter-extension
  Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
- This project is in very early development right now, and there are many features to add (and some bugs to fix). Currently it is only a Chromium extension, but we are hoping to expand the extension to non-Chromium browsers, such as Firefox and Safari, in the future. Support is being added first for Amazon, Netflix, and Disney Plus, with the hope to later expand to other streaming services.
+ This project is in very early development right now, and there are many features to add (and some bugs to fix). Currently it is only a Chromium extension, but we are hoping to expand the extension to non-Chromium browsers, such as Firefox and Safari, in the future. Support is being added first for Amazon, Netflix, Disney Plus, and Hulu, with the hope to later expand to other streaming services.
 
 Like the open-source VideoSkip and Play It My Way extensions that this extension is built on, this extension "does not infringe media copyrights because the video files are not altered in any way. Simply, users choose to see or not to see parts of the content, and the app remembers their choice" (quoted from the VideoSkip README [here](https://github.com/fruiz500/VideoSkip-extension/blob/master/README.md)).
 
 Movie Content Filter Website: https://www.moviecontentfilter.com/
 
-Installation Instructions
+The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL). It is linked below, along with the source code for VideoSkip and Play It My Way, which this project is built on:
+
+Project Source Code Link: https://github.com/jacob-willden/movie-content-filter-extension/
+VideoSkip Source Code Link: https://github.com/fruiz500/VideoSkip-extension/
+Play It My Way Source Code Link: https://github.com/rdp/sensible-cinema/
+
+Extension Installation Instructions
 
 1. Download the repository and extract the ZIP file
 

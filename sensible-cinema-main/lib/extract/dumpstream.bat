@@ -1,1 +1,0 @@
-mplayer -dumpstream dvd://1 -dvd-device d: -dumpfile dvdout.mpg	

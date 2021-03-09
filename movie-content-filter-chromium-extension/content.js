@@ -8,21 +8,24 @@
 
     This file is part of the Movie Content Filter Browser Extension Project.
     
-    Copyright (C) 2020 Jacob Willden
+    Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
+    (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
+
+    VideoSkip Source Code Copyright (C) 2020, 2021 Francisco Ruiz
+    (Released under the GNU General Public License (GNU GPL))
+    
+    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
+    (Released under the Lesser General Public License (LGPL))
 
     Most of the code below was derived and modified from several source 
     code files in the VideoSkip extension repository (source link above), 
-    including "content1.js", "content2.js", and "videoskip.js". 
-    Various other parts of the code below were derived and modified from 
-    the "edited_generic_player.js" and "contentscript.js" source code 
-    files in the "chrome_extension" folder in the "html5_javascript" 
-    folder from the Sensible Cinema (Play It My Way) repository 
-    (source link above), and it is explicitly labled as so.
-
-    VideoSkip Source Code Copyright (C) 2020 Francisco Ruiz
-    (Released Under the GNU General Public License (GNU GPL))
-    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
-    (Released Under the Lesser General Public License (LGPL))
+    including "content1.js", "content2.js", and "videoskip.js", and 
+    it is explicitly labled as so. Various other parts of the code below 
+    were derived and modified from the "edited_generic_player.js" and 
+    "contentscript.js" source code files in the "chrome_extension" folder 
+    in the "html5_javascript" folder from the Sensible Cinema 
+    (Play It My Way) repository (source link above), and it is explicitly 
+    labled as so.
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020
@@ -350,10 +353,11 @@ function filterScript() {
                     oldVideoSource = myVideo.src;
                     // New video, check for new filters
                     displayLegalNotice();
+                    console.log(cuts);
                 }
             }
             else {
-                console.log("video element changed to null");
+                console.log("video element is null now");
             }  
         }
 
@@ -401,7 +405,7 @@ function filterScript() {
             return result;
         }
 
-        //moves play to requested time
+        // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         function goToTime(time) {
             if(serviceName == 'www.netflix.com') { //Netflix will crash with the normal seek instruction. By Dmitry Paloskin at StackOverflow. Must be executed in page context
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.seek(' + time*1000 + ')');

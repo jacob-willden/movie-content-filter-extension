@@ -8,20 +8,22 @@
 
     This file is part of the Movie Content Filter Browser Extension Project.
     
-    Copyright (C) 2020 Jacob Willden
+    Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
+    (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
 
-    Some of the code below was derived from the "videoskip.js" source code 
+    VideoSkip Source Code Copyright (C) 2020, 2021 Francisco Ruiz
+    (Released under the GNU General Public License (GNU GPL))
+
+    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
+    (Released under the Lesser General Public License (LGPL))
+
+    Some parts of the code below were derived from the "videoskip.js" source code 
     file in the VideoSkip extension repository (source link above), and 
-    it is explicitly labled as so. Some other parts of the code below was 
+    it is explicitly labled as so. Some other parts of the code below were 
     derived and modified from the "edited_generic_player.js" source code 
     file in the "chrome_extension" folder in the "html5_javascript" folder 
     from the Sensible Cinema (Play It My Way) repository (source link above), 
     and it is explicitly labled as so.
-
-    VideoSkip Source Code Copyright (C) 2020 Francisco Ruiz
-    (Released Under the GNU General Public License (GNU GPL))
-    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
-    (Released Under the Lesser General Public License (LGPL))
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: December 28, 2020

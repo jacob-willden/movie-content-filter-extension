@@ -353,7 +353,7 @@ function filterScript() {
                     oldVideoSource = myVideo.src;
                     // New video, check for new filters
                     displayLegalNotice();
-                    console.log(cuts);
+                    console.log(myVideo);
                 }
             }
             else {
@@ -407,8 +407,9 @@ function filterScript() {
 
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         function goToTime(time) {
-            if(serviceName == 'www.netflix.com') { //Netflix will crash with the normal seek instruction. By Dmitry Paloskin at StackOverflow. Must be executed in page context
-                executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.seek(' + time*1000 + ')');
+            if(serviceName == 'www.netflix.com') { 
+                //Netflix will crash with the normal seek instruction. By Dmitry Paloskin at StackOverflow. Must be executed in page context
+                executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
             else if(isThisAmazon()) {
@@ -501,7 +502,7 @@ function filterScript() {
                 return;
             } 
             else if(action == 'skip') {
-                console.log("skipping: " + getCurrentTime());
+                console.log("skipping from: " + getCurrentTime() + " to " + endTime);
                 goToTime(endTime);
             } 
             else if(action == 'blank') {

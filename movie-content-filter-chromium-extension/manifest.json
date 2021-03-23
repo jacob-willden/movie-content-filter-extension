@@ -11,6 +11,7 @@
             "https://*.disneyplus.com/video/*",
             "https://tv.apple.com/*",
             "https://www.imdb.com/tv/*",
+            "https://www.hulu.com/*",
             "https://*.youtube.com/*",
             "https://*.vimeo.com/*",
             "https://*.amazon.com/*", 

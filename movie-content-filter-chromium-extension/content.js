@@ -456,66 +456,8 @@ function filterScript() {
         // if enabled tags > 0?
         displayLegalNotice();
 
-
-        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
-        function checkIfVideoElementChanged() {
-            var newVideo = findFirstVideoTagOrNull(); // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
-            
-            if((newVideo) && (myVideo != newVideo)) {
-                console.log("new video element found");
-                myVideo = newVideo;
-                displayLegalNotice();
-                if(!myVideo.ontimeupdate) {
-                    myVideo.ontimeupdate = function() { // The timeupdate event needs to be set again when a new video is found
-                        if((filtersEnabled == false) || (setForAdvertisement == true)) {
-                            return;
-                        }
-                        var action = '', startTime, endTime;
-                        for(var i = 0; i < cuts.length; i++) { //find out what action to take, according to timing and setting in cuts object
-                            startTime = cuts[i].startTime;
-                            endTime = cuts[i].endTime;
-                            if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
-                                if(cuts[i].enabled == true) {
-                                    action = cuts[i].action;
-                                    break;
-                                }
-                            } 
-                            else {
-                                action = '';
-                            }
-                        }
-                        if(action == prevAction) { //only apply action to the Document Object Model (DOM) if there's a change
-                            return;
-                        } 
-                        else if(action == 'skip') {
-                            console.log("skipping from: " + getCurrentTime() + " to " + endTime);
-                            goToTime(endTime);
-                        } 
-                        else if(action == 'blank') {
-                            console.log("blanking: " + getCurrentTime());
-                            myVideo.style.opacity = 0;
-                        } 
-                        else if(action == 'mute') {
-                            console.log("muting: " + getCurrentTime());
-                            myVideo.muted = true;
-                            // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
-                        } 
-                        else {
-                            // Check if videoNotBuffering before unhiding video?
-                            myVideo.style.opacity =  '';
-                            myVideo.muted = false;
-                            // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'showing';
-                        }
-                        prevAction = action;
-                    }
-                }
-            }
-        }
-
-        setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
-
         // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
-        myVideo.ontimeupdate = function() {
+        function doTheFiltering() {
             if((filtersEnabled == false) || (setForAdvertisement == true)) {
                 return;
             }
@@ -558,6 +500,26 @@ function filterScript() {
             prevAction = action;
         }
 
+        myVideo.ontimeupdate = function() {
+            doTheFiltering();
+        }
+
+        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
+        function checkIfVideoElementChanged() {
+            var newVideo = findFirstVideoTagOrNull(); // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
+            
+            if((newVideo) && (myVideo != newVideo)) {
+                console.log("new video element found");
+                myVideo = newVideo;
+                displayLegalNotice();
+                if(!myVideo.ontimeupdate) {
+                    myVideo.ontimeupdate = function() { // The timeupdate event needs to be set again when a new video is found
+                        doTheFiltering();
+                    }
+                }
+            }
+        }
+        setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
     }
 
     function checkPreferencesID() {
@@ -606,8 +568,7 @@ checkIfFiltersActive();
 
 
 /* Next Todos: 
-* Make extension reloads when going to a different episode on Amazon (checkIfEpisodeChanged function? or refreshVideoElement??)
-* Troubleshoot Netflix crashing when the user scrubs to inside a skip (could possibly be solved with safe seek?)
+* Troubleshoot Netflix crashing when the user scrubs to inside a skip (partially fixed)
 * Test without activeTab permission (use host permissions instead?)
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?
 * Run filter script only if filters are available and active for the specific video

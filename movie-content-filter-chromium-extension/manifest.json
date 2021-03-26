@@ -2,7 +2,7 @@
     "name": "Movie Content Filter",
     "version": "0.0.0.1",
     "manifest_version": 2,
-    "permissions": ["activeTab", "storage"],
+    "permissions": ["storage"],
     "content_scripts": [{
         "all_frames": true, 
         "js": ["content.js"],

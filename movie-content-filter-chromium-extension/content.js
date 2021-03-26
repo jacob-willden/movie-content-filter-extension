@@ -389,6 +389,8 @@ function filterScript() {
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         function goToTime(time) {
             if(serviceName == 'www.netflix.com') { 
+                // In case the user seeks within a skip (?)
+                //myVideo.style.opacity = 0;
                 //Netflix will crash with the normal seek instruction. By Dmitry Paloskin at StackOverflow. Must be executed in page context
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
             }
@@ -448,7 +450,7 @@ function filterScript() {
 
         // If the video is on a website with video advertisements
         if(isThisAmazon() || isThisIMDbTV() || isThisYoutube()) {
-            setInterval(checkVideoStatus, 10); // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon)
+            setInterval(checkVideoStatus, 10); // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
         }
 
         setActions(myPreferencesID);
@@ -543,7 +545,7 @@ function filterScript() {
 }
 
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
-function checkIfFiltersActive() {
+function checkIfFiltersEnabled() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
         if(result.mcfFilterOn == true) {
             if(filterScriptAlreadyRunning == false) {
@@ -556,21 +558,23 @@ function checkIfFiltersActive() {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if(request.message == "set_filter_actions") {
-            checkIfFiltersActive();
+            checkIfFiltersEnabled();
         }
         if(request.message == "filter_checkbox_changed") {
-            checkIfFiltersActive();
+            checkIfFiltersEnabled();
         }
     }
 );
 
-checkIfFiltersActive();
+checkIfFiltersEnabled();
 
 
 /* Next Todos: 
-* Troubleshoot Netflix crashing when the user scrubs to inside a skip (partially fixed)
-* Test without activeTab permission (use host permissions instead?)
+* Amazon timing weirdness again? (asynchronous issues?)
+* Test seeking within skip annotations
+* Load script without initial reload (webNavigation?)
+* Run filter script only if filters are available and active for the specific video 
+(Try making 2 arrays, allCuts & activeCuts, then check activeCuts.length > 0. Also clarify enabled vs active.)
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?
-* Run filter script only if filters are available and active for the specific video
-* Roger Pack says timeupdate isn't "granular enough for much", but VideoSkip uses it?
+* Sensible Cinema says timeupdate isn't "granular enough for much", but VideoSkip uses it?
 */

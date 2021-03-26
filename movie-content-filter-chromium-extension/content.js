@@ -120,20 +120,21 @@ function filterScript() {
     }
 
     function applyFilters(myPreferencesID) {
-        console.log("fetching cuts");
-        var cuts = [ // Some dummy values for now
-            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute", "enabled": true},
-            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank", "enabled": true},
-            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip", "enabled": true},
-            {"startTime": 31, "endTime": 33, "category": "tedious", "severity": 2, "action": "mute", "enabled": true},
-            {"startTime": 38, "endTime": 40, "category": "tedious", "severity": 2, "action": "blank", "enabled": true},
-            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "skip", "enabled": true},
-            {"startTime": 52, "endTime": 54, "category": "warfare", "severity": 3, "action": "mute", "enabled": true},
-            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 3, "action": "blank", "enabled": true},
-            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "skip", "enabled": true}
+        console.log("fetching allCuts");
+        var allCuts = [ // Some dummy values for now
+            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute"},
+            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank"},
+            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip"},
+            {"startTime": 31, "endTime": 33, "category": "tedious", "severity": 2, "action": "mute"},
+            {"startTime": 38, "endTime": 40, "category": "tedious", "severity": 2, "action": "blank"},
+            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "skip"},
+            {"startTime": 52, "endTime": 54, "category": "warfare", "severity": 3, "action": "mute"},
+            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 3, "action": "blank"},
+            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "skip"}
         ];
-        //for(var i = 0; i < cuts.length; i++) {
-        //    console.log(cuts[i]);
+        var activeCuts = [];
+        //for(var i = 0; i < allCuts.length; i++) {
+        //    console.log(allCuts[i]);
         //}
 
         var prevAction = '';
@@ -146,16 +147,15 @@ function filterScript() {
                     var myPreferences = userPrefs[i];
                 }
             }
+
+            activeCuts = []; // Clear array to prevent duplicate filter tags
             
             // Modified from isSkipped function from "videoskip.js" from VideoSkip
-            for(var j = 0; j < cuts.length; j++) {
-                var tagCategory = cuts[j].category;
-                var tagSeverity = cuts[j].severity;
+            for(var j = 0; j < allCuts.length; j++) {
+                var tagCategory = allCuts[j].category;
+                var tagSeverity = allCuts[j].severity;
                 if(tagSeverity >= myPreferences[tagCategory]) {
-                    cuts[j].enabled = true;
-                }
-                else {
-                    cuts[j].enabled = false;
+                    activeCuts.push(allCuts[j]);
                 }
             }
         }
@@ -455,23 +455,18 @@ function filterScript() {
 
         setActions(myPreferencesID);
 
-        // if enabled tags > 0?
-        displayLegalNotice();
-
         // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
         function doTheFiltering() {
             if((filtersEnabled == false) || (setForAdvertisement == true)) {
                 return;
             }
             var action = '', startTime, endTime;
-            for(var i = 0; i < cuts.length; i++) { //find out what action to take, according to timing and setting in cuts object
-                startTime = cuts[i].startTime;
-                endTime = cuts[i].endTime;
+            for(var i = 0; i < activeCuts.length; i++) { //find out what action to take, according to timing and setting in activeCuts object
+                startTime = activeCuts[i].startTime;
+                endTime = activeCuts[i].endTime;
                 if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
-                    if(cuts[i].enabled == true) {
-                        action = cuts[i].action;
-                        break;
-                    }
+                    action = activeCuts[i].action;
+                    break;    
                 } 
                 else {
                     action = '';
@@ -522,6 +517,10 @@ function filterScript() {
             }
         }
         setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
+
+        if(activeCuts.length > 0) {
+            displayLegalNotice();
+        }
     }
 
     function checkPreferencesID() {
@@ -573,8 +572,7 @@ checkIfFiltersEnabled();
 * Amazon timing weirdness again? (asynchronous issues?)
 * Test seeking within skip annotations
 * Load script without initial reload (webNavigation?)
-* Run filter script only if filters are available and active for the specific video 
-(Try making 2 arrays, allCuts & activeCuts, then check activeCuts.length > 0. Also clarify enabled vs active.)
+* Run filter script only if filters are available for the specific video
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?
 * Sensible Cinema says timeupdate isn't "granular enough for much", but VideoSkip uses it?
 */

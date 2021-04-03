@@ -1,4 +1,4 @@
-<!-- 
+/*
     @source: https://github.com/jacob-willden/movie-content-filter-extension/
 
     @licstart  The following is the entire license notice for the
@@ -30,31 +30,10 @@
 
     @licend  The above is the entire license notice for the 
     code in this page.
--->
+*/
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Movie Content Filter Extension</title>
-        <script src="popup.js" defer></script>
-    </head>
-
-    <body>
-        <h1>Movie Content Filter Extension</h1>
-        <label for="toggle-filters-checkbox">
-            <input type="checkbox" id="toggle-filters-checkbox" name="toggle-filters-checkbox">
-            Toggle Filters
-        </label>
-        <br>
-        <label for="user-preferences-id">Your Filter Preferences ID
-            <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25">
-        </label>
-        <button id="find-user-preferences" name="find-user-preferences">Get ID</button>
-        <p id="user-preferences-message-area"></p>
-<!--         <label for="safe-seek-slider">Safe Seek Slider
-            <input type="range" min="0" max="100" step="1" value="0" id="safe-seek-slider">
-        </label>
-        <span id="safe-seek-display-value"></span> -->
-    </body>
-</html>
+// From Natalie Chouinard on Stack Overflow
+// Source: https://stackoverflow.com/questions/20865581/chrome-extension-content-script-not-loaded-until-page-is-refreshed
+chrome.webNavigation.onHistoryStateUpdated.addListener(function() {
+    chrome.tabs.executeScript(null,{file:"content.js"});
+}); // This is so the user doesn't need to refresh the page for the content script to run

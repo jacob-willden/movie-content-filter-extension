@@ -37,9 +37,9 @@
     you can redistribute it and/or modify it under the terms of the GNU
     General Public License (GNU GPL) as published by the Free Software
     Foundation, either version 3 of the License, or (at your option)
-    any later version.  The project is distributed WITHOUT ANY WARRANTY;
+    any later version. The project is distributed WITHOUT ANY WARRANTY;
     without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+    FOR A PARTICULAR PURPOSE. See the GNU GPL for more details.
 
     As additional permission under GNU GPL version 3 section 7, you
     may distribute non-source (e.g., minimized or compacted) forms of
@@ -570,8 +570,7 @@ checkIfFiltersEnabled();
 
 /* Next Todos: 
 * Amazon timing weirdness again? (asynchronous issues?)
-* Test seeking within skip annotations
-* Load script without initial reload (webNavigation?)
+* Test seeking within skip annotations and overlapping annotations
 * Run filter script only if filters are available for the specific video
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?
 * Sensible Cinema says timeupdate isn't "granular enough for much", but VideoSkip uses it?

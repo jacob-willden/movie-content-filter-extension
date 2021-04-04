@@ -234,14 +234,14 @@ function filterScript() {
             }
         }
 
-        function isThisYoutube() {
+/*         function isThisYoutube() {
             if(serviceName.includes('youtube')) {
                 return true;
             }
             else {
                 return false;
             }
-        }
+        } */
 
         // Amazon-specific functions
 
@@ -270,7 +270,7 @@ function filterScript() {
                     return false;
                 }
             }
-            if(isThisYoutube()) {
+/*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");
                 if(adIndicator != null) {
                     return true;
@@ -278,7 +278,7 @@ function filterScript() {
                 else {
                     return false;
                 }
-            }
+            } */
             else {
                 return false;
             }
@@ -449,7 +449,7 @@ function filterScript() {
         );
 
         // If the video is on a website with video advertisements
-        if(isThisAmazon() || isThisIMDbTV() || isThisYoutube()) {
+        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) {
             setInterval(checkVideoStatus, 10); // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
         }
 

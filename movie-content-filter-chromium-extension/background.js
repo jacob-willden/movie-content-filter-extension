@@ -6,7 +6,8 @@
 
     This file is part of the Movie Content Filter Browser Extension Project.
 
-    Movie Content Filter Browser Extension Project Copyright (C) 2020 Jacob Willden
+    Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
+    (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
 
     "Movie Content Filter" Website Copyright (C) delight.im
     Website Link: https://www.moviecontentfilter.com/

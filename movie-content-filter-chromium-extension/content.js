@@ -61,7 +61,7 @@ var filterScriptAlreadyRunning = false; // To prevent the script from running tw
 function filterScript() {
     filterScriptAlreadyRunning = true;
 
-    console.log("starting filter script");
+    console.log("starting main section of content script");
     var filtersEnabled = true;
     var myVideo = null;
     var serviceName = window.location.hostname;
@@ -307,10 +307,18 @@ function filterScript() {
         
         var durationDifference = 0;
         var setForAdvertisement = false;
-        var timeIndicator;
+        var timeIndicator = null;
+
+        function setDurationDifference() {
+            // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
+            // This assumes that ad durations are always integers (will want to test this more)
+            var realDuration = getAmazonTruncatedActualDuration(timeIndicator) + parseFloat(getDecimalFromFloat(myVideo.duration).toFixed(3));
+            durationDifference = myVideo.duration - realDuration;
+            //console.log("new durationDifference: " + durationDifference);
+        }
         
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
-        function checkVideoStatus() {
+        function checkForAdvertisement() {
             if(isWatchingAdvertisement() == true) {
                 if(setForAdvertisement == false) {
                     setForAdvertisement = true;
@@ -323,21 +331,6 @@ function filterScript() {
                     setForAdvertisement = false;
                     // Ad is over, now you can check for truncatedActualDuration
                     console.log("ad just ended");
-
-                    if(isThisAmazon()) {
-                        var checkForTimeIndicator = setInterval(function() {
-                            timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
-                            if((timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times
-                                //console.log(timeIndicator);
-                                clearInterval(checkForTimeIndicator);
-    
-                                // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
-                                // This assumes that ad durations are always integers (will want to test this more)
-                                var realDuration = getAmazonTruncatedActualDuration(timeIndicator) + parseFloat(getDecimalFromFloat(myVideo.duration).toFixed(3));
-                                durationDifference = myVideo.duration - realDuration;
-                            }
-                        }, 100);
-                    }
                 }
             }
         }
@@ -348,12 +341,17 @@ function filterScript() {
                 return myVideo.currentTime - durationDifference;                
             }
             if(isThisIMDbTV()) { // Only works if all ads are integer lengths
-                var bothTimesArray = timeIndicator.innerText.split("/");
-                var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
-                var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
-                var myActualTime = elapsedTimeInteger + myTimeDecimal;
-                //console.log(myActualTime);
-                return myActualTime;
+                if(timeIndicator) {
+                    var bothTimesArray = timeIndicator.innerText.split("/");
+                    var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
+                    var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
+                    var myActualTime = elapsedTimeInteger + myTimeDecimal;
+                    //console.log(myActualTime);
+                    return myActualTime;
+                }
+                else {
+                    return 0;
+                }
             }
             if(isThisAppleTV()) {
                 return myVideo.currentTime + 0.5;
@@ -448,9 +446,20 @@ function filterScript() {
             }
         );
 
-        // If the video is on a website with video advertisements
-        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) {
-            setInterval(checkVideoStatus, 10); // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
+        function checkForTimeIndicator() {
+            timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
+            if((isThisAmazon()) && (timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
+                setDurationDifference();
+            }
+        }
+
+        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
+            // To help with consistent video timing
+            setInterval(checkForTimeIndicator, 100);
+
+            // If the video is on a website with video advertisements
+            setInterval(checkForAdvertisement, 10);
+            // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
         }
 
         setActions(myPreferencesID);
@@ -514,6 +523,9 @@ function filterScript() {
                         doTheFiltering();
                     }
                 }
+            }
+            else if((myVideo != newVideo)) {
+                console.log("new video element not found yet");
             }
         }
         setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)

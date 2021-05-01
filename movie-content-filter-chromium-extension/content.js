@@ -160,33 +160,7 @@ function filterScript() {
             }
         }
 
-        // Displays a notice to comply with the United States Family Movie Act of 2005
-        function displayLegalNotice() {
-            // Modified from both content1.js and content2.js
-
-            var performanceDisclaimerArea = document.createElement('span');
-
-            // Set styles
-            performanceDisclaimerArea.style.display = "block";
-            performanceDisclaimerArea.style.color = "white";
-            performanceDisclaimerArea.style.fontFamily = "sans-serif";
-            performanceDisclaimerArea.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            performanceDisclaimerArea.style.fontSize = "large";
-            performanceDisclaimerArea.style.textAlign = "center";
-            performanceDisclaimerArea.style.zIndex = myVideo.style.zIndex + 1 | 1;
-            performanceDisclaimerArea.style.position = "absolute";
-            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
-            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + "px";
-            performanceDisclaimerArea.style.width = (myVideo.offsetWidth - 20) + "px";
-
-            myVideo.parentNode.insertBefore(performanceDisclaimerArea, myVideo);
-            var performanceDisclaimerText = document.createTextNode("Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.");
-            performanceDisclaimerArea.appendChild(performanceDisclaimerText);
-
-            setTimeout(function() {
-                performanceDisclaimerArea.style.visibility = "hidden";
-            }, 6000);
-        }
+        setActions(myPreferencesID);
 
         // Maybe add currentUrlNotIframe() function from "edited_generic_player.js" from Sensible Cinema later?
         // Definitely add blankScreenIfWithinHeartOfSkip() and some other functions below it later
@@ -243,8 +217,6 @@ function filterScript() {
             }
         } */
 
-        // Amazon-specific functions
-
         // Function derived from "edited_generic_player.js" from Sensible Cinema
 /*         function isAmazonTenSecondsOff() {
             // the new way has both webPlayerContainer and webPlayerUIContainer, old lacks latter [and is 10s off]
@@ -258,6 +230,7 @@ function filterScript() {
         } */
 
         var adIndicator = null;
+        var setForAdvertisement = false;
 
         // Function created by Jacob Willden
         function isWatchingAdvertisement() {
@@ -284,6 +257,33 @@ function filterScript() {
             }
         }
 
+        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
+        function checkForAdvertisement() {
+            if(isWatchingAdvertisement() == true) {
+                if(setForAdvertisement == false) {
+                    setForAdvertisement = true;
+                    // Ad is playing
+                    console.log("ad just started");
+                }
+            }
+            else {
+                if(setForAdvertisement == true) {
+                    setForAdvertisement = false;
+                    // Ad is over, now you can check for truncatedActualDuration
+                    console.log("ad just ended");
+                }
+            }
+        }
+
+        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
+            // If the video is on a website with video advertisements
+            setInterval(checkForAdvertisement, 10);
+            // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
+        }
+
+        var durationDifference = 0;
+        var timeIndicator = null;
+
         // Function created by Jacob Willden
         function getAmazonTruncatedActualDuration(timeIndicator) {
             //console.log("the full text: " + timeIndicator.innerText);
@@ -302,13 +302,7 @@ function filterScript() {
         function getDecimalFromFloat(number) {
             return (number - Math.floor(number));
         }
-
-        // End of Amazon-specific functions
         
-        var durationDifference = 0;
-        var setForAdvertisement = false;
-        var timeIndicator = null;
-
         function setDurationDifference() {
             // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
             // This assumes that ad durations are always integers (will want to test this more)
@@ -316,23 +310,19 @@ function filterScript() {
             durationDifference = myVideo.duration - realDuration;
             //console.log("new durationDifference: " + durationDifference);
         }
-        
-        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
-        function checkForAdvertisement() {
-            if(isWatchingAdvertisement() == true) {
-                if(setForAdvertisement == false) {
-                    setForAdvertisement = true;
-                    // Ad is playing
-                    console.log("ad just started");
+
+        function checkForTimeIndicator() {
+            var interval = setInterval(function() {
+                timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
+                if((isThisAmazon()) && (timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
+                    clearInterval(interval);
+                    setDurationDifference();
                 }
-            }
-            else {
-                if(setForAdvertisement == true) {
-                    setForAdvertisement = false;
-                    // Ad is over, now you can check for truncatedActualDuration
-                    console.log("ad just ended");
-                }
-            }
+            }, 100);
+        }
+
+        if(isThisAmazon()) {
+            checkForTimeIndicator(); // To help with consistent video timing
         }
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
@@ -446,24 +436,6 @@ function filterScript() {
             }
         );
 
-        function checkForTimeIndicator() {
-            timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
-            if((isThisAmazon()) && (timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
-                setDurationDifference();
-            }
-        }
-
-        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
-            // To help with consistent video timing
-            setInterval(checkForTimeIndicator, 100);
-
-            // If the video is on a website with video advertisements
-            setInterval(checkForAdvertisement, 10);
-            // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
-        }
-
-        setActions(myPreferencesID);
-
         // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
         function doTheFiltering() {
             if((filtersEnabled == false) || (setForAdvertisement == true)) {
@@ -510,24 +482,54 @@ function filterScript() {
             doTheFiltering();
         }
 
+        // Displays a notice to comply with the United States Family Movie Act of 2005
+        function displayLegalNotice() {
+            console.log("display notice");
+            // Modified from both content1.js and content2.js
+
+            var performanceDisclaimerArea = document.createElement('span');
+
+            // Set styles
+            performanceDisclaimerArea.style.display = "block";
+            performanceDisclaimerArea.style.color = "white";
+            performanceDisclaimerArea.style.fontFamily = "sans-serif";
+            performanceDisclaimerArea.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            performanceDisclaimerArea.style.fontSize = "large";
+            performanceDisclaimerArea.style.textAlign = "center";
+            performanceDisclaimerArea.style.zIndex = myVideo.style.zIndex + 1 | 1;
+            performanceDisclaimerArea.style.position = "absolute";
+            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
+            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + "px";
+            performanceDisclaimerArea.style.width = (myVideo.offsetWidth - 20) + "px";
+
+            myVideo.parentNode.insertBefore(performanceDisclaimerArea, myVideo);
+            var performanceDisclaimerText = document.createTextNode("Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.");
+            performanceDisclaimerArea.appendChild(performanceDisclaimerText);
+
+            setTimeout(function() {
+                performanceDisclaimerArea.style.visibility = "hidden";
+            }, 6000);
+        }
+
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
-            var newVideo = findFirstVideoTagOrNull(); // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
-            
-            if((newVideo) && (myVideo != newVideo)) {
+            var oldVideo = myVideo;
+            myVideo = findFirstVideoTagOrNull() || myVideo; // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
+
+            if(myVideo != oldVideo) { // Amend myVideo != oldVideo to something else for Amazon, since it appears to reassign the video element (apparently similar with src)
                 console.log("new video element found");
-                myVideo = newVideo;
                 displayLegalNotice();
+                if(isThisAmazon()) {
+                    checkForTimeIndicator(); // To help with consistent video timing
+                }
                 if(!myVideo.ontimeupdate) {
                     myVideo.ontimeupdate = function() { // The timeupdate event needs to be set again when a new video is found
                         doTheFiltering();
                     }
                 }
             }
-            else if((myVideo != newVideo)) {
-                console.log("new video element not found yet");
-            }
         }
+        
         setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
 
         if(activeCuts.length > 0) {
@@ -581,7 +583,6 @@ checkIfFiltersEnabled();
 
 
 /* Next Todos: 
-* Amazon timing weirdness again? (asynchronous issues?)
 * Test seeking within skip annotations and overlapping annotations
 * Run filter script only if filters are available for the specific video
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?

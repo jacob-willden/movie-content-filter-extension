@@ -521,9 +521,12 @@ function filterScript() {
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
             oldVideoSrc = myVideoSrc;
-            myVideoSrc = findFirstVideoTagOrNull().src || myVideoSrc; // Short-circuit evaluation, to prevent trying to get src from null (which would throw an error)
+            var newVideo = findFirstVideoTagOrNull();
+            if(newVideo) {
+                myVideoSrc = newVideo.src || myVideoSrc; // Short-circuit evaluation, to prevent an empty string from being assigned to myVideoSrc
+            }
             if(oldVideoSrc != myVideoSrc) {
-                console.log("new video src found");
+                console.log("video element changed");
                 checkForTimeIndicator(); // To help with consistent video timing
                 if(!myVideo.ontimeupdate) {
                     myVideo.ontimeupdate = function() { // The timeupdate event needs to be set again when a new video is found

@@ -33,6 +33,8 @@
     code in this page.
 */
 
+"use strict";
+
 /* 
     Inject content script programmatically (requires host permissions), so the user doesn't need to refresh the page for the content script to run
     From Natalie Chouinard on Stack Overflow, with some modifications from wOxxOm on Stack Overflow

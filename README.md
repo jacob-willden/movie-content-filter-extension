@@ -10,7 +10,9 @@ Movie Content Filter Website: https://www.moviecontentfilter.com/
 The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL). It is linked below, along with the source code for VideoSkip and Play It My Way, which this project is built on:
 
 Project Source Code Link: https://github.com/jacob-willden/movie-content-filter-extension/
+
 VideoSkip Source Code Link: https://github.com/fruiz500/VideoSkip-extension/
+
 Play It My Way Source Code Link: https://github.com/rdp/sensible-cinema/
 
 Extension Installation Instructions

@@ -470,7 +470,7 @@ function filterScript() {
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
             } 
             else {
-                // Check if videoNotBuffering before unhiding video?
+                // Check if videoNotBuffering (or for seek event) before unhiding video?
                 myVideo.style.opacity =  '';
                 myVideo.muted = false;
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'showing';
@@ -485,29 +485,36 @@ function filterScript() {
         // Displays a notice to comply with the United States Family Movie Act of 2005
         function displayLegalNotice() {
             console.log("display notice");
-            // Modified from both content1.js and content2.js
+        
+            var duplicateDisclaimer = document.querySelector(".family-movie-act-of-2005-disclaimer");
+            if(duplicateDisclaimer) {
+                duplicateDisclaimer.remove();
+            }
 
-            var performanceDisclaimerArea = document.createElement('span');
+            // Modified from both "content1.js" and "content2.js" from VideoSkip
+
+            var performanceDisclaimer = document.createElement('span');
+            performanceDisclaimer.className = "family-movie-act-of-2005-disclaimer";
 
             // Set styles
-            performanceDisclaimerArea.style.display = "block";
-            performanceDisclaimerArea.style.color = "white";
-            performanceDisclaimerArea.style.fontFamily = "sans-serif";
-            performanceDisclaimerArea.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            performanceDisclaimerArea.style.fontSize = "large";
-            performanceDisclaimerArea.style.textAlign = "center";
-            performanceDisclaimerArea.style.zIndex = myVideo.style.zIndex + 1 | 1;
-            performanceDisclaimerArea.style.position = "absolute";
-            performanceDisclaimerArea.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
-            performanceDisclaimerArea.style.left = (myVideo.offsetLeft + 10) + "px";
-            performanceDisclaimerArea.style.width = (myVideo.offsetWidth - 20) + "px";
+            performanceDisclaimer.style.display = "block";
+            performanceDisclaimer.style.color = "white";
+            performanceDisclaimer.style.fontFamily = "sans-serif";
+            performanceDisclaimer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            performanceDisclaimer.style.fontSize = "large";
+            performanceDisclaimer.style.textAlign = "center";
+            performanceDisclaimer.style.zIndex = myVideo.style.zIndex + 1 | 1;
+            performanceDisclaimer.style.position = "absolute";
+            performanceDisclaimer.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
+            performanceDisclaimer.style.left = (myVideo.offsetLeft + 10) + "px";
+            performanceDisclaimer.style.width = (myVideo.offsetWidth - 20) + "px";
 
-            myVideo.parentNode.insertBefore(performanceDisclaimerArea, myVideo);
+            myVideo.parentNode.insertBefore(performanceDisclaimer, myVideo);
             var performanceDisclaimerText = document.createTextNode("Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.");
-            performanceDisclaimerArea.appendChild(performanceDisclaimerText);
+            performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
-                performanceDisclaimerArea.style.visibility = "hidden";
+                performanceDisclaimer.style.visibility = "hidden";
             }, 6000);
         }
 
@@ -523,7 +530,7 @@ function filterScript() {
             oldVideoSrc = myVideoSrc;
             var newVideo = findFirstVideoTagOrNull();
             if(newVideo) {
-                myVideoSrc = newVideo.src || myVideoSrc; // Short-circuit evaluation, to prevent an empty string from being assigned to myVideoSrc
+                myVideoSrc = newVideo.src || myVideoSrc; // Short-circuit evaluation, so it won't be assigned an empty string (prevents uneeded code execution below)
             }
             if(oldVideoSrc != myVideoSrc) {
                 console.log("video element changed");

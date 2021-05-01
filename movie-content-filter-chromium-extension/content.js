@@ -321,7 +321,7 @@ function filterScript() {
             }, 100);
         }
 
-        if(isThisAmazon()) {
+        if(isThisAmazon() || isThisIMDbTV()) {
             checkForTimeIndicator(); // To help with consistent video timing
         }
 
@@ -511,15 +511,17 @@ function filterScript() {
             }, 6000);
         }
 
+        var myVideoSrc = myVideo.src;
+        var oldVideoSrc = myVideoSrc;
+
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
-            var oldVideo = myVideo;
-            myVideo = findFirstVideoTagOrNull() || myVideo; // refresh the video element in case changed, but don't switch to null between clips, I don't think our code handles nulls very well...
-
-            if(myVideo != oldVideo) { // Amend myVideo != oldVideo to something else for Amazon, since it appears to reassign the video element (apparently similar with src)
-                console.log("new video element found");
+            oldVideoSrc = myVideoSrc;
+            myVideoSrc = findFirstVideoTagOrNull().src || myVideoSrc; // Short-circuit evaluation
+            if(oldVideoSrc != myVideoSrc) {
+                console.log("new video src found");
                 displayLegalNotice();
-                if(isThisAmazon()) {
+                if(isThisAmazon() || isThisIMDbTV()) {
                     checkForTimeIndicator(); // To help with consistent video timing
                 }
                 if(!myVideo.ontimeupdate) {

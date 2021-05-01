@@ -511,31 +511,31 @@ function filterScript() {
             }, 6000);
         }
 
+        if(activeCuts.length > 0) {
+            displayLegalNotice();
+        }
+
         var myVideoSrc = myVideo.src;
         var oldVideoSrc = myVideoSrc;
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
             oldVideoSrc = myVideoSrc;
-            myVideoSrc = findFirstVideoTagOrNull().src || myVideoSrc; // Short-circuit evaluation
+            myVideoSrc = findFirstVideoTagOrNull().src || myVideoSrc; // Short-circuit evaluation, to prevent trying to get src from null (which would throw an error)
             if(oldVideoSrc != myVideoSrc) {
                 console.log("new video src found");
-                displayLegalNotice();
-                if(isThisAmazon() || isThisIMDbTV()) {
-                    checkForTimeIndicator(); // To help with consistent video timing
-                }
+                checkForTimeIndicator(); // To help with consistent video timing
                 if(!myVideo.ontimeupdate) {
                     myVideo.ontimeupdate = function() { // The timeupdate event needs to be set again when a new video is found
                         doTheFiltering();
                     }
                 }
+                displayLegalNotice();
             }
         }
         
-        setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
-
-        if(activeCuts.length > 0) {
-            displayLegalNotice();
+        if(isThisAmazon() || isThisIMDbTV()) {
+            setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
         }
     }
 

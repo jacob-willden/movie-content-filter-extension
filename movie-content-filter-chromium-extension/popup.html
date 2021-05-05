@@ -43,12 +43,13 @@
     </head>
 
     <body>
-        <h1>Movie Content Filter Extension</h1>
+        <h1 id="popupTitle">Movie Content Filter</h1>
         <label for="toggle-filters-checkbox">
             <input type="checkbox" id="toggle-filters-checkbox" name="toggle-filters-checkbox">
-            Toggle Filters
+            <span id="toggleFiltersText">Toggle Filters</span>
         </label>
-        <label for="user-preferences-id">Your Filter Preferences ID
+        <label for="user-preferences-id">
+            <span id="yourPreferencesIDText">Your Filter Preferences ID</span>
             <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25">
         </label>
         <button id="find-user-preferences" name="find-user-preferences">Get ID</button>

@@ -379,7 +379,7 @@ function filterScript() {
             if(serviceName == 'www.netflix.com') { 
                 // In case the user seeks within a skip (?)
                 //myVideo.style.opacity = 0;
-                //Netflix will crash with the normal seek instruction. By Dmitry Paloskin at StackOverflow. Must be executed in page context
+                //Netflix will crash with the normal seek instruction. Modified from code by Dmitry Paloskin at StackOverflow. Must be executed in page context
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema

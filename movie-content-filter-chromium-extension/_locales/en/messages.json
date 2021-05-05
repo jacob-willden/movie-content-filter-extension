@@ -1,0 +1,8 @@
+{
+    "extensionName": {
+        "message": "Movie Content Filter"
+    },
+    "extensionDescription": {
+        "message": "Allows users to skip objectionable content on streaming services, based on their preferences."
+    }
+}

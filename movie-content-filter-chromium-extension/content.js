@@ -510,7 +510,7 @@ function filterScript() {
             performanceDisclaimer.style.width = (myVideo.offsetWidth - 20) + "px";
 
             myVideo.parentNode.insertBefore(performanceDisclaimer, myVideo);
-            var performanceDisclaimerText = document.createTextNode("Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.");
+            var performanceDisclaimerText = document.createTextNode(chrome.i18n.getMessage("legalNotice"));
             performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {

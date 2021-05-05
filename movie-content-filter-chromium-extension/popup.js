@@ -60,12 +60,23 @@
 
 "use strict";
 
+var popupTitle = document.getElementById("popupTitle");
+popupTitle.textContent = chrome.i18n.getMessage("extensionName");
+
+var toggleFiltersText = document.getElementById("toggleFiltersText");
+toggleFiltersText.textContent = chrome.i18n.getMessage("toggleFilters");
+
+var yourPreferencesIDText = document.getElementById("yourPreferencesIDText");
+yourPreferencesIDText.textContent = chrome.i18n.getMessage("yourPreferencesID");
+
+var findUserButton = document.getElementById("find-user-preferences");
+findUserButton.textContent = chrome.i18n.getMessage("findIDButton");
+
 var filterToggleCheckbox = document.getElementById("toggle-filters-checkbox");
 var userIDTextbox = document.getElementById("user-preferences-id");
-var findUserButton = document.getElementById("find-user-preferences");
 var preferencesMessageArea = document.getElementById("user-preferences-message-area");
-var safeSeekSlider = document.getElementById("safe-seek-slider");
-var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
+//var safeSeekSlider = document.getElementById("safe-seek-slider");
+//var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
 
 var userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},

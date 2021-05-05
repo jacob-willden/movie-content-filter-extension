@@ -1,0 +1,19 @@
+body {
+    font-family: sans-serif;
+}
+
+h1 {
+    margin-bottom: 0.25em;
+}
+
+label {
+    display: block;
+}
+
+input#toggle-filters-checkbox {
+    margin-bottom: 1em;
+}
+
+button#find-user-preferences {
+    margin-top: 0.25em;
+}

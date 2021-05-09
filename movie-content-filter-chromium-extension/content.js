@@ -595,6 +595,7 @@ checkIfFiltersEnabled();
 
 
 /* Next Todos: 
+* onHistoryStateUpdated isn't supported for Microsoft Edge?
 * Test seeking within skip annotations and overlapping annotations
 * Run filter script only if filters are available for the specific video
 * Add i_muted_it and i_hid_it variables from Sensible Cinema?

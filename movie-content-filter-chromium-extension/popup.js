@@ -69,14 +69,16 @@ toggleFiltersText.textContent = chrome.i18n.getMessage("toggleFilters");
 var yourPreferencesIDText = document.getElementById("yourPreferencesIDText");
 yourPreferencesIDText.textContent = chrome.i18n.getMessage("yourPreferencesID");
 
-var findUserButton = document.getElementById("find-user-preferences");
-findUserButton.textContent = chrome.i18n.getMessage("findIDButton");
+var findUserButton = document.querySelector("#find-user-preferences");
+findUserButton.value = chrome.i18n.getMessage("findIDButton");
 
 var filterToggleCheckbox = document.getElementById("toggle-filters-checkbox");
 var userIDTextbox = document.getElementById("user-preferences-id");
 var preferencesMessageArea = document.getElementById("user-preferences-message-area");
 //var safeSeekSlider = document.getElementById("safe-seek-slider");
 //var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
+
+var findPreferencesForm = document.querySelector("form");
 
 var userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
@@ -103,22 +105,12 @@ function validateIDInput(input) {
     if(typeof(input) !== 'string') {
         return null;
     }
+
     // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
     // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
     var myIDValue = (input).replace(/[^0-9a-z]/gi, '');
 
     userIDTextbox.value = myIDValue; // Show santized string in the input box
-
-    // Validate the input so the length is between 1 and 15 characters
-    if((myIDValue).length < 1) {
-        preferencesMessageArea.innerText = "Error: Needs alphanumeric characters";
-        return null;
-    }
-    if((myIDValue).length > 25) {
-        
-        preferencesMessageArea.innerText = "Error: Needs to be shorter";
-        return null;
-    } // maximum length is arbitrary for now, appears to already be enforced by the maxlength HTML attribute
 
     return myIDValue;
 }
@@ -136,7 +128,6 @@ function findUserID() {
     }
 
     // If the entered ID doesn't match any IDs in the database
-    preferencesMessageArea.innerText = "Couldn't find it";
     return null;
 }
 
@@ -158,10 +149,11 @@ function restoreSettingsFormOptions() {
     });
 }
 
-function setFilterActions() {
+function setFilterActions(event) {
+    event.preventDefault();
     var myUserID = findUserID();
     if(myUserID != null) {
-        preferencesMessageArea.innerText = "Found it";
+        preferencesMessageArea.textContent = chrome.i18n.getMessage("foundTheID"); // Found the entered ID
         chrome.storage.sync.set({mcfPrefsID: myUserID});
 
         // Set filter values
@@ -169,7 +161,14 @@ function setFilterActions() {
             chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions"});
         });
     }
+    else {
+        preferencesMessageArea.textContent = chrome.i18n.getMessage("failedToFindID"); // Could not find the entered ID
+    }
 }
+
+document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
+filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
+findPreferencesForm.addEventListener('submit', setFilterActions);
 
 // Safe Seek Functions
 
@@ -218,8 +217,8 @@ function updateSafeSeekTime() {
     if(!isSafeSeekSliderBeingDragged) {
         var currentTime = requestCurrentTime();
         safeSeekSlider.value = currentTime / requestDuration() * 100;
-        if(safeSeekDisplayValueArea.innerText != toHMS(currentTime)) {
-            safeSeekDisplayValueArea.innerText = toHMS(currentTime);
+        if(safeSeekDisplayValueArea.textContent != toHMS(currentTime)) {
+            safeSeekDisplayValueArea.textContent = toHMS(currentTime);
         }
     } // else let the mouse movement change it only...it's about to seek soon'ish...
 }
@@ -238,7 +237,7 @@ function setupSafeSeekOnce() {
     addListenerMulti(safeSeekSlider, "mousemove touchmove", function() {
         if (isSafeSeekSliderBeingDragged) {
             var desiredTimeInSeconds = requestDuration() / 100.0 * this.value;
-            safeSeekDisplayValueArea.innerText = toHMS(desiredTimeInSeconds);
+            safeSeekDisplayValueArea.textContent = toHMS(desiredTimeInSeconds);
             // but don't seek yet :)
          }
     });
@@ -251,7 +250,3 @@ setupSafeSeekOnce();
 */
 
 // End of Safe Seek Functions
-
-document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
-filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
-findUserButton.addEventListener('click', setFilterActions);

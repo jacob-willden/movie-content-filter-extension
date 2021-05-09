@@ -1,6 +1,7 @@
 {
     "name": "__MSG_extensionName__",
     "description": "__MSG_extensionDescription__",
+    "author": "Jacob Willden, et al.",
     "version": "0.0.0.1",
     "manifest_version": 2,
     "default_locale": "en",

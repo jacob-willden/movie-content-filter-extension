@@ -16,5 +16,11 @@
     },
     "findIDButton": {
         "message": "Get ID"
+    },
+    "foundTheID": {
+        "message": "Found it"
+    },
+    "failedToFindID": {
+        "message": "Could not find it"
     }
 }

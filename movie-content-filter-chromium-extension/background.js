@@ -51,6 +51,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
         {hostContains: '.disneyplus.com', pathPrefix: '/video'},
         {hostContains: 'tv.apple.com'},
         {hostContains: '.imdb.com', pathPrefix: '/tv'},
-        {hostContains: '.hulu.com'},
+        {hostContains: '.hulu.com'}
     ]
 });

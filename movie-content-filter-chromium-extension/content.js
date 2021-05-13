@@ -478,7 +478,7 @@ function filterScript() {
             prevAction = action;
         }
 
-        myVideo.ontimeupdate = function() {
+        myVideo.ontimeupdate = function() { // Sensible Cinema says timeupdate isn't "granular enough for much", but VideoSkip uses it?
             doTheFiltering();
         }
 
@@ -594,10 +594,7 @@ chrome.runtime.onMessage.addListener(
 checkIfFiltersEnabled();
 
 
-/* Next Todos: 
-* onHistoryStateUpdated isn't supported for Microsoft Edge?
-* Test seeking within skip annotations and overlapping annotations
+/* Next To-dos: 
+* Test seeking within skip annotations and maybe overlapping annotations later
 * Run filter script only if filters are available for the specific video
-* Add i_muted_it and i_hid_it variables from Sensible Cinema?
-* Sensible Cinema says timeupdate isn't "granular enough for much", but VideoSkip uses it?
 */

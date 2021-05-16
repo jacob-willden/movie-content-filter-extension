@@ -43,7 +43,7 @@
     https://stackoverflow.com/questions/63647840/unchecked-runtime-lasterror-cannot-access-contents-of-url-but-i-dont-need-to-a
 */
 chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
-    chrome.tabs.executeScript(details.tabId, {file:"content.js", allFrames: true});
+    chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
 }, {
     url: [
         {hostContains: '.amazon.'},

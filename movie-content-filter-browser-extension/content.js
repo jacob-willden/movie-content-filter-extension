@@ -181,31 +181,24 @@ function filterScript() {
             }
         }
 
+        function isThisNetflix() {
+            return serviceName.includes('netflix');
+        }
+
         function isThisAmazon() {
-            if(serviceName.includes('amazon')) { // This includes any Amazon top-level domain or subdomain
-                return true;
-            }
-            else {
-                return false;
-            }
+            return serviceName.includes('amazon'); // This includes any Amazon top-level domain or subdomain
         }
 
         function isThisIMDbTV() {
-            if(serviceName.includes('imdb')) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return serviceName.includes('imdb');
         }
 
         function isThisAppleTV() {
-            if(serviceName.includes('apple')) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return serviceName.includes('apple');
+        }
+
+        function isThisHulu() {
+            return serviceName.includes('hulu');
         }
 
 /*         function isThisYoutube() {
@@ -361,7 +354,7 @@ function filterScript() {
             }
         } */ // Not sure if isAmazonTenSecondsOff() should be checked too yet
 
-        //by Naveen at StackOverflow, we use it to execute seek on Netflix
+        // By Naveen at StackOverflow, we use it to execute seek on Netflix (derived from "content2.js" from VideoSkip)
         // https://stackoverflow.com/questions/9602022/chrome-extension-retrieving-global-variable-from-webpage
         function executeOnPageSpace(code) {
             var script = document.createElement('script');
@@ -376,7 +369,7 @@ function filterScript() {
 
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         function goToTime(time) {
-            if(serviceName == 'www.netflix.com') { 
+            if(isThisNetflix()) { 
                 // In case the user seeks within a skip (?)
                 //myVideo.style.opacity = 0;
                 //Netflix will crash with the normal seek instruction. Modified from code by Dmitry Paloskin at StackOverflow. Must be executed in page context
@@ -597,4 +590,5 @@ checkIfFiltersEnabled();
 /* Next To-dos: 
 * Test seeking within skip annotations and maybe overlapping annotations later
 * Run filter script only if filters are available for the specific video
+* All frames for executeScript throws errors?
 */

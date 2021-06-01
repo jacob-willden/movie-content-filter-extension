@@ -1,9 +1,9 @@
 # movie-content-filter-extension
 Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
-This project is in very early development right now, and there are many features to add (and some bugs to fix). Currently the extension is for Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Support is being added first for Amazon, Netflix, Disney Plus, Hulu, and Apple TV Plus, with the hope to expand later to other streaming services. The project is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below).
+This project is in very early development right now, and there are many features to add (and some bugs to fix). Currently the extension is for Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Support is being added first for Amazon Video, Netflix, Disney Plus, Hulu, and Apple TV Plus, with the hope to expand later to other streaming services. The project is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below).
 
-This extension, like the aforementioned extensions that it is built on, "does not infringe media copyrights because the video files are not altered in any way. Simply, users choose to see or not to see parts of the content, and the app remembers their choice" (quoted from the Read Me file for the VideoSkip extension [here](https://github.com/fruiz500/VideoSkip-extension/blob/master/README.md)). It also does not enable unauthorized access to video files.
+The extension does not alter video files at all, but instead lets "users choose to see or not to see parts of the content, and the app remembers their choice" (quoted from the Read Me file for the VideoSkip extension [here](https://github.com/fruiz500/VideoSkip-extension/blob/master/README.md)). It also does not enable unauthorized access to video files.
 
 Movie Content Filter Website: https://www.moviecontentfilter.com/
 

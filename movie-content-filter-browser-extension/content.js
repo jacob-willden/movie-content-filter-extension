@@ -142,22 +142,17 @@ function filterScript() {
         // Determine which filter tags should be set, based on user preferences
         function setActions(userID) {
             console.log("setting filter actions");
+            var myPreferences;
             for(var i = 0; i < userPrefs.length; i++) {
                 if(userPrefs[i].id == userID) {
-                    var myPreferences = userPrefs[i];
+                    myPreferences = userPrefs[i];
                 }
             }
-
-            activeCuts = []; // Clear array to prevent duplicate filter tags
             
             // Modified from isSkipped function from "videoskip.js" from VideoSkip
-            for(var j = 0; j < allCuts.length; j++) {
-                var tagCategory = allCuts[j].category;
-                var tagSeverity = allCuts[j].severity;
-                if(tagSeverity >= myPreferences[tagCategory]) {
-                    activeCuts.push(allCuts[j]);
-                }
-            }
+            activeCuts = allCuts.filter(function(tag) {
+                return tag.severity >= myPreferences[tag.category];
+            });
         }
 
         setActions(myPreferencesID);
@@ -236,6 +231,9 @@ function filterScript() {
                     return false;
                 }
             }
+            if(isThisHulu()) {
+                
+            }
 /*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");
                 if(adIndicator != null) {
@@ -268,17 +266,17 @@ function filterScript() {
             }
         }
 
-        if(isThisAmazon() || isThisIMDbTV() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
+        if(isThisAmazon() || isThisIMDbTV() || isThisHulu() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
             // If the video is on a website with video advertisements
             setInterval(checkForAdvertisement, 10);
-            // Keep interval going in case there's another ad (for IMDb and Youtube, may be able to clear it for Amazon?)
+            // Keep interval going in case there's another ad (for IMDb, Hulu, and Youtube, may be able to clear it for Amazon?)
         }
 
         var durationDifference = 0;
         var timeIndicator = null;
 
         // Function created by Jacob Willden
-        function getAmazonTruncatedActualDuration(timeIndicator) {
+        function getAmazonTruncatedActualDuration(timeIndicator) { // Modify for Hulu?
             //console.log("the full text: " + timeIndicator.innerText);
             var bothTimesArray = timeIndicator.innerText.split("/");
             //console.log(bothTimesArray);
@@ -507,7 +505,7 @@ function filterScript() {
             performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
-                performanceDisclaimer.style.visibility = "hidden";
+                performanceDisclaimer.style.visibility = "hidden"; // Should it still be visible to screen readers?
             }, 6000);
         }
 

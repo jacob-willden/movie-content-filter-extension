@@ -495,17 +495,17 @@ function filterScript() {
             performanceDisclaimer.style.fontSize = "large";
             performanceDisclaimer.style.textAlign = "center";
             performanceDisclaimer.style.zIndex = myVideo.style.zIndex + 1 | 1;
-            performanceDisclaimer.style.position = "absolute";
-            performanceDisclaimer.style.top = (myVideo.offsetTop + (myVideo.offsetHeight * 0.75)) + "px";
-            performanceDisclaimer.style.left = (myVideo.offsetLeft + 10) + "px";
-            performanceDisclaimer.style.width = (myVideo.offsetWidth - 20) + "px";
+            performanceDisclaimer.style.position = "fixed";
+            performanceDisclaimer.style.top = "35%";
+            performanceDisclaimer.style.left = "10px";
+            performanceDisclaimer.style.width = "calc(100% - 20px)";
 
             myVideo.parentNode.insertBefore(performanceDisclaimer, myVideo);
             var performanceDisclaimerText = document.createTextNode(chrome.i18n.getMessage("legalNotice"));
             performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
-                performanceDisclaimer.style.visibility = "hidden"; // Should it still be visible to screen readers?
+                performanceDisclaimer.style.opacity = 0; // Should it still be visible to screen readers?
             }, 6000);
         }
 
@@ -586,6 +586,7 @@ checkIfFiltersEnabled();
 
 
 /* Next To-dos: 
+* Fix disclaimer reappearing when stopping and replaying the same video on Hulu
 * Test seeking within skip annotations and maybe overlapping annotations later
 * Run filter script only if filters are available for the specific video
 * All frames for executeScript throws errors?

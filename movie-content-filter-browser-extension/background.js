@@ -36,12 +36,31 @@
 "use strict";
 
 /* 
-    Inject content script programmatically (requires host permissions), so the user doesn't need to refresh the page for the content script to run
+    Inject the content script programmatically below (requires host permissions), so the user doesn't need to refresh the page for the content script to run
     From Natalie Chouinard on Stack Overflow, with some modifications from wOxxOm on Stack Overflow
     Sources: 
     https://stackoverflow.com/questions/20865581/chrome-extension-content-script-not-loaded-until-page-is-refreshed
     https://stackoverflow.com/questions/63647840/unchecked-runtime-lasterror-cannot-access-contents-of-url-but-i-dont-need-to-a
 */
+
+// On Hulu
+var lastHuluUrl = ''; // When the background script is changed to a service worker, change this to a variable in storage.local
+
+function checkHuluHistoryStateUpdated(details) {
+    if(lastHuluUrl != details.url) {
+        //console.log('new URL: ' + details.url);
+        lastHuluUrl = details.url;
+        chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
+    }
+}
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(checkHuluHistoryStateUpdated, {
+    url: [
+        {hostContains: '.hulu.com', pathPrefix: '/watch'}
+    ]
+});
+
+// On other streaming services
 chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
     chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
 }, {
@@ -50,7 +69,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
         {hostContains: '.netflix.com', pathPrefix: '/watch'},
         {hostContains: '.disneyplus.com', pathPrefix: '/video'},
         {hostContains: 'tv.apple.com'},
-        {hostContains: '.imdb.com', pathPrefix: '/tv'},
-        {hostContains: '.hulu.com', pathPrefix: '/watch'}
+        {hostContains: '.imdb.com', pathPrefix: '/tv'}
     ]
 });

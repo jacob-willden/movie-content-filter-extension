@@ -586,8 +586,7 @@ checkIfFiltersEnabled();
 
 
 /* Next To-dos: 
-* Fix disclaimer reappearing when stopping and replaying the same video on Hulu
 * Test seeking within skip annotations and maybe overlapping annotations later
 * Run filter script only if filters are available for the specific video
-* All frames for executeScript throws errors?
+* All frames for executeScript throws errors occassionally?
 */

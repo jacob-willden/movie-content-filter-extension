@@ -117,12 +117,12 @@ function validateIDInput(input) {
 
 function findUserID() {
     var santizedIDValue = validateIDInput(userIDTextbox.value);
-    if(santizedIDValue == null) {
+    if(santizedIDValue === null) {
         return null;
     }
 
     for(var i = 0; i < userPrefs.length; i++) {
-        if(santizedIDValue == userPrefs[i].id) {
+        if(santizedIDValue === userPrefs[i].id) {
             return userPrefs[i].id;
         }
     }
@@ -133,17 +133,17 @@ function findUserID() {
 
 function restoreSettingsFormOptions() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
-        if(result.mcfFilterOn == true) {
+        if(result.mcfFilterOn === true) {
             filterToggleCheckbox.checked = true;
         }
-        else if (result.mcfFilterOn == false) {
+        else {
             filterToggleCheckbox.checked = false;
         }
         //console.log("Checkbox value: " + result.mcfFilterOn);
     });
     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
         var resultID = validateIDInput(result.mcfPrefsID);
-        if(resultID != null) {
+        if(resultID) {
             userIDTextbox.value = resultID;
         }
     });
@@ -152,7 +152,7 @@ function restoreSettingsFormOptions() {
 function setFilterActions(event) {
     event.preventDefault();
     var myUserID = findUserID();
-    if(myUserID != null) {
+    if(myUserID) {
         preferencesMessageArea.textContent = chrome.i18n.getMessage("foundTheID"); // Found the entered ID
         chrome.storage.sync.set({mcfPrefsID: myUserID});
 
@@ -217,7 +217,7 @@ function updateSafeSeekTime() {
     if(!isSafeSeekSliderBeingDragged) {
         var currentTime = requestCurrentTime();
         safeSeekSlider.value = currentTime / requestDuration() * 100;
-        if(safeSeekDisplayValueArea.textContent != toHMS(currentTime)) {
+        if(safeSeekDisplayValueArea.textContent !== toHMS(currentTime)) {
             safeSeekDisplayValueArea.textContent = toHMS(currentTime);
         }
     } // else let the mouse movement change it only...it's about to seek soon'ish...

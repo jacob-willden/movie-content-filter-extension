@@ -47,7 +47,7 @@
 var lastHuluUrl = ''; // When the background script is changed to a service worker, change this to a variable in storage.local
 
 function checkHuluHistoryStateUpdated(details) {
-    if(lastHuluUrl != details.url) {
+    if(lastHuluUrl !== details.url) {
         //console.log('new URL: ' + details.url);
         lastHuluUrl = details.url;
         chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});

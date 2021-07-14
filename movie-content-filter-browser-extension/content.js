@@ -144,7 +144,7 @@ function filterScript() {
             console.log("setting filter actions");
             var myPreferences;
             for(var i = 0; i < userPrefs.length; i++) {
-                if(userPrefs[i].id == userID) {
+                if(userPrefs[i].id === userID) {
                     myPreferences = userPrefs[i];
                 }
             }
@@ -165,10 +165,10 @@ function filterScript() {
         function fromHMS(timeString) {
             timeString = timeString.replace(/,/,".");			//in .srt format decimal seconds use a comma
             var time = timeString.split(":");
-            if(time.length == 3) {							//has hours
+            if(time.length === 3) {							//has hours
                 return parseInt(time[0])*3600 + parseInt(time[1])*60 + parseFloat(time[2]);
             }
-            else if(time.length == 2){					//minutes and seconds
+            else if(time.length === 2){					//minutes and seconds
                 return parseInt(time[0])*60 + parseFloat(time[1]);
             }
             else {											//only seconds
@@ -224,7 +224,7 @@ function filterScript() {
         function isWatchingAdvertisement() {
             if(isThisAmazon() || isThisIMDbTV()) { // They have the same advertisement system
                 adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
-                if(adIndicator != null) {
+                if(adIndicator) {
                     return true;
                 }
                 else {
@@ -236,7 +236,7 @@ function filterScript() {
             }
 /*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");
-                if(adIndicator != null) {
+                if(adIndicator) {
                     return true;
                 }
                 else {
@@ -250,15 +250,15 @@ function filterScript() {
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)
         function checkForAdvertisement() {
-            if(isWatchingAdvertisement() == true) {
-                if(setForAdvertisement == false) {
+            if(isWatchingAdvertisement()) {
+                if(setForAdvertisement === false) {
                     setForAdvertisement = true;
                     // Ad is playing
                     console.log("ad just started");
                 }
             }
             else {
-                if(setForAdvertisement == true) {
+                if(setForAdvertisement === true) {
                     setForAdvertisement = false;
                     // Ad is over, now you can check for truncatedActualDuration
                     console.log("ad just ended");
@@ -344,7 +344,7 @@ function filterScript() {
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
 /*         function getDuration() {
-            if(isThisAmazon() == true) {
+            if(isThisAmazon()) {
                 return myVideo.duration - durationDifference;
             }
             else {
@@ -390,19 +390,19 @@ function filterScript() {
 
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
-                if(request.message == "set_filter_actions") {
+                if(request.message === "set_filter_actions") {
                     //console.log("got set filter actions message:" + request.preferences);
                     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
                         var validatedID = validateIDInput(result.mcfPrefsID);
-                        if(validatedID != null) {
+                        if(validatedID) {
                             setActions(validatedID);
                         }
                     });
                 }
                 
-                if(request.message == "filter_checkbox_changed") {
+                if(request.message === "filter_checkbox_changed") {
                     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
-                        if(result.mcfFilterOn == true) {
+                        if(result.mcfFilterOn === true) {
                             filtersEnabled = true;
                         }
                         else {
@@ -411,17 +411,17 @@ function filterScript() {
                     });
                 }
 
-/*                 if(request.message == "request_current_time") {
+/*                 if(request.message === "request_current_time") {
                     var requestedCurrentTime = getCurrentTime();
                     sendResponse({myCurrentTime: requestedCurrentTime});
                 }
 
-                if(request.message == "request_duration") {
+                if(request.message === "request_duration") {
                     var requestedDuration = getDuration();
                     sendResponse({myDuration: requestedDuration});
                 } */
 
-                /* if(request.message == "request_filter_id_list") { // Probably unnecessary?
+                /* if(request.message === "request_filter_id_list") { // Probably unnecessary?
                     sendResponse({filterIDList: userPrefs});
                 } */
             }
@@ -429,7 +429,7 @@ function filterScript() {
 
         // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
         function doTheFiltering() {
-            if((filtersEnabled == false) || (setForAdvertisement == true)) {
+            if((filtersEnabled === false) || (setForAdvertisement === true)) {
                 return;
             }
             var action = '', startTime, endTime;
@@ -444,18 +444,18 @@ function filterScript() {
                     action = '';
                 }
             }
-            if(action == prevAction) { //only apply action to the Document Object Model (DOM) if there's a change
+            if(action === prevAction) { //only apply action to the Document Object Model (DOM) if there's a change
                 return;
             } 
-            else if(action == 'skip') {
+            else if(action === 'skip') {
                 console.log("skipping from: " + getCurrentTime() + " to " + endTime);
                 goToTime(endTime);
             } 
-            else if(action == 'blank') {
+            else if(action === 'blank') {
                 console.log("blanking: " + getCurrentTime());
                 myVideo.style.opacity = 0;
             } 
-            else if(action == 'mute') {
+            else if(action === 'mute') {
                 console.log("muting: " + getCurrentTime());
                 myVideo.muted = true;
                 // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
@@ -523,7 +523,7 @@ function filterScript() {
             if(newVideo) {
                 myVideoSrc = newVideo.src || myVideoSrc; // Short-circuit evaluation, so it won't be assigned an empty string (prevents uneeded code execution below)
             }
-            if(oldVideoSrc != myVideoSrc) {
+            if(oldVideoSrc !== myVideoSrc) {
                 console.log("video element changed");
                 checkForTimeIndicator(); // To help with consistent video timing
                 if(!myVideo.ontimeupdate) {
@@ -543,7 +543,7 @@ function filterScript() {
     function checkPreferencesID() {
         chrome.storage.sync.get(['mcfPrefsID'], function(result) {
             var validatedID = validateIDInput(result.mcfPrefsID);
-            if(validatedID != null) {
+            if(validatedID) {
                 applyFilters(validatedID);
             }
         });
@@ -552,7 +552,7 @@ function filterScript() {
     // Function derived and modified from "contentscript.js" from Sensible Cinema
     var interval = setInterval(function() {
         myVideo = findFirstVideoTagOrNull();
-        if (myVideo != null) {
+        if (myVideo) {
             console.log("found video tag");
             clearInterval(interval);
             checkPreferencesID();
@@ -563,8 +563,8 @@ function filterScript() {
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
 function checkIfFiltersEnabled() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
-        if(result.mcfFilterOn == true) {
-            if(filterScriptAlreadyRunning == false) {
+        if(result.mcfFilterOn === true) {
+            if(filterScriptAlreadyRunning === false) {
                 filterScript();
             } 
         }
@@ -573,10 +573,10 @@ function checkIfFiltersEnabled() {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if(request.message == "set_filter_actions") {
+        if(request.message === "set_filter_actions") {
             checkIfFiltersEnabled();
         }
-        if(request.message == "filter_checkbox_changed") {
+        if(request.message === "filter_checkbox_changed") {
             checkIfFiltersEnabled();
         }
     }

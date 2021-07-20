@@ -224,25 +224,17 @@ function filterScript() {
         function isWatchingAdvertisement() {
             if(isThisAmazon() || isThisIMDbTV()) { // They have the same advertisement system
                 adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
-                if(adIndicator) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
             }
             if(isThisHulu()) {
-                
+                //adIndicator = document.querySelector(""); // Short circuit evaluation?
             }
 /*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");
-                if(adIndicator) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
             } */
+
+            if(adIndicator) {
+                return true;
+            }
             else {
                 return false;
             }

@@ -226,7 +226,7 @@ function filterScript() {
                 adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
             }
             if(isThisHulu()) {
-                //adIndicator = document.querySelector(""); // Short circuit evaluation?
+                //adIndicator = document.querySelector("");
             }
 /*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");

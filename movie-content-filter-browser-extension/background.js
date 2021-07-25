@@ -44,14 +44,14 @@
 */
 
 // On Hulu
-var lastHuluUrl = ''; // When the background script is changed to a service worker, change this to a variable in storage.local
-
 function checkHuluHistoryStateUpdated(details) {
-    if(lastHuluUrl !== details.url) {
-        //console.log('new URL: ' + details.url);
-        lastHuluUrl = details.url;
-        chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
-    }
+    chrome.storage.local.get(['lastHuluUrl'], function(result) {
+        if(result.lastHuluUrl !== details.url) {
+            //console.log('new URL: ' + details.url);
+            chrome.storage.local.set({lastHuluUrl: details.url});
+            chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
+        }
+    });
 }
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(checkHuluHistoryStateUpdated, {

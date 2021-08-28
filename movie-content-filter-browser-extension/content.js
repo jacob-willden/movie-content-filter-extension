@@ -578,7 +578,7 @@ checkIfFiltersEnabled();
 
 
 /* Next To-dos: 
-* Test seeking within skip annotations and maybe overlapping annotations later
-* Run filter script only if filters are available for the specific video
+* Find a way to account for overlapping annotations and maybe implement hiding the video while seeking
+* Run filter script only if filters are available for the specific video (once the website API is available)
 * All frames for executeScript throws errors occassionally?
 */

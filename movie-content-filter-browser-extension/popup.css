@@ -35,20 +35,53 @@
 
 body {
     font-family: sans-serif;
+    font-size: 16px;
+    margin: 0;
 }
 
 h1 {
-    margin-bottom: 0.25em;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
 }
 
 label {
     display: block;
+    margin: 1rem;
+}
+
+label#toggle-filters {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }
 
 input#toggle-filters-checkbox {
-    margin-bottom: 1em;
+    width: 1rem;
+    height: 1rem;
+    margin-bottom: 1rem;
 }
 
-button#find-user-preferences {
-    margin-top: 0.25em;
+label#user-preferences-form {
+    margin-bottom: 0;
+}
+
+input#user-preferences-id {
+    font-size: 1rem;
+    padding: 0.25rem;
+}
+
+input#find-user-preferences {
+    margin: 0.5rem 1rem 0.25rem 1rem;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+input#find-user-preferences:active {
+    background-color: white;
+}
+
+p#user-preferences-message-area {
+    padding: 0 1rem;
+    font-size: 0.9rem;
 }

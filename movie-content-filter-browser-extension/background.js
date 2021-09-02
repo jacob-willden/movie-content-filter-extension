@@ -37,7 +37,7 @@
 
 /* 
     Inject the content script programmatically below (requires host permissions), so the user doesn't need to refresh the page for the content script to run
-    From Natalie Chouinard on Stack Overflow, with some modifications from wOxxOm on Stack Overflow
+    From Natalie Chouinard on Stack Overflow, with an addition from wOxxOm on Stack Overflow
     Sources: 
     https://stackoverflow.com/questions/20865581/chrome-extension-content-script-not-loaded-until-page-is-refreshed
     https://stackoverflow.com/questions/63647840/unchecked-runtime-lasterror-cannot-access-contents-of-url-but-i-dont-need-to-a

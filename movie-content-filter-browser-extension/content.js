@@ -29,6 +29,7 @@
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020
+    Most Recent Date of Derivation/Modification: September 1, 2021
 
     "Movie Content Filter" Website Copyright (C) delight.im
     Website Link: https://www.moviecontentfilter.com/
@@ -125,12 +126,16 @@ function filterScript() {
             {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute"},
             {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank"},
             {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip"},
-            {"startTime": 31, "endTime": 33, "category": "tedious", "severity": 2, "action": "mute"},
-            {"startTime": 38, "endTime": 40, "category": "tedious", "severity": 2, "action": "blank"},
-            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "skip"},
-            {"startTime": 52, "endTime": 54, "category": "warfare", "severity": 3, "action": "mute"},
-            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 3, "action": "blank"},
-            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "skip"}
+            {"startTime": 31, "endTime": 33, "category": "gambling", "severity": 1, "action": "fast"},
+            {"startTime": 38, "endTime": 40, "category": "gambling", "severity": 1, "action": "blur"},
+            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "mute"},
+            {"startTime": 52, "endTime": 54, "category": "tedious", "severity": 2, "action": "blank"},
+            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 2, "action": "skip"},
+            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "mute"},
+            {"startTime": 73, "endTime": 75, "category": "warfare", "severity": 3, "action": "blank"},
+            {"startTime": 80, "endTime": 82, "category": "warfare", "severity": 3, "action": "skip"},
+            {"startTime": 87, "endTime": 89, "category": "warfare", "severity": 3, "action": "blank"},
+            {"startTime": 87.5, "endTime": 88.5, "category": "warfare", "severity": 3, "action": "skip"}
         ];
         var activeCuts = [];
         //for(var i = 0; i < allCuts.length; i++) {
@@ -419,44 +424,74 @@ function filterScript() {
             }
         );
 
-        // Execute filters during playback, derived and modified from anonymous function in "content2.js" from VideoSkip
-        function doTheFiltering() {
-            if((filtersEnabled === false) || (setForAdvertisement === true)) {
+        // Execute filters during playback, derived and modified from anonymous function in "content1.js" from VideoSkip (version 0.4.1), originally "content2.js"
+        function doTheFiltering() { //apply skips to video when it gets to them. THIS IS THE HEART OF THE EXTENSION
+            if(typeof(activeCuts) === "undefined" || !activeCuts || filtersEnabled === false || setForAdvertisement === true) {
                 return;
             }
-            var action = '', startTime, endTime;
+            var action = '', tempAction = '', startTime, endTime;
             for(var i = 0; i < activeCuts.length; i++) { //find out what action to take, according to timing and setting in activeCuts object
                 startTime = activeCuts[i].startTime;
                 endTime = activeCuts[i].endTime;
                 if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
-                    action = activeCuts[i].action;
-                    break;    
+                    tempAction = activeCuts[i].action;
                 } 
                 else {
-                    action = '';
+                    tempAction = '';
+                }
+                if(tempAction === 'skip') { //retain the strongest action valid for the current time. Hierarchy: skip > fast > blank > blur > mute
+                    action = 'skip';
+                    break; //can't get any stronger, so stop looking for this time
+                }
+                else if(tempAction === 'fast') {
+                    action = (action === 'skip') ? 'skip' : 'fast';
+                }
+                else if(tempAction === 'blank') {
+                    action = ((action === 'skip') || (action === 'fast')) ? action : 'blank';
+                }
+                else if(tempAction === 'blur') {
+                    action = ((action === 'skip') || (action === 'fast') || (action === 'blank')) ? action : 'blur';
+                }
+                else if(tempAction === 'mute') {
+                    action = ((action === 'skip') || (action === 'fast') || (action === 'blank') || (action === 'blur')) ? action : 'mute';
                 }
             }
+
+/*             if(action == 'mute'){				//mute/unmute subtitles regardless of previous action, in case the subs element changes in the middle of the interval
+                blankSubs(true)
+            }else if(action != 'mute'){		//reset to normal
+                blankSubs(false)
+            } */
+
             if(action === prevAction) { //only apply action to the Document Object Model (DOM) if there's a change
                 return;
             } 
-            else if(action === 'skip') {
-                console.log("skipping from: " + getCurrentTime() + " to " + endTime);
+            else if(action === 'skip') { //skip range
+                console.log("skipping from: " + getCurrentTime());
                 goToTime(endTime);
             } 
-            else if(action === 'blank') {
+            else if(action === 'blank') { //blank screeen
                 console.log("blanking: " + getCurrentTime());
                 myVideo.style.opacity = 0;
-            } 
-            else if(action === 'mute') {
+            }
+            else if(action == 'blur') { //blur screeen
+                console.log("blurring: " + getCurrentTime());
+                myVideo.style.filter =  'blur(30px)';
+            }
+            else if(action == 'fast') { //fast forward
+                console.log("fast forwarding from: " + getCurrentTime());
+                myVideo.playbackRate = 16;
+            }
+            else if(action === 'mute') { //mute sound (and subtitles?)
                 console.log("muting: " + getCurrentTime());
                 myVideo.muted = true;
-                // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'disabled';
             } 
-            else {
+            else { //back to normal
                 // Check if videoNotBuffering (or for seek event) before unhiding video?
                 myVideo.style.opacity =  '';
+                myVideo.style.filter = '';
+                myVideo.playbackRate = 1;
                 myVideo.muted = false;
-                // if(myVideo.textTracks.length > 0) myVideo.textTracks[0].mode = 'showing';
             }
             prevAction = action;
         }
@@ -578,7 +613,7 @@ checkIfFiltersEnabled();
 
 
 /* Next To-dos: 
-* Find a way to account for overlapping annotations and maybe implement hiding the video while seeking
+* Maybe implement hiding the video while seeking?
 * Run filter script only if filters are available for the specific video (once the website API is available)
 * All frames for executeScript throws errors occassionally?
 */

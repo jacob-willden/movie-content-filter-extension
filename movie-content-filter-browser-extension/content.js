@@ -231,7 +231,7 @@ function filterScript() {
                 adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
             }
             if(isThisHulu()) {
-                //adIndicator = document.querySelector("");
+                adIndicator = document.querySelector(".AdUnitView");
             }
 /*             if(isThisYoutube()) {
                 adIndicator = document.querySelector(".ytp-ad-player-overlay");
@@ -612,7 +612,7 @@ chrome.runtime.onMessage.addListener(
 checkIfFiltersEnabled();
 
 
-/* Next To-dos: 
+/* Future To-dos: 
 * Maybe implement hiding the video while seeking?
 * Run filter script only if filters are available for the specific video (once the website API is available)
 * All frames for executeScript throws errors occassionally?

@@ -532,7 +532,8 @@ function filterScript() {
             performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
-                performanceDisclaimer.style.opacity = 0; // Should it still be visible to screen readers?
+                performanceDisclaimer.style.color = 'rgba(0, 0, 0, 0)';
+                performanceDisclaimer.style.backgroundColor = 'rgba(0, 0, 0, 0)';
             }, 6000);
         }
 

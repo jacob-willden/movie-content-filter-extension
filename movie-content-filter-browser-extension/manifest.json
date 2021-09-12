@@ -42,6 +42,7 @@
             "https://tv.apple.com/*",
             "https://www.hulu.com/*",
             "https://www.imdb.com/tv/*",
+            "https://*.plex.tv/*",
             "https://*.amazon.com/*", 
             "https://*.amazon.com.br/*",
             "https://*.amazon.ca/*",

@@ -69,6 +69,8 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
         {hostContains: '.netflix.com', pathPrefix: '/watch'},
         {hostContains: '.disneyplus.com', pathPrefix: '/video'},
         {hostContains: 'tv.apple.com'},
-        {hostContains: '.imdb.com', pathPrefix: '/tv'}
+        {hostContains: '.hulu.com'},
+        {hostContains: '.imdb.com', pathPrefix: '/tv'},
+        {hostContains: '.plex.com'}
     ]
 });

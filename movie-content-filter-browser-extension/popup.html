@@ -44,19 +44,19 @@
 
     <body>
         <h1 id="popupTitle">Movie Content Filter</h1>
-        <label for="toggle-filters-checkbox" id="toggle-filters">
-            <input type="checkbox" id="toggle-filters-checkbox" name="toggle-filters-checkbox">
+        <label id="toggle-filters">
+            <input type="checkbox" checked id="toggle-filters-checkbox" name="toggle-filters-checkbox">
             <span id="toggleFiltersText">Toggle Filters</span>
         </label>
         <form>
-            <label for="user-preferences-id" id="user-preferences-form">
+            <label id="user-preferences">
                 <span id="yourPreferencesIDText">Your Filter Preferences ID</span>
                 <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25" required>
             </label>
             <input type="submit" name="submit" id="find-user-preferences" value="Get ID">
         </form>
         <p id="user-preferences-message-area"></p>
-<!--         <label for="safe-seek-slider">Safe Seek Slider
+<!--         <label>Safe Seek Slider
             <input type="range" min="0" max="100" step="1" value="0" id="safe-seek-slider">
         </label>
         <span id="safe-seek-display-value"></span> -->

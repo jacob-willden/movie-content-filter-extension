@@ -132,7 +132,7 @@ function findUserID() {
 }
 
 function restoreSettingsFormOptions() {
-    chrome.storage.sync.get(['mcfFilterOn'], function(result) {
+    chrome.storage.sync.get({mcfFilterOn: true}, function(result) {
         if(result.mcfFilterOn === true) {
             filterToggleCheckbox.checked = true;
         }

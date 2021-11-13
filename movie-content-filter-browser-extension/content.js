@@ -55,8 +55,6 @@
     JavaScript code in this page.
 */
 
-"use strict";
-
 var filterScriptAlreadyRunning = false; // To prevent the script from running twice (may need to modify for Amazon TV shows?)
 
 function filterScript() {

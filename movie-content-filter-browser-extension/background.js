@@ -33,44 +33,27 @@
     code in this page.
 */
 
-"use strict";
-
-/* 
-    Inject the content script programmatically below (requires host permissions), so the user doesn't need to refresh the page for the content script to run
-    From Natalie Chouinard on Stack Overflow, with an addition from wOxxOm on Stack Overflow
-    Sources: 
-    https://stackoverflow.com/questions/20865581/chrome-extension-content-script-not-loaded-until-page-is-refreshed
-    https://stackoverflow.com/questions/63647840/unchecked-runtime-lasterror-cannot-access-contents-of-url-but-i-dont-need-to-a
-*/
-
-// On Hulu
-function checkHuluHistoryStateUpdated(details) {
+function checkHuluTabUpdated(currentURL) {
     chrome.storage.local.get(['lastHuluUrl'], function(result) {
-        if(result.lastHuluUrl !== details.url) {
-            //console.log('new URL: ' + details.url);
-            chrome.storage.local.set({lastHuluUrl: details.url});
-            chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
+        if(result.lastHuluUrl !== currentURL) {
+            chrome.storage.local.set({lastHuluUrl: currentURL});
+            chrome.tabs.executeScript({file:"/content.js", allFrames: true});
         }
     });
 }
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(checkHuluHistoryStateUpdated, {
-    url: [
-        {hostContains: '.hulu.com', pathPrefix: '/watch'}
-    ]
-});
-
 // On other streaming services
-chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
-    chrome.tabs.executeScript(details.tabId, {file:"/content.js", allFrames: true});
-}, {
-    url: [
-        {hostContains: '.amazon.'},
-        {hostContains: '.netflix.com', pathPrefix: '/watch'},
-        {hostContains: '.disneyplus.com', pathPrefix: '/video'},
-        {hostContains: 'tv.apple.com'},
-        {hostContains: '.hulu.com'},
-        {hostContains: '.imdb.com', pathPrefix: '/tv'},
-        {hostContains: '.plex.com'}
-    ]
-});
+function handleTabUpdated(tabId, changeInfo) {
+    var currentURL = changeInfo.url;
+	if (currentURL) {
+        console.log("URL changed to " + currentURL);
+        if(currentURL.includes(".hulu.com")) {
+            checkHuluTabUpdated(currentURL);
+        }
+        else {
+            chrome.tabs.executeScript({file: "/content.js", allFrames: true});
+        }
+    }
+}
+
+chrome.tabs.onUpdated.addListener(handleTabUpdated);

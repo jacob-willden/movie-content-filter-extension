@@ -168,6 +168,8 @@ document.addEventListener('DOMContentLoaded', restoreSettingsFormOptions);
 filterToggleCheckbox.addEventListener('change', filterToggleCheckboxChanged);
 findPreferencesForm.addEventListener('submit', setFilterActions);
 
+// Add promise error handling?
+
 // Safe Seek Functions
 
 /* 

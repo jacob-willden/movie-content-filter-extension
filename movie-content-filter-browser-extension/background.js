@@ -57,3 +57,5 @@ function handleTabUpdated(tabId, changeInfo) {
 }
 
 chrome.tabs.onUpdated.addListener(handleTabUpdated);
+
+// Add promise error handling?

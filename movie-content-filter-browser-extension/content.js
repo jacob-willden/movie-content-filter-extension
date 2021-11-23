@@ -615,5 +615,6 @@ checkIfFiltersEnabled();
 * Add support for HBO Max, Paramount Plus, Crackle, etc.
 * Maybe implement hiding the video while seeking?
 * Run filter script only if filters are available for the specific video (once the website API is available)
+* Add promise error handling?
 * All frames for executeScript throws errors occassionally?
 */

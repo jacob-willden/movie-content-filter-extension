@@ -1,4 +1,4 @@
-# movie-content-filter-extension
+# Movie Content Filter Extension
 Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
 ## Description
@@ -38,6 +38,22 @@ Firefox
 
 (For Firefox Testing: Since Firefox can only install unsigned extensions as temporary add-ons, you will need to reload the extension each time you restart the browser, and you will need to recheck the box to enable filters and enter a preferences ID in the extension popup.)
 
+## Browser Requirements
+
+Chrome: Version 55 or newer
+
+Microsoft Edge: Version 79 or newer
+
+Firefox: Version 54 or newer
+
+Opera: Version 42 or newer
+
+Other Browsers (including Vivaldi and Brave): Any version that supports ECMAScript 2015 or newer, supports the `fetch` and `async` functions in JavaScript, and supports standard web extensions
+
+(If you would like to use the extension with an older version of these browsers or an unsupported browser, [submit an issue on Github](https://github.com/jacob-willden/movie-content-filter-extension/issues).)
+
+Thanks to the [Can I Use](https://caniuse.com/) and [Mozilla Developer Network](https://developer.mozilla.org/) websites for browser compatibility information.
+
 ## Legal
 
 The extension does not alter video files at all, but instead lets "users choose to see or not to see parts of the content, and the app remembers their choice" (quoted from the Read Me file for the VideoSkip extension [here](https://github.com/fruiz500/VideoSkip-extension/blob/master/README.md), which extension's code this extension is built on). It also does not enable unauthorized access to video files.
@@ -46,4 +62,6 @@ The streaming services that our extension supports and the content from these st
 
 Notice to All Users: When watching a motion picture (referring to a movie, television show, etc) using this extension, the performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture.
 
-Notice to Netflix Users: While this extension and its users are legally protected from liability under the United States Family Entertainment and Copyright Act of 2005, Netflix has a section in their Terms of Service that prohibits code insertion (section 4.6), without mentioning if code insertion is allowed for legal purposes, like filtering as allowed under the law. If the administrators of Netflix were to think that your use of this extension violates their Terms of Service, they could terminate your account. We find this scenario to be unlikely however, because this would only hurt the streaming service financially. In addition, there are larger, proprietary filtering services that support this streaming service (such as Clearplay, VidAngel, and Enjoy Movies Your Way) that have not faced this issue as far as we know. While we think it is unlikely that Netflix's administrators would take such action against their users, we wish to inform our users so they can make the decision themselves whether to filter (or not filter) content that is available through these services.
+Notice to Netflix Users: While this extension and its users are legally protected from liability under the United States Family Entertainment and Copyright Act of 2005, Netflix has a section in their Terms of Service that prohibits code insertion (section 4.6), without mentioning if code insertion is allowed for legal purposes, like filtering as allowed under the law. 
+
+If the administrators of Netflix were to think that your use of this extension violates their Terms of Service, they could terminate your account. We find this scenario to be unlikely however, because this would only hurt the streaming service financially. In addition, there are larger, proprietary filtering services that support this streaming service (such as Clearplay, VidAngel, and Enjoy Movies Your Way) that have not faced this issue as far as we know. While we think it is unlikely that Netflix's administrators would take such action against their users, we wish to inform our users so they can make the decision themselves whether to filter (or not filter) content that is available through these services.

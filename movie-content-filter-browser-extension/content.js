@@ -118,27 +118,8 @@ function filterScript() {
         return santizedIDValue;
     }
 
-    function applyFilters(myPreferencesID) {
-        console.log("fetching allCuts");
-        var allCuts = [ // Some dummy values for now
-            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute"},
-            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank"},
-            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip"},
-            {"startTime": 31, "endTime": 33, "category": "gambling", "severity": 1, "action": "fast"},
-            {"startTime": 38, "endTime": 40, "category": "gambling", "severity": 1, "action": "blur"},
-            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "mute"},
-            {"startTime": 52, "endTime": 54, "category": "tedious", "severity": 2, "action": "blank"},
-            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 2, "action": "skip"},
-            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "mute"},
-            {"startTime": 73, "endTime": 75, "category": "warfare", "severity": 3, "action": "blank"},
-            {"startTime": 80, "endTime": 82, "category": "warfare", "severity": 3, "action": "skip"},
-            {"startTime": 87, "endTime": 89, "category": "warfare", "severity": 3, "action": "blank"},
-            {"startTime": 87.5, "endTime": 88.5, "category": "warfare", "severity": 3, "action": "skip"}
-        ];
+    function applyFilters(myPreferencesID, allCuts) {
         var activeCuts = [];
-        //for(var i = 0; i < allCuts.length; i++) {
-        //    console.log(allCuts[i]);
-        //}
 
         var prevAction = '';
 
@@ -566,11 +547,32 @@ function filterScript() {
         }
     }
 
+    function getFilters(myPreferencesID) {
+        console.log("getting allCuts");
+        var allCuts = [ // Some dummy values for now
+            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute"},
+            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank"},
+            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip"},
+            {"startTime": 31, "endTime": 33, "category": "gambling", "severity": 1, "action": "fast"},
+            {"startTime": 38, "endTime": 40, "category": "gambling", "severity": 1, "action": "blur"},
+            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "mute"},
+            {"startTime": 52, "endTime": 54, "category": "tedious", "severity": 2, "action": "blank"},
+            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 2, "action": "skip"},
+            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "mute"},
+            {"startTime": 73, "endTime": 75, "category": "warfare", "severity": 3, "action": "blank"},
+            {"startTime": 80, "endTime": 82, "category": "warfare", "severity": 3, "action": "skip"},
+            {"startTime": 87, "endTime": 89, "category": "warfare", "severity": 3, "action": "blank"},
+            {"startTime": 87.5, "endTime": 88.5, "category": "warfare", "severity": 3, "action": "skip"}
+        ];
+
+        applyFilters(myPreferencesID, allCuts);
+    }
+
     function checkPreferencesID() {
         chrome.storage.sync.get(['mcfPrefsID'], function(result) {
             var validatedID = validateIDInput(result.mcfPrefsID);
             if(validatedID) {
-                applyFilters(validatedID);
+                getFilters(validatedID);
             }
         });
     }
@@ -578,7 +580,7 @@ function filterScript() {
     // Function derived and modified from "contentscript.js" from Sensible Cinema
     var interval = setInterval(function() {
         myVideo = findFirstVideoTagOrNull();
-        if (myVideo) {
+        if(myVideo) {
             console.log("found video tag");
             clearInterval(interval);
             checkPreferencesID();

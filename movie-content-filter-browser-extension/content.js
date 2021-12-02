@@ -564,7 +564,6 @@ function filterScript() {
             {"startTime": 87, "endTime": 89, "category": "warfare", "severity": 3, "action": "blank"},
             {"startTime": 87.5, "endTime": 88.5, "category": "warfare", "severity": 3, "action": "skip"}
         ];
-
         applyFilters(myPreferencesID, allCuts);
     }
 
@@ -591,7 +590,8 @@ function filterScript() {
 // Check if the user has enabled filters in the extension popup (see popup.html and popup.js)
 function checkIfFiltersEnabled() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
-        if(result.mcfFilterOn === true) {
+        //console.log("got result back: " + result.mcfFilterOn);
+        if(result.mcfFilterOn !== false) {
             if(filterScriptAlreadyRunning === false) {
                 filterScript();
             } 

@@ -46,7 +46,7 @@ function checkHuluTabUpdated(currentURL) {
 function handleTabUpdated(tabId, changeInfo) {
     var currentURL = changeInfo.url;
 	if (currentURL) {
-        console.log("URL changed to " + currentURL);
+        //console.log("URL changed to " + currentURL);
         if(currentURL.includes(".hulu.com")) {
             checkHuluTabUpdated(currentURL);
         }

@@ -549,22 +549,18 @@ function filterScript() {
 
     function getFilters(myPreferencesID) {
         console.log("getting allCuts");
-        var allCuts = [ // Some dummy values for now
-            {"startTime": 10, "endTime": 12, "category": "gambling", "severity": 1, "action": "mute"},
-            {"startTime": 17, "endTime": 19, "category": "gambling", "severity": 1, "action": "blank"},
-            {"startTime": 24, "endTime": 26, "category": "gambling", "severity": 1, "action": "skip"},
-            {"startTime": 31, "endTime": 33, "category": "gambling", "severity": 1, "action": "fast"},
-            {"startTime": 38, "endTime": 40, "category": "gambling", "severity": 1, "action": "blur"},
-            {"startTime": 45, "endTime": 47, "category": "tedious", "severity": 2, "action": "mute"},
-            {"startTime": 52, "endTime": 54, "category": "tedious", "severity": 2, "action": "blank"},
-            {"startTime": 59, "endTime": 61, "category": "warfare", "severity": 2, "action": "skip"},
-            {"startTime": 66, "endTime": 68, "category": "warfare", "severity": 3, "action": "mute"},
-            {"startTime": 73, "endTime": 75, "category": "warfare", "severity": 3, "action": "blank"},
-            {"startTime": 80, "endTime": 82, "category": "warfare", "severity": 3, "action": "skip"},
-            {"startTime": 87, "endTime": 89, "category": "warfare", "severity": 3, "action": "blank"},
-            {"startTime": 87.5, "endTime": 88.5, "category": "warfare", "severity": 3, "action": "skip"}
-        ];
-        applyFilters(myPreferencesID, allCuts);
+        var filterFileURL = chrome.runtime.getURL("sample-filter-file.json");
+
+        fetch(filterFileURL).then(function(response) {
+            if(!response.ok) {
+                throw new Error("Network response returned code " + response.status);
+            }
+            return response.json();
+        }).then(function(allCuts) {
+            applyFilters(myPreferencesID, allCuts);
+        }).catch(function(error) {
+            console.log("Filter file fetch failed: " + error);
+        });        
     }
 
     function checkPreferencesID() {
@@ -591,7 +587,7 @@ function filterScript() {
 function checkIfFiltersEnabled() {
     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
         //console.log("got result back: " + result.mcfFilterOn);
-        if(result.mcfFilterOn !== false) {
+        if(result.mcfFilterOn !== false) { // Needs to check for not false (instead of true) in case the user hasn't opened the popup since install (and therefore hasn't set the filter toggle variable in storage)
             if(filterScriptAlreadyRunning === false) {
                 filterScript();
             } 

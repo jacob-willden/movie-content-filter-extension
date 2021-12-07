@@ -560,7 +560,7 @@ function filterScript() {
             applyFilters(myPreferencesID, allCuts);
         }).catch(function(error) {
             console.log("Filter file fetch failed: " + error);
-        });        
+        });
     }
 
     function checkPreferencesID() {
@@ -590,7 +590,7 @@ function checkIfFiltersEnabled() {
         if(result.mcfFilterOn !== false) { // Needs to check for not false (instead of true) in case the user hasn't opened the popup since install (and therefore hasn't set the filter toggle variable in storage)
             if(filterScriptAlreadyRunning === false) {
                 filterScript();
-            } 
+            }
         }
     });
 }

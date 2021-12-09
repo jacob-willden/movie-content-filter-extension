@@ -35,7 +35,7 @@
     "background": {"scripts": ["background.js"], "persistent": false},
     "content_scripts": [{
         "all_frames": true, 
-        "js": ["content.js"],
+        "js": ["utilities.js", "content.js"],
         "matches": [
             "https://*.netflix.com/watch/*", 
             "https://*.disneyplus.com/video/*",

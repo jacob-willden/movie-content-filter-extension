@@ -99,22 +99,9 @@ function filterToggleCheckboxChanged() {
     });
 }
 
-function validateIDInput(input) {
-    if(typeof(input) !== 'string') {
-        return null;
-    }
-
-    // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
-    // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
-    var myIDValue = (input).replace(/[^0-9a-z]/gi, '');
-
-    userIDTextbox.value = myIDValue; // Show santized string in the input box
-
-    return myIDValue;
-}
-
 function findUserID() {
     var santizedIDValue = validateIDInput(userIDTextbox.value);
+    userIDTextbox.value = santizedIDValue; // Show santized string in the input box
     if(santizedIDValue === null) {
         return null;
     }

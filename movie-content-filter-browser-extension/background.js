@@ -33,11 +33,18 @@
     code in this page.
 */
 
+function runContentScript() {
+    chrome.tabs.executeScript({file: "/utilities.js", allFrames: true}, function() {
+        chrome.tabs.executeScript({file: "/content.js", allFrames: true});
+    });
+
+}
+
 function checkHuluTabUpdated(currentURL) {
     chrome.storage.local.get(['lastHuluUrl'], function(result) {
         if(result.lastHuluUrl !== currentURL) {
             chrome.storage.local.set({lastHuluUrl: currentURL});
-            chrome.tabs.executeScript({file:"/content.js", allFrames: true});
+            runContentScript();
         }
     });
 }
@@ -51,7 +58,7 @@ function handleTabUpdated(tabId, changeInfo) {
             checkHuluTabUpdated(currentURL);
         }
         else {
-            chrome.tabs.executeScript({file: "/content.js", allFrames: true});
+            runContentScript();
         }
     }
 }

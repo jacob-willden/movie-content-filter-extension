@@ -40,7 +40,7 @@ body {
 }
 
 h1 {
-    padding: 0.5rem 1rem;
+    padding: 1.5rem 1rem 0.5rem 1rem;
     margin: 0;
     font-size: 1.5rem;
     text-align: center;
@@ -81,8 +81,9 @@ input#find-user-preferences:active {
     background-color: white;
 }
 
-p#user-preferences-message-area {
-    padding: 0 1rem;
+#user-preferences-message-area {
+    display: block;
+    padding: 1rem;
     font-size: 0.9rem;
 }
 

@@ -48,7 +48,7 @@ Firefox: Version 54 or newer
 
 Opera: Version 42 or newer
 
-Other Browsers (including Vivaldi, Brave, and likely Kiwi, Samsung Internet, Firefox for Android, and others): Any version that supports ECMAScript 5 or newer, the `fetch` and `async` functions in JavaScript, and supports standard web extensions
+Other Browsers (such as Vivaldi, Brave, and likely Kiwi, Samsung Internet, Firefox for Android, and others): Any version that supports ECMAScript 5 or newer, the `fetch` and `async` functions in JavaScript, and supports standard web extensions (including extension APIs such as storage, i18n (stands for internationalization), runtime, and tabs).
 
 (If you would like to use the extension with an older version of these browsers or an unsupported browser, [submit an issue on Github](https://github.com/jacob-willden/movie-content-filter-extension/issues).)
 

@@ -48,6 +48,7 @@ h1 {
 label {
     display: block;
     margin: 1rem;
+    font-size: 0.9rem;
 }
 
 label#toggle-filters {
@@ -73,7 +74,6 @@ input#user-preferences-id {
 input#find-user-preferences {
     margin: 0.5rem 1rem 0.25rem 1rem;
     padding: 0.5rem;
-    font-size: 0.9rem;
 }
 
 input#find-user-preferences:active {
@@ -83,7 +83,6 @@ input#find-user-preferences:active {
 #user-preferences-message-area {
     display: block;
     padding: 1rem;
-    font-size: 0.9rem;
 }
 
 /* Dark Mode */

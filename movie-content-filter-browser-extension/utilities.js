@@ -1,3 +1,5 @@
+'use strict';
+
 function validateIDInput(input) {
     if(typeof(input) !== 'string') {
         return null;

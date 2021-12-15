@@ -58,6 +58,8 @@
     JavaScript code in this page.
 */
 
+'use strict';
+
 var popupTitle = document.getElementById("popupTitle");
 popupTitle.textContent = chrome.i18n.getMessage("extensionName");
 

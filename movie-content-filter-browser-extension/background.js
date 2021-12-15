@@ -33,6 +33,8 @@
     code in this page.
 */
 
+'use strict';
+
 function runContentScript() {
     chrome.tabs.executeScript({file: "/utilities.js", allFrames: true}, function() {
         chrome.tabs.executeScript({file: "/content.js", allFrames: true});

@@ -410,13 +410,13 @@ function filterScript() {
                     action = (action === 'skip') ? 'skip' : 'fast';
                 }
                 else if(tempAction === 'blank') {
-                    action = ((action === 'skip') || (action === 'fast')) ? action : 'blank';
+                    action = ((action === 'skip') || (action === 'fast')) ? action : tempAction;
                 }
                 else if(tempAction === 'blur') {
-                    action = ((action === 'skip') || (action === 'fast') || (action === 'blank')) ? action : 'blur';
+                    action = ((action === 'skip') || (action === 'fast') || (action === 'blank')) ? action : tempAction; //may include position for local blur (if added)
                 }
                 else if(tempAction === 'mute') {
-                    action = ((action === 'skip') || (action === 'fast') || (action === 'blank') || (action === 'blur')) ? action : 'mute';
+                    action = ((action === 'skip') || (action === 'fast')) ? action : (((action === 'blank') || (action === 'blur')) ? 'skip' : 'mute');
                 }
             }
 

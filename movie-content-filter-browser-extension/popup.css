@@ -72,7 +72,7 @@ input#user-preferences-id {
 }
 
 input#find-user-preferences {
-    margin: 0.5rem 1rem 0.25rem 1rem;
+    margin: 0 1rem 0.25rem 1rem;
     padding: 0.5rem;
 }
 
@@ -82,7 +82,7 @@ input#find-user-preferences:active {
 
 #user-preferences-message-area {
     display: block;
-    padding: 1rem;
+    padding: 0.5rem 1rem 1rem 1rem;
 }
 
 /* Dark Mode */

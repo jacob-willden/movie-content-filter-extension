@@ -1,7 +1,7 @@
 {
     "name": "__MSG_extensionName__",
     "description": "__MSG_extensionDescription__",
-    "author": "Jacob Willden, et al.",
+    "author": "Jacob Willden, Francisco Ruiz (VideoSkip creator), Roger Pack (Play It My Way creator)",
     "homepage_url": "https://github.com/jacob-willden/movie-content-filter-extension",
     "version": "0.0.0.1",
     "manifest_version": 2,

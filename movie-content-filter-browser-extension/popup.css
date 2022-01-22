@@ -87,21 +87,19 @@ input#find-user-preferences:active {
 
 /* Dark Mode */
 
-/* For Firefox */
-@media (prefers-color-scheme: dark) {
-    body {
-        color: #eee;
-        background-color: #222;
-    }
-    input {
-        color: #eee;
-        background-color: #555;
+@supports not (color-scheme: light dark) {
+    @media (prefers-color-scheme: dark) {
+        body {
+            color: #eee;
+            background-color: #222;
+        }
+        input {
+            color: #eee;
+            background-color: #555;
+        }
     }
 }
 
-/* For Chromium & Safari */
 :root {
     color-scheme: light dark;
 }
-
-/* prefers-contrast? */

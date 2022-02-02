@@ -237,8 +237,8 @@ function filterScript() {
 
         // Function created by Jacob Willden
         function getAmazonTruncatedActualDuration(timeIndicator) { // Modify for Hulu?
-            //console.log("the full text: " + timeIndicator.innerText);
-            var bothTimesArray = timeIndicator.innerText.split("/");
+            //console.log("the full text: " + timeIndicator.textContent);
+            var bothTimesArray = timeIndicator.textContent.split("/");
             //console.log(bothTimesArray);
             var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
             var remainingTime = fromHMS(bothTimesArray[1].replace(/[^0-9:]/g, ''));
@@ -265,7 +265,7 @@ function filterScript() {
         function checkForTimeIndicator() {
             var interval = setInterval(function() {
                 timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
-                if((isThisAmazon()) && (timeIndicator) && (timeIndicator.innerText.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
+                if((isThisAmazon()) && (timeIndicator) && (timeIndicator.textContent.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
                     clearInterval(interval);
                     setDurationDifference();
                 }
@@ -283,7 +283,7 @@ function filterScript() {
             }
             if(isThisIMDbTV()) { // Only works if all ads are integer lengths
                 if(timeIndicator) {
-                    var bothTimesArray = timeIndicator.innerText.split("/");
+                    var bothTimesArray = timeIndicator.textContent.split("/");
                     var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
                     var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
                     var myActualTime = elapsedTimeInteger + myTimeDecimal;

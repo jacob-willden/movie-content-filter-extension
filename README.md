@@ -1,39 +1,33 @@
 # Movie Content Filter Extension
 Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
-## Description
-This project is in very early development right now, and there are many features to add (and some bugs to fix). Currently the extension is for Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Support is being added first for Amazon Video, Netflix, Disney Plus, Hulu, and Apple TV Plus, with the hope to expand later to other streaming services. The project is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below).
+Project Source Code Link: https://github.com/jacob-willden/movie-content-filter-extension/
 
 Movie Content Filter Website: https://www.moviecontentfilter.com/
 
-The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL). It is linked below, along with the source code for VideoSkip and Play It My Way (Sensible Cinema), which this project is built on:
-
-Project Source Code Link: https://github.com/jacob-willden/movie-content-filter-extension/
+## General Information
+This project is in very early development right now, and there are many features to add (and some bugs to fix). It is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below). The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL).
 
 VideoSkip Source Code Link: https://github.com/fruiz500/VideoSkip-extension/
 
 Play It My Way Source Code Link: https://github.com/rdp/sensible-cinema/
+
+Currently the extension is for Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Support is being added first for Amazon Video, Netflix, Disney Plus, Hulu, and Apple TV Plus, with the hope to expand later to other streaming services.
 
 ## Installation Instructions (for testing purposes)
 
 Chromium Browsers
 
 1. Download the repository and extract the ZIP file
-
 2. Go to the Extensions area of your browser and make sure "Developer mode" is on
-
 3. Click the "Load unpacked" button
-
 4. Select the "movie-content-filter-browser-extension" folder inside the "movie-content-filter-extension" folder
 
 Firefox
 
 1. Download the repository and extract the ZIP file
-
 2. Enter "about:debugging" into the address bar and click "This Firefox"
-
 3. Click "Load Temporary Add-on"
-
 4. Select the "manifest.json" file inside the "movie-content-filter-browser-extension" folder inside the "movie-content-filter-extension" folder
 
 (For Firefox Testing: Since Firefox can only install unsigned extensions as temporary add-ons, you will need to reload the extension each time you restart the browser, and you will need to recheck the box to enable filters and enter a preferences ID in the extension popup.)

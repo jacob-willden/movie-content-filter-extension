@@ -236,7 +236,7 @@ function filterScript() {
         var timeIndicator = null;
 
         // Function created by Jacob Willden
-        function getAmazonTruncatedActualDuration(timeIndicator) { // Modify for Hulu?
+        function getAmazonTruncatedActualDuration(timeIndicator) {
             //console.log("the full text: " + timeIndicator.textContent);
             var bothTimesArray = timeIndicator.textContent.split("/");
             //console.log(bothTimesArray);
@@ -437,11 +437,11 @@ function filterScript() {
                 console.log("blanking: " + getCurrentTime());
                 myVideo.style.opacity = 0;
             }
-            else if(action == 'blur') { //blur screeen
+            else if(action === 'blur') { //blur screeen
                 console.log("blurring: " + getCurrentTime());
                 myVideo.style.filter =  'blur(30px)';
             }
-            else if(action == 'fast') { //fast forward
+            else if(action === 'fast') { //fast forward
                 console.log("fast forwarding from: " + getCurrentTime());
                 myVideo.playbackRate = 16;
             }

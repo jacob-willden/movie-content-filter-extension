@@ -1,0 +1,65 @@
+<!-- 
+    @source: https://github.com/jacob-willden/movie-content-filter-extension/
+
+    @licstart  The following is the entire license notice for the
+    code in this page.
+
+    This file is part of the Movie Content Filter Browser Extension Project.
+
+    Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
+    (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
+
+    "Movie Content Filter" Website Copyright (C) delight.im
+    Website Link: https://www.moviecontentfilter.com/
+
+    The Movie Content Filter Browser Extension Project is free software: 
+    you can redistribute it and/or modify it under the terms of the GNU
+    General Public License (GNU GPL) as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option)
+    any later version.  The project is distributed WITHOUT ANY WARRANTY;
+    without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE. See the GNU GPL for more details.
+
+    As additional permission under GNU GPL version 3 section 7, you
+    may distribute non-source (e.g., minimized or compacted) forms of
+    the code without the copy of the GNU GPL normally required by
+    section 4, provided you include this license notice and a URL
+    through which recipients can access the Corresponding Source.
+
+    You should have recieved a copy of the GNU General Public License
+    along with this project. Otherwise, see: https://www.gnu.org/licenses/
+
+    @licend  The above is the entire license notice for the 
+    code in this page.
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Movie Content Filter Extension</title>
+        <link rel="stylesheet" href="popup.css">
+    </head>
+
+    <body>
+        <h1 id="popupTitle">Movie Content Filter</h1>
+        <label id="toggle-filters">
+            <input type="checkbox" checked id="toggle-filters-checkbox" name="toggle-filters-checkbox">
+            <span id="toggleFiltersText">Toggle Filters</span>
+        </label>
+        <form>
+            <label id="user-preferences">
+                <span id="yourPreferencesIDText">Your Filter Preferences ID</span>
+                <input type="text" id="user-preferences-id" name="user-preferences-id" maxlength="25" required>
+            </label>
+            <input type="submit" name="submit" id="find-user-preferences" value="Get ID">
+            <output for="user-preferences-id" id="user-preferences-message-area" name="user-preferences-output"></output>
+        </form>
+<!--         <label>Safe Seek Slider
+            <input type="range" min="0" max="100" step="1" value="0" id="safe-seek-slider">
+        </label>
+        <span id="safe-seek-display-value"></span> -->
+        <script src="utilities.js"></script>
+        <script src="popup.js"></script>
+    </body>
+</html>

@@ -1,0 +1,105 @@
+/*
+    @source: https://github.com/jacob-willden/movie-content-filter-extension/
+
+    @licstart  The following is the entire license notice for the
+    code in this page.
+
+    This file is part of the Movie Content Filter Browser Extension Project.
+
+    Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
+    (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
+
+    "Movie Content Filter" Website Copyright (C) delight.im
+    Website Link: https://www.moviecontentfilter.com/
+
+    The Movie Content Filter Browser Extension Project is free software: 
+    you can redistribute it and/or modify it under the terms of the GNU
+    General Public License (GNU GPL) as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option)
+    any later version.  The project is distributed WITHOUT ANY WARRANTY;
+    without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE. See the GNU GPL for more details.
+
+    As additional permission under GNU GPL version 3 section 7, you
+    may distribute non-source (e.g., minimized or compacted) forms of
+    the code without the copy of the GNU GPL normally required by
+    section 4, provided you include this license notice and a URL
+    through which recipients can access the Corresponding Source.
+
+    You should have recieved a copy of the GNU General Public License
+    along with this project. Otherwise, see: https://www.gnu.org/licenses/
+
+    @licend  The above is the entire license notice for the 
+    code in this page.
+*/
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+h1 {
+    padding: 1.5rem 1rem 0.5rem 1rem;
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 1rem;
+    font-size: 0.9rem;
+}
+
+label#toggle-filters {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+input#toggle-filters-checkbox {
+    width: 1rem;
+    height: 1rem;
+    margin-bottom: 1rem;
+}
+
+label#user-preferences-form {
+    margin-bottom: 0;
+}
+
+input#user-preferences-id {
+    font-size: 1rem;
+    padding: 0.25rem;
+}
+
+input#find-user-preferences {
+    margin: 0 1rem 0.25rem 1rem;
+    padding: 0.5rem;
+}
+
+input#find-user-preferences:active {
+    background-color: white;
+}
+
+#user-preferences-message-area {
+    display: block;
+    padding: 0.5rem 1rem 1rem 1rem;
+}
+
+/* Dark Mode */
+
+@supports not (color-scheme: light dark) {
+    @media (prefers-color-scheme: dark) {
+        body {
+            color: #eee;
+            background-color: #222;
+        }
+        input {
+            color: #eee;
+            background-color: #555;
+        }
+    }
+}
+
+:root {
+    color-scheme: light dark;
+}

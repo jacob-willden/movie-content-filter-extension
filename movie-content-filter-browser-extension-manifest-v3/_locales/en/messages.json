@@ -1,0 +1,26 @@
+{
+    "extensionName": {
+        "message": "Movie Content Filter"
+    },
+    "extensionDescription": {
+        "message": "Allows users to skip objectionable content on streaming services, based on their preferences."
+    },
+    "legalNotice": {
+        "message": "Notice: The performance of the motion picture is altered from the performance intended by the director or copyright holder of the motion picture."
+    },
+    "toggleFilters": {
+        "message": "Toggle Filters"
+    },
+    "yourPreferencesID": {
+        "message": "Your Filter Preferences ID"
+    },
+    "findIDButton": {
+        "message": "Get ID"
+    },
+    "foundTheID": {
+        "message": "Found it"
+    },
+    "failedToFindID": {
+        "message": "Could not find it"
+    }
+}

@@ -12,7 +12,7 @@ VideoSkip Source Code Link: https://github.com/fruiz500/VideoSkip-extension/
 
 Play It My Way Source Code Link: https://github.com/rdp/sensible-cinema/
 
-Currently the extension is for Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Support is being added first for Amazon Video, Netflix, Disney Plus, Hulu, and Apple TV Plus, with the hope to expand later to other streaming services.
+The extension works with Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Currently supported streaming services include Netflix, Amazon Video, Disney Plus, HBO Max, Hulu, Plex TV, Apple TV Plus, and IMDb TV, with the hope to expand to other streaming services in the future.
 
 ## Installation Instructions (for testing purposes)
 

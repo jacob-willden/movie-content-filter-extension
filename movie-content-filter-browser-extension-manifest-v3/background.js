@@ -36,10 +36,9 @@
 'use strict';
 
 function runContentScript() {
-    chrome.tabs.executeScript({file: "/utilities.js", allFrames: true}, function() {
-        chrome.tabs.executeScript({file: "/content.js", allFrames: true});
+    chrome.scripting.executeScript({file: "/utilities.js", allFrames: true}, function() {
+        chrome.scripting.executeScript({file: "/content.js", allFrames: true});
     });
-
 }
 
 function checkHuluTabUpdated(currentURL) {

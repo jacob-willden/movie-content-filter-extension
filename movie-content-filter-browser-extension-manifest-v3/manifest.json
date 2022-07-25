@@ -4,10 +4,10 @@
     "author": "Jacob Willden, Francisco Ruiz (VideoSkip creator), Roger Pack (Play It My Way creator)",
     "homepage_url": "https://github.com/jacob-willden/movie-content-filter-extension",
     "version": "0.0.0.1",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "default_locale": "en",
-    "permissions": [
-        "storage",
+    "permissions": ["storage", "scripting"],
+    "host_permissions": [
         "https://*.netflix.com/watch/*", 
         "https://*.disneyplus.com/video/*",
         "https://tv.apple.com/*",
@@ -32,7 +32,7 @@
         "https://*.amazon.co.uk/*",
         "https://*.amazon.com.au/*"
     ],
-    "background": {"scripts": ["background.js"], "persistent": false},
+    "background": {"service_worker": "background.js"},
     "content_scripts": [{
         "all_frames": true, 
         "js": ["utilities.js", "content.js"],
@@ -62,8 +62,33 @@
             "https://*.amazon.com.au/*"
         ]
     }],
-    "browser_action": {
-        "default_popup": "popup.html"
-    },
-    "web_accessible_resources": ["sample-filter-file.json"]
+    "action": {"default_popup": "popup.html"},
+    "web_accessible_resources": [{
+        "resources": ["sample-filter-file.json"],
+        "matches": [
+            "https://*.netflix.com/*", 
+            "https://*.disneyplus.com/*",
+            "https://tv.apple.com/*",
+            "https://www.hulu.com/*",
+            "https://www.imdb.com/*",
+            "https://*.plex.tv/*",
+            "https://*.amazon.com/*", 
+            "https://*.amazon.com.br/*",
+            "https://*.amazon.ca/*",
+            "https://*.amazon.com.mx/*",
+            "https://*.amazon.in/*",
+            "https://*.amazon.co.jp/*",
+            "https://*.amazon.sg/*",
+            "https://*.amazon.com.tr/*",
+            "https://*.amazon.ae/*",
+            "https://*.amazon.fr/*",
+            "https://*.amazon.de/*",
+            "https://*.amazon.it/*",
+            "https://*.amazon.nl/*",
+            "https://*.amazon.es/*",
+            "https://*.amazon.se/*",
+            "https://*.amazon.co.uk/*",
+            "https://*.amazon.com.au/*"
+        ]
+    }]
 }

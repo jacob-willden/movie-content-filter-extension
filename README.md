@@ -21,20 +21,22 @@ Chromium Browsers
 1. Download the repository and extract the ZIP file
 2. Go to the Extensions area of your browser and make sure "Developer mode" is on
 3. Click the "Load unpacked" button
-4. Select the "movie-content-filter-browser-extension" folder inside the "movie-content-filter-extension" folder
+4. Inside the "movie-content-filter-extension" folder, either select the "movie-content-filter-browser-extension-manifest-v3" folder or the "movie-content-filter-browser-extension-manifest-v2" folder
 
 Firefox
 
 1. Download the repository and extract the ZIP file
 2. Enter "about:debugging" into the address bar and click "This Firefox"
 3. Click "Load Temporary Add-on"
-4. Select the "manifest.json" file inside the "movie-content-filter-browser-extension" folder inside the "movie-content-filter-extension" folder
+4. Inside the "movie-content-filter-extension" folder, select the "manifest.json" file inside either the "movie-content-filter-browser-extension-manifest-v3" folder or the "movie-content-filter-browser-extension-manifest-v2" folder
 
-(For Firefox Testing: Since Firefox can only install unsigned extensions as temporary add-ons, you will need to reload the extension each time you restart the browser, and you will need to recheck the box to enable filters and enter a preferences ID in the extension popup.)
+The folder you select will depend on your browser and browser version. If it supports manifest version 3, select the folder that ends in "manifest-v3". Otherwise, select the folder that ends in "manifest-v2".
+
+For Firefox Testing: Since Firefox can only install unsigned extensions as temporary add-ons, you will need to reload the extension each time you restart the browser, and you will need to recheck the box to enable filters and enter a preferences ID in the extension popup.
 
 ## Browser Requirements
 
-Chrome: Version 55 or newer
+Google Chrome: Version 55 or newer
 
 Microsoft Edge: Version 79 or newer
 
@@ -42,11 +44,11 @@ Firefox: Version 54 or newer
 
 Opera: Version 42 or newer
 
-Other Browsers (such as Vivaldi, Brave, and likely Kiwi, Samsung Internet, Firefox for Android, and others): Any version that supports ECMAScript 5 or newer, the `fetch` and `async` functions in JavaScript, and supports standard web extensions (including extension APIs such as storage, i18n (stands for internationalization), runtime, and tabs).
+Other Browsers (such as Vivaldi, Brave, and likely Kiwi, Samsung Internet, Firefox for Android, and others): Any version that supports ECMAScript 5 or newer, supports the `fetch` function in JavaScript, and supports standard Web extensions (including extension APIs such as storage, i18n (stands for internationalization), runtime, and tabs).
 
 (If you would like to use the extension with an older version of these browsers or an unsupported browser, [submit an issue on Github](https://github.com/jacob-willden/movie-content-filter-extension/issues).)
 
-Thanks to the [Can I Use](https://caniuse.com/) and [Mozilla Developer Network](https://developer.mozilla.org/) websites for browser compatibility information.
+Credit to the [Can I Use](https://caniuse.com/) and [Mozilla Developer Network](https://developer.mozilla.org/) Websites for browser compatibility information.
 
 ## Legal
 

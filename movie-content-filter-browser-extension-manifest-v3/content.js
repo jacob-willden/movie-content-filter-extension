@@ -191,21 +191,24 @@ function filterScript() {
         // Function created by Jacob Willden
         function isWatchingAdvertisement() {
             if(isThisAmazon() || isThisIMDbTV()) { // They have the same advertisement system
-                adIndicator = document.querySelector(".atvwebplayersdk-adtimeindicator-text");
+                if(document.querySelector(".atvwebplayersdk-adtimeindicator-text")) {
+                    return true;
+                }
             }
             if(isThisHulu()) {
-                adIndicator = document.querySelector(".AdUnitView");
+                if(document.querySelector(".AdUnitView")) {
+                    return true;
+                }
+            }
+            if(isThisPluto()) {
+                if(document.querySelector('[aria-label="Play"]').hasAttribute('disabled')) {
+                    return true;
+                }
             }
 /*             if(isThisYoutube()) {
-                adIndicator = document.querySelector(".ytp-ad-player-overlay");
+                if(document.querySelector(".ytp-ad-player-overlay")) return true;
             } */
-
-            if(adIndicator) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return false;
         }
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (checkStatus)

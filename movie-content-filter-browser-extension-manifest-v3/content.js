@@ -73,6 +73,35 @@ function filterScript() {
         {"id": "T3GDJ", "gambling": 1, "tedious": 1, "warfare": 1}
     ];
 
+    function isThisNetflix() {
+        return serviceName.includes('netflix');
+    }
+
+    function isThisAmazon() {
+        return serviceName.includes('amazon'); // This includes any Amazon top-level domain or subdomain
+    }
+
+    function isThisAppleTV() {
+        return serviceName.includes('apple');
+    }
+
+    function isThisHulu() {
+        return serviceName.includes('hulu');
+    }
+
+    function isThisPluto() {
+        return serviceName.includes('pluto');
+    }
+
+/*     function isThisYoutube() {
+        if(serviceName.includes('youtube')) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    } */
+
     // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
     function findFirstVideoTagOrNull() {
         if(serviceName.includes('tv.apple.com')) {
@@ -143,31 +172,6 @@ function filterScript() {
                 return parseFloat(time[0]);
             }
         }
-
-        function isThisNetflix() {
-            return serviceName.includes('netflix');
-        }
-
-        function isThisAmazon() {
-            return serviceName.includes('amazon'); // This includes any Amazon top-level domain or subdomain
-        }
-
-        function isThisAppleTV() {
-            return serviceName.includes('apple');
-        }
-
-        function isThisHulu() {
-            return serviceName.includes('hulu');
-        }
-
-/*         function isThisYoutube() {
-            if(serviceName.includes('youtube')) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        } */
 
         // Function derived from "edited_generic_player.js" from Sensible Cinema
 /*         function isAmazonTenSecondsOff() {

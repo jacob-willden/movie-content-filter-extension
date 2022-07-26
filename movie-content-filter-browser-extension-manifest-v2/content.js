@@ -152,10 +152,6 @@ function filterScript() {
             return serviceName.includes('amazon'); // This includes any Amazon top-level domain or subdomain
         }
 
-        function isThisIMDbTV() {
-            return serviceName.includes('imdb');
-        }
-
         function isThisAppleTV() {
             return serviceName.includes('apple');
         }
@@ -194,7 +190,7 @@ function filterScript() {
 
         // Function created by Jacob Willden
         function isWatchingAdvertisement() {
-            if(isThisAmazon() || isThisIMDbTV()) { // They have the same advertisement system
+            if(isThisAmazon()) {
                 if(document.querySelector(".atvwebplayersdk-adtimeindicator-text")) {
                     return true;
                 }
@@ -233,62 +229,35 @@ function filterScript() {
             }
         }
 
-        if(isThisAmazon() || isThisIMDbTV() || isThisHulu() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
+        if(isThisAmazon() || isThisHulu() || isThisPluto() /* || isThisYoutube() */ ) { // If bringing back Youtube later, be sure to separate into a another if statement
             // If the video is on a website with video advertisements
             setInterval(checkForAdvertisement, 10);
-            // Keep interval going in case there's another ad (for IMDb, Hulu, and Youtube, may be able to clear it for Amazon?)
+            // Keep interval going in case there's another ad (for Amazon FreeVee, Hulu, and Youtube, may be able to clear it for Amazon?)
         }
 
-        var durationDifference = 0;
         var timeIndicator = null;
-
-        // Function created by Jacob Willden
-        function getAmazonTruncatedActualDuration(timeIndicator) {
-            //console.log("the full text: " + timeIndicator.textContent);
-            var bothTimesArray = timeIndicator.textContent.split("/");
-            //console.log(bothTimesArray);
-            var elapsedTime = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, ''));
-            var remainingTime = fromHMS(bothTimesArray[1].replace(/[^0-9:]/g, ''));
-            // The regular expressions above are to remove any characters that aren't digits or colons
-            //console.log("elapsedTime: " + elapsedTime + " remainingTime: " + remainingTime);
-
-            var truncatedActualDuration = elapsedTime + remainingTime;
-            return truncatedActualDuration;
-        }
         
         // Function source: https://www.includehelp.com/code-snippets/get-the-decimal-part-of-a-floating-number-in-javascript.aspx
         function getDecimalFromFloat(number) {
             return (number - Math.floor(number));
         }
-        
-        function setDurationDifference() {
-            // Get real video duration by adding the truncated duration and the decimal value from the video's duration attribute
-            // This assumes that ad durations are always integers (will want to test this more)
-            var realDuration = getAmazonTruncatedActualDuration(timeIndicator) + parseFloat(getDecimalFromFloat(myVideo.duration).toFixed(3));
-            durationDifference = myVideo.duration - realDuration;
-            //console.log("new durationDifference: " + durationDifference);
-        }
 
         function checkForTimeIndicator() {
             var interval = setInterval(function() {
                 timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
-                if((isThisAmazon()) && (timeIndicator) && (timeIndicator.textContent.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. For IMDb TV, the duration difference is checked in getCurrentTime()
+                if((timeIndicator) && (timeIndicator.textContent.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. The duration difference is checked in getCurrentTime()
                     clearInterval(interval);
-                    setDurationDifference();
                 }
             }, 100);
         }
 
-        if(isThisAmazon() || isThisIMDbTV()) {
+        if(isThisAmazon()) {
             checkForTimeIndicator(); // To help with consistent video timing
         }
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
         function getCurrentTime() {
             if(isThisAmazon()) { // Only works if all ads are integer lengths
-                return myVideo.currentTime - durationDifference;                
-            }
-            if(isThisIMDbTV()) { // Only works if all ads are integer lengths
                 if(timeIndicator) {
                     var bothTimesArray = timeIndicator.textContent.split("/");
                     var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
@@ -308,16 +277,6 @@ function filterScript() {
                 return myVideo.currentTime;
             }
         }
-
-        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
-/*         function getDuration() {
-            if(isThisAmazon()) {
-                return myVideo.duration - durationDifference;
-            }
-            else {
-                return myVideo.duration;
-            }
-        } */ // Not sure if isAmazonTenSecondsOff() should be checked too yet
 
         // By Naveen at StackOverflow, we use it to execute seek on Netflix (derived from "content2.js" from VideoSkip)
         // https://stackoverflow.com/questions/9602022/chrome-extension-retrieving-global-variable-from-webpage
@@ -342,9 +301,6 @@ function filterScript() {
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
             else if(isThisAmazon()) {
-                myVideo.currentTime = time + durationDifference;
-            }
-            else if(isThisIMDbTV()) {
                 myVideo.currentTime = (myVideo.currentTime - getCurrentTime()) + time;
             }
             else if(isThisAppleTV()) {
@@ -533,7 +489,7 @@ function filterScript() {
             }
         }
         
-        if(isThisAmazon() || isThisIMDbTV()) {
+        if(isThisAmazon()) {
             setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
         }
     }

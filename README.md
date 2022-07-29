@@ -1,16 +1,16 @@
 # Movie Content Filter Extension
 Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
-Project Source Code Link: https://github.com/jacob-willden/movie-content-filter-extension/
+[Project Source Code Link](https://github.com/jacob-willden/movie-content-filter-extension/)
 
-Movie Content Filter Website: https://www.moviecontentfilter.com/
+[Movie Content Filter Website](https://www.moviecontentfilter.com/)
 
 ## General Information
 This project is in very early development right now, and there are many features to add (and some bugs to fix). It is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below). The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL).
 
-VideoSkip Source Code Link: https://github.com/fruiz500/VideoSkip-extension/
+[VideoSkip Source Code Link](https://github.com/fruiz500/VideoSkip-extension/)
 
-Play It My Way Source Code Link: https://github.com/rdp/sensible-cinema/
+[Play It My Way Source Code Link](https://github.com/rdp/sensible-cinema/)
 
 The extension works with Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Currently supported streaming services include Netflix, Amazon Video, Disney Plus, HBO Max, Hulu, Plex TV, Apple TV Plus, and IMDb TV, with the hope to expand to other streaming services in the future.
 

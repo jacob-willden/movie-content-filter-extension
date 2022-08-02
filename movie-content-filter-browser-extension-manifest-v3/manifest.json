@@ -73,7 +73,7 @@
             "https://tv.apple.com/*",
             "https://*.hulu.com/*",
             "https://*.plex.tv/*",
-            "https://*.pluto.tv/",
+            "https://*.pluto.tv/*",
             "https://*.hbomax.com/*",
             "https://*.amazon.com/*", 
             "https://*.amazon.com.br/*",

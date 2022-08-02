@@ -36,8 +36,9 @@
 'use strict';
 
 function runContentScript() {
-    chrome.scripting.executeScript({file: "/utilities.js", allFrames: true}, function() {
-        chrome.scripting.executeScript({file: "/content.js", allFrames: true});
+    chrome.scripting.executeScript({
+        files: ["/utilities.js", "/content.js"], 
+        target: {tabId: tabId, allFrames: true}
     });
 }
 

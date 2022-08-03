@@ -288,26 +288,32 @@ function filterScript() {
             }
         } */ // Not sure if isAmazonTenSecondsOff() should be checked too yet
 
-        // By Naveen at StackOverflow, we use it to execute seek on Netflix (derived from "content2.js" from VideoSkip)
-        // https://stackoverflow.com/questions/9602022/chrome-extension-retrieving-global-variable-from-webpage
-        function executeOnPageSpace(code) {
-            var script = document.createElement('script');
-            script.id = 'tmpScript';
-            script.textContent = 
-            'document.getElementById("tmpScript").textContent = ' + String(code);
-            document.documentElement.appendChild(script);
-            var result = document.getElementById("tmpScript").textContent;
-            script.remove();
-            return result;
-        }
-
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
+        // This is an alternative to using inline scripting, which is not allowed in manifest version 3, thanks to wOxxOm at StackOverflow
+        // https://stackoverflow.com/questions/72927004/refused-to-execute-inline-script-because-it-violates-the-following-content-secur
         function goToTime(time) {
-            if(isThisNetflix()) { 
-                // In case the user seeks within a skip (?)
-                //myVideo.style.opacity = 0;
-                //Netflix will crash with the normal seek instruction. Modified from code by Dmitry Paloskin at StackOverflow. Must be executed in page context
-                executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
+            if(isThisNetflix()) {
+                var duplicatetimeElement = document.querySelector('meta[name="mcf-skip-time"]');
+                if(duplicatetimeElement) {
+                    duplicatetimeElement.remove();
+                }
+
+                // By Robidu at StackOverflow
+                // https://stackoverflow.com/questions/5292372/how-to-pass-parameters-to-a-script-tag
+                var timeElement = document.createElement('meta');
+                timeElement.setAttribute('name', 'mcf-skip-time');
+                timeElement.setAttribute('content', time);
+                document.head.appendChild(timeElement);
+
+                // By Rob W at StackOverflow
+                // https://stackoverflow.com/questions/9515704/use-a-content-script-to-access-the-page-context-variables-and-functions/9517879
+                var scriptElement = document.createElement('script');
+                scriptElement.src = chrome.runtime.getURL('netflix-seek.js');
+                //myVideo.style.opacity = 0; // In case the user seeks within a skip (?)
+                (document.head || document.documentElement).appendChild(scriptElement);
+                scriptElement.addEventListener('load', function() {
+                    this.remove();
+                });
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema
             else if(isThisAmazon()) {

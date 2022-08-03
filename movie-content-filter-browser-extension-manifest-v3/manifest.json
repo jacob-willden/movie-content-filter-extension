@@ -64,33 +64,39 @@
         ]
     }],
     "action": {"default_popup": "popup.html"},
-    "web_accessible_resources": [{
-        "resources": ["sample-filter-file.json"],
-        "matches": [
-            "https://*.netflix.com/*", 
-            "https://*.disneyplus.com/*",
-            "https://tv.apple.com/*",
-            "https://*.hulu.com/*",
-            "https://*.plex.tv/*",
-            "https://*.pluto.tv/*",
-            "https://*.hbomax.com/*",
-            "https://*.amazon.com/*", 
-            "https://*.amazon.com.br/*",
-            "https://*.amazon.ca/*",
-            "https://*.amazon.com.mx/*",
-            "https://*.amazon.in/*",
-            "https://*.amazon.co.jp/*",
-            "https://*.amazon.sg/*",
-            "https://*.amazon.com.tr/*",
-            "https://*.amazon.ae/*",
-            "https://*.amazon.fr/*",
-            "https://*.amazon.de/*",
-            "https://*.amazon.it/*",
-            "https://*.amazon.nl/*",
-            "https://*.amazon.es/*",
-            "https://*.amazon.se/*",
-            "https://*.amazon.co.uk/*",
-            "https://*.amazon.com.au/*"
-        ]
-    }]
+    "web_accessible_resources": [
+        {
+            "resources": ["sample-filter-file.json"],
+            "matches": [
+                "https://*.netflix.com/*", 
+                "https://*.disneyplus.com/*",
+                "https://tv.apple.com/*",
+                "https://*.hulu.com/*",
+                "https://*.plex.tv/*",
+                "https://*.pluto.tv/*",
+                "https://*.hbomax.com/*",
+                "https://*.amazon.com/*", 
+                "https://*.amazon.com.br/*",
+                "https://*.amazon.ca/*",
+                "https://*.amazon.com.mx/*",
+                "https://*.amazon.in/*",
+                "https://*.amazon.co.jp/*",
+                "https://*.amazon.sg/*",
+                "https://*.amazon.com.tr/*",
+                "https://*.amazon.ae/*",
+                "https://*.amazon.fr/*",
+                "https://*.amazon.de/*",
+                "https://*.amazon.it/*",
+                "https://*.amazon.nl/*",
+                "https://*.amazon.es/*",
+                "https://*.amazon.se/*",
+                "https://*.amazon.co.uk/*",
+                "https://*.amazon.com.au/*"
+            ]
+        },
+        {
+            "resources": ["netflix-seek.js"],
+            "matches": ["https://*.netflix.com/*"]
+        }
+    ]
 }

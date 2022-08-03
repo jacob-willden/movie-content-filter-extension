@@ -557,10 +557,10 @@ chrome.runtime.onMessage.addListener(
 checkIfFiltersEnabled();
 
 
-/* Future To-dos: 
-* Add support for HBO Max, Paramount Plus, Crackle, etc.
+/* Future To-dos:
 * Maybe implement hiding the video while seeking?
 * Run filter script only if filters are available for the specific video (once the website API is available)
 * Add promise error handling?
-* All frames for executeScript throws errors occassionally?
+* All frames for executeScript throws errors occassionally (probably need to check URL)
+* Specify extension authors?
 */

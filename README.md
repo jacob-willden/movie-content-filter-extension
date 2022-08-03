@@ -12,7 +12,7 @@ This project is in very early development right now, and there are many features
 
 [Play It My Way Source Code Link](https://github.com/rdp/sensible-cinema/)
 
-The extension works with Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Currently supported streaming services include Netflix, Amazon Video, Disney Plus, HBO Max, Hulu, Plex TV, Apple TV Plus, and IMDb TV, with the hope to expand to other streaming services in the future.
+The extension works with Firefox and Chromium browsers (such as Google Chrome, Microsoft Edge, Opera, Vivaldi, and Brave). Currently supported streaming services include Netflix, Amazon Video (including FreeVee), Disney Plus, HBO Max, Hulu, Plex TV, Apple TV Plus, Pluto TV, Crackle, and Paramount Plus, with the hope to expand to other streaming services in the future.
 
 ## Installation Instructions (for testing purposes)
 

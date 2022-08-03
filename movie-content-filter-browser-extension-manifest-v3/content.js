@@ -278,16 +278,6 @@ function filterScript() {
             }
         }
 
-        // Function derived and modified from "edited_generic_player.js" from Sensible Cinema
-/*         function getDuration() {
-            if(isThisAmazon()) {
-                return myVideo.duration - durationDifference;
-            }
-            else {
-                return myVideo.duration;
-            }
-        } */ // Not sure if isAmazonTenSecondsOff() should be checked too yet
-
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         // This is an alternative to using inline scripting, which is not allowed in manifest version 3, thanks to wOxxOm at StackOverflow
         // https://stackoverflow.com/questions/72927004/refused-to-execute-inline-script-because-it-violates-the-following-content-secur
@@ -355,12 +345,7 @@ function filterScript() {
                     sendResponse({myCurrentTime: requestedCurrentTime});
                 }
 
-                if(request.message === "request_duration") {
-                    var requestedDuration = getDuration();
-                    sendResponse({myDuration: requestedDuration});
-                } */
-
-                /* if(request.message === "request_filter_id_list") { // Probably unnecessary?
+                if(request.message === "request_filter_id_list") { // Probably unnecessary?
                     sendResponse({filterIDList: userPrefs});
                 } */
             }

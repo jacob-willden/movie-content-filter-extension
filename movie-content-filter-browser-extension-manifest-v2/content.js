@@ -339,12 +339,7 @@ function filterScript() {
                     sendResponse({myCurrentTime: requestedCurrentTime});
                 }
 
-                if(request.message === "request_duration") {
-                    var requestedDuration = getDuration();
-                    sendResponse({myDuration: requestedDuration});
-                } */
-
-                /* if(request.message === "request_filter_id_list") { // Probably unnecessary?
+                if(request.message === "request_filter_id_list") { // Probably unnecessary?
                     sendResponse({filterIDList: userPrefs});
                 } */
             }

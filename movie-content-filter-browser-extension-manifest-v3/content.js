@@ -57,17 +57,17 @@
 
 'use strict';
 
-var filterScriptAlreadyRunning = false; // To prevent the script from running twice (may need to modify for Amazon TV shows?)
+let filterScriptAlreadyRunning = false; // To prevent the script from running twice (may need to modify for Amazon TV shows?)
 
 function filterScript() {
     filterScriptAlreadyRunning = true;
 
     console.log("starting main section of content script");
-    var filtersEnabled = true;
-    var myVideo = null;
-    var serviceName = window.location.hostname;
+    let filtersEnabled = true;
+    let myVideo = null;
+    let serviceName = window.location.hostname;
 
-    var userPrefs = [ // dummy values for now
+    let userPrefs = [ // dummy values for now
         {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
         {"id": "ghBnb", "gambling": 4, "tedious": 1, "warfare": 3},
         {"id": "T3GDJ", "gambling": 1, "tedious": 1, "warfare": 1}
@@ -106,7 +106,7 @@ function filterScript() {
     function findFirstVideoTagOrNull() {
         if(serviceName.includes('tv.apple.com')) {
             try {
-                var foundVideo = document.querySelector("apple-tv-plus-player").shadowRoot.querySelector("amp-video-player-internal").shadowRoot.querySelector("amp-video-player").shadowRoot.querySelector("video");
+                let foundVideo = document.querySelector("apple-tv-plus-player").shadowRoot.querySelector("amp-video-player-internal").shadowRoot.querySelector("amp-video-player").shadowRoot.querySelector("video");
                 if(foundVideo) {
                     return foundVideo;
                 }
@@ -118,9 +118,9 @@ function filterScript() {
             }
         }
         else {
-            var all = document.getElementsByTagName("video");
+            let all = document.getElementsByTagName("video");
             // look for first "real" playing vid as it were [byu.tv needs this, it has two, first is an ad player, i.e. wrong one]
-            for(var i = 0, len = all.length; i < len; i++) {
+            for(let i = 0, len = all.length; i < len; i++) {
                 if (all[i].currentTime > 0) {
                     return all[i];
                 } 
@@ -132,15 +132,15 @@ function filterScript() {
     }
 
     function applyFilters(myPreferencesID, allCuts) {
-        var activeCuts = [];
+        let activeCuts = [];
 
-        var prevAction = '';
+        let prevAction = '';
 
         // Determine which filter tags should be set, based on user preferences
         function setActions(userID) {
             console.log("setting filter actions");
-            var myPreferences;
-            for(var i = 0; i < userPrefs.length; i++) {
+            let myPreferences;
+            for(let i = 0; i < userPrefs.length; i++) {
                 if(userPrefs[i].id === userID) {
                     myPreferences = userPrefs[i];
                 }
@@ -161,7 +161,7 @@ function filterScript() {
         // hour:minute:second string to decimal seconds
         function fromHMS(timeString) {
             timeString = timeString.replace(/,/,".");			//in .srt format decimal seconds use a comma
-            var time = timeString.split(":");
+            let time = timeString.split(":");
             if(time.length === 3) {							//has hours
                 return parseInt(time[0])*3600 + parseInt(time[1])*60 + parseFloat(time[2]);
             }
@@ -176,7 +176,7 @@ function filterScript() {
         // Function derived from "edited_generic_player.js" from Sensible Cinema
 /*         function isAmazonTenSecondsOff() {
             // the new way has both webPlayerContainer and webPlayerUIContainer, old lacks latter [and is 10s off]
-            var x = document.getElementsByClassName("webPlayerUIContainer");
+            let x = document.getElementsByClassName("webPlayerUIContainer");
             if (x.length > 0) {
                 return false; // new
             } 
@@ -185,8 +185,7 @@ function filterScript() {
             }
         } */
 
-        var adIndicator = null;
-        var setForAdvertisement = false;
+        let setForAdvertisement = false;
 
         // Function created by Jacob Willden
         function isWatchingAdvertisement() {
@@ -235,7 +234,7 @@ function filterScript() {
             // Keep interval going in case there's another ad (for Amazon FreeVee, Hulu, and Youtube, may be able to clear it for Amazon?)
         }
 
-        var timeIndicator = null;
+        let timeIndicator = null;
         
         // Function source: https://www.includehelp.com/code-snippets/get-the-decimal-part-of-a-floating-number-in-javascript.aspx
         function getDecimalFromFloat(number) {
@@ -243,7 +242,7 @@ function filterScript() {
         }
 
         function checkForTimeIndicator() {
-            var interval = setInterval(function() {
+            let interval = setInterval(function() {
                 timeIndicator = document.querySelector(".atvwebplayersdk-timeindicator-text");
                 if((timeIndicator) && (timeIndicator.textContent.length > 6)) { // The div appears to have a non-breaking space (6 characters) before inserting the times. The duration difference is checked in getCurrentTime()
                     clearInterval(interval);
@@ -259,10 +258,10 @@ function filterScript() {
         function getCurrentTime() {
             if(isThisAmazon()) { // Only works if all ads are integer lengths
                 if(timeIndicator) {
-                    var bothTimesArray = timeIndicator.textContent.split("/");
-                    var elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
-                    var myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
-                    var myActualTime = elapsedTimeInteger + myTimeDecimal;
+                    let bothTimesArray = timeIndicator.textContent.split("/");
+                    let elapsedTimeInteger = fromHMS(bothTimesArray[0].replace(/[^0-9:]/g, '')); // The regular expression is to remove any characters that aren't digits or colons
+                    let myTimeDecimal = getDecimalFromFloat(myVideo.currentTime);
+                    let myActualTime = elapsedTimeInteger + myTimeDecimal;
                     //console.log(myActualTime);
                     return myActualTime;
                 }
@@ -283,21 +282,21 @@ function filterScript() {
         // https://stackoverflow.com/questions/72927004/refused-to-execute-inline-script-because-it-violates-the-following-content-secur
         function goToTime(time) {
             if(isThisNetflix()) {
-                var duplicatetimeElement = document.querySelector('meta[name="mcf-skip-time"]');
+                let duplicatetimeElement = document.querySelector('meta[name="mcf-skip-time"]');
                 if(duplicatetimeElement) {
                     duplicatetimeElement.remove();
                 }
 
                 // By Robidu at StackOverflow
                 // https://stackoverflow.com/questions/5292372/how-to-pass-parameters-to-a-script-tag
-                var timeElement = document.createElement('meta');
+                let timeElement = document.createElement('meta');
                 timeElement.setAttribute('name', 'mcf-skip-time');
                 timeElement.setAttribute('content', time);
                 document.head.appendChild(timeElement);
 
                 // By Rob W at StackOverflow
                 // https://stackoverflow.com/questions/9515704/use-a-content-script-to-access-the-page-context-variables-and-functions/9517879
-                var scriptElement = document.createElement('script');
+                let scriptElement = document.createElement('script');
                 scriptElement.src = chrome.runtime.getURL('netflix-seek.js');
                 //myVideo.style.opacity = 0; // In case the user seeks within a skip (?)
                 (document.head || document.documentElement).appendChild(scriptElement);
@@ -322,7 +321,7 @@ function filterScript() {
                 if(request.message === "set_filter_actions") {
                     //console.log("got set filter actions message:" + request.preferences);
                     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-                        var validatedID = validateIDInput(result.mcfPrefsID);
+                        let validatedID = validateIDInput(result.mcfPrefsID);
                         if(validatedID) {
                             setActions(validatedID);
                         }
@@ -341,7 +340,7 @@ function filterScript() {
                 }
 
 /*                 if(request.message === "request_current_time") {
-                    var requestedCurrentTime = getCurrentTime();
+                    let requestedCurrentTime = getCurrentTime();
                     sendResponse({myCurrentTime: requestedCurrentTime});
                 }
 
@@ -356,8 +355,8 @@ function filterScript() {
             if(typeof(activeCuts) === "undefined" || !activeCuts || filtersEnabled === false || setForAdvertisement === true) {
                 return;
             }
-            var action = '', tempAction = '', startTime, endTime;
-            for(var i = 0; i < activeCuts.length; i++) { //find out what action to take, according to timing and setting in activeCuts object
+            let action = '', tempAction = '', startTime, endTime;
+            for(let i = 0; i < activeCuts.length; i++) { //find out what action to take, according to timing and setting in activeCuts object
                 startTime = activeCuts[i].startTime;
                 endTime = activeCuts[i].endTime;
                 if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
@@ -431,14 +430,14 @@ function filterScript() {
         function displayLegalNotice() {
             console.log("display notice");
         
-            var duplicateDisclaimer = document.querySelector(".family-movie-act-of-2005-disclaimer");
+            let duplicateDisclaimer = document.querySelector(".family-movie-act-of-2005-disclaimer");
             if(duplicateDisclaimer) {
                 duplicateDisclaimer.remove();
             }
 
             // Modified from both "content1.js" and "content2.js" from VideoSkip
 
-            var performanceDisclaimer = document.createElement('span');
+            let performanceDisclaimer = document.createElement('span');
             performanceDisclaimer.className = "family-movie-act-of-2005-disclaimer";
 
             // Set styles
@@ -455,7 +454,7 @@ function filterScript() {
             performanceDisclaimer.style.width = "calc(100% - 20px)";
 
             myVideo.parentNode.insertBefore(performanceDisclaimer, myVideo);
-            var performanceDisclaimerText = document.createTextNode(chrome.i18n.getMessage("legalNotice"));
+            let performanceDisclaimerText = document.createTextNode(chrome.i18n.getMessage("legalNotice"));
             performanceDisclaimer.appendChild(performanceDisclaimerText);
 
             setTimeout(function() {
@@ -468,13 +467,13 @@ function filterScript() {
             displayLegalNotice();
         }
 
-        var myVideoSrc = myVideo.src;
-        var oldVideoSrc = myVideoSrc;
+        let myVideoSrc = myVideo.src;
+        let oldVideoSrc = myVideoSrc;
 
         // Function derived and modified from "edited_generic_player.js" from Sensible Cinema (refreshVideoElement)
         function checkIfVideoElementChanged() {
             oldVideoSrc = myVideoSrc;
-            var newVideo = findFirstVideoTagOrNull();
+            let newVideo = findFirstVideoTagOrNull();
             if(newVideo) {
                 myVideoSrc = newVideo.src || myVideoSrc; // Short-circuit evaluation, so it won't be assigned an empty string (prevents uneeded code execution below)
             }
@@ -497,7 +496,7 @@ function filterScript() {
 
     function getFilters(myPreferencesID) {
         console.log("getting allCuts");
-        var filterFileURL = chrome.runtime.getURL("sample-filter-file.json");
+        let filterFileURL = chrome.runtime.getURL("sample-filter-file.json");
 
         fetch(filterFileURL).then(function(response) {
             if(!response.ok) {
@@ -513,7 +512,7 @@ function filterScript() {
 
     function checkPreferencesID() {
         chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-            var validatedID = validateIDInput(result.mcfPrefsID);
+            let validatedID = validateIDInput(result.mcfPrefsID);
             if(validatedID) {
                 getFilters(validatedID);
             }
@@ -521,7 +520,7 @@ function filterScript() {
     }
 
     // Function derived and modified from "contentscript.js" from Sensible Cinema
-    var interval = setInterval(function() {
+    let interval = setInterval(function() {
         myVideo = findFirstVideoTagOrNull();
         if(myVideo) {
             console.log("found video tag");

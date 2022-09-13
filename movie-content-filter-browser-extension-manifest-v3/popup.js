@@ -60,27 +60,27 @@
 
 'use strict';
 
-var popupTitle = document.getElementById("popupTitle");
+let popupTitle = document.getElementById("popupTitle");
 popupTitle.textContent = chrome.i18n.getMessage("extensionName");
 
-var toggleFiltersText = document.getElementById("toggleFiltersText");
+let toggleFiltersText = document.getElementById("toggleFiltersText");
 toggleFiltersText.textContent = chrome.i18n.getMessage("toggleFilters");
 
-var yourPreferencesIDText = document.getElementById("yourPreferencesIDText");
+let yourPreferencesIDText = document.getElementById("yourPreferencesIDText");
 yourPreferencesIDText.textContent = chrome.i18n.getMessage("yourPreferencesID");
 
-var findUserButton = document.querySelector("#find-user-preferences");
+let findUserButton = document.querySelector("#find-user-preferences");
 findUserButton.value = chrome.i18n.getMessage("findIDButton");
 
-var filterToggleCheckbox = document.getElementById("toggle-filters-checkbox");
-var userIDTextbox = document.getElementById("user-preferences-id");
-var preferencesMessageArea = document.getElementById("user-preferences-message-area");
-//var safeSeekSlider = document.getElementById("safe-seek-slider");
-//var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
+let filterToggleCheckbox = document.getElementById("toggle-filters-checkbox");
+let userIDTextbox = document.getElementById("user-preferences-id");
+let preferencesMessageArea = document.getElementById("user-preferences-message-area");
+//let safeSeekSlider = document.getElementById("safe-seek-slider");
+//let safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
 
-var findPreferencesForm = document.querySelector("form");
+let findPreferencesForm = document.querySelector("form");
 
-var userPrefs = [ // dummy values for now
+let userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
     {"id": "ghBnb", "gambling": 0, "tedious": 1, "warfare": 0},
     {"id": "T3GDJ", "gambling": 3, "tedious": 3, "warfare": 3}
@@ -102,13 +102,13 @@ function filterToggleCheckboxChanged() {
 }
 
 function findUserID() {
-    var santizedIDValue = validateIDInput(userIDTextbox.value);
+    let santizedIDValue = validateIDInput(userIDTextbox.value);
     userIDTextbox.value = santizedIDValue; // Show santized string in the input box
     if(santizedIDValue === null) {
         return null;
     }
 
-    for(var i = 0; i < userPrefs.length; i++) {
+    for(let i = 0; i < userPrefs.length; i++) {
         if(santizedIDValue === userPrefs[i].id) {
             return userPrefs[i].id;
         }
@@ -129,7 +129,7 @@ function restoreSettingsFormOptions() {
         //console.log("Checkbox value: " + result.mcfFilterOn);
     });
     chrome.storage.sync.get(['mcfPrefsID'], function(result) {
-        var resultID = validateIDInput(result.mcfPrefsID);
+        let resultID = validateIDInput(result.mcfPrefsID);
         if(resultID) {
             userIDTextbox.value = resultID;
         }
@@ -138,7 +138,7 @@ function restoreSettingsFormOptions() {
 
 function setFilterActions(event) {
     event.preventDefault();
-    var myUserID = findUserID();
+    let myUserID = findUserID();
     if(myUserID) {
         preferencesMessageArea.textContent = chrome.i18n.getMessage("foundTheID"); // Found the entered ID
         chrome.storage.sync.set({mcfPrefsID: myUserID});
@@ -166,9 +166,9 @@ findPreferencesForm.addEventListener('submit', setFilterActions);
 // Derived from "videoskip.js" from VideoSkip
 //to put seconds into hour:minute:second format
 function toHMS(seconds) {
-	var hours = Math.floor(seconds / 3600);
+	let hours = Math.floor(seconds / 3600);
 	seconds -= hours * 3600;
-    var minutes = Math.floor(seconds / 60);
+    let minutes = Math.floor(seconds / 60);
     minutes = (minutes >= 10) ? minutes : "0" + minutes;
     seconds = Math.floor((seconds % 60) * 100) / 100;			//precision is 0.01 s
     seconds = (seconds >= 10) ? seconds : "0" + seconds;
@@ -177,8 +177,8 @@ function toHMS(seconds) {
 
 // Derived from "edited_generic_player.js" from Sensible Cinema
 function addListenerMulti(element, eventNames, listener) {
-    var events = eventNames.split(' ');
-    for(var i = 0, iLen = events.length; i < iLen; i++) {
+    let events = eventNames.split(' ');
+    for(let i = 0, iLen = events.length; i < iLen; i++) {
         element.addEventListener(events[i], listener, false);
     }
 }
@@ -199,12 +199,12 @@ function requestDuration() {
     });
 }
 
-var isSafeSeekSliderBeingDragged = false; // see the seek_dragger_being_dragged variable from "edited_generic_player.js"
+let isSafeSeekSliderBeingDragged = false; // see the seek_dragger_being_dragged variable from "edited_generic_player.js"
 
 // Derived and Modified from "edited_generic_player.js"
 function updateSafeSeekTime() {
     if(!isSafeSeekSliderBeingDragged) {
-        var currentTime = requestCurrentTime();
+        let currentTime = requestCurrentTime();
         safeSeekSlider.value = currentTime / requestDuration() * 100;
         if(safeSeekDisplayValueArea.textContent !== toHMS(currentTime)) {
             safeSeekDisplayValueArea.textContent = toHMS(currentTime);
@@ -225,7 +225,7 @@ function setupSafeSeekOnce() {
 
     addListenerMulti(safeSeekSlider, "mousemove touchmove", function() {
         if (isSafeSeekSliderBeingDragged) {
-            var desiredTimeInSeconds = requestDuration() / 100.0 * this.value;
+            let desiredTimeInSeconds = requestDuration() / 100.0 * this.value;
             safeSeekDisplayValueArea.textContent = toHMS(desiredTimeInSeconds);
             // but don't seek yet :)
          }

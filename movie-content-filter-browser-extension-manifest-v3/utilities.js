@@ -6,7 +6,7 @@ function validateIDInput(input) {
     }
     // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
     // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
-    var santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
+    let santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
 
     // Validate the input so the length is between 1 and 15 characters
     if((santizedIDValue).length < 1) {

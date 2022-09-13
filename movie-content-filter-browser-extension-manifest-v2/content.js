@@ -185,7 +185,6 @@ function filterScript() {
             }
         } */
 
-        var adIndicator = null;
         var setForAdvertisement = false;
 
         // Function created by Jacob Willden

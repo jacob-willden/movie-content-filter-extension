@@ -295,7 +295,8 @@ function filterScript() {
             if(isThisNetflix()) { 
                 // In case the user seeks within a skip (?)
                 //myVideo.style.opacity = 0;
-                //Netflix will crash with the normal seek instruction. Modified from code by Dmitry Paloskin at StackOverflow. Must be executed in page context
+                // Netflix will crash with the normal seek instruction. Must be executed in page context. Modified from code by Dmitry Paloskin (DimaOverflow) at StackOverflow
+                // https://stackoverflow.com/questions/42105028/netflix-video-player-in-chrome-how-to-seek
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
             }
             // Modified from "edited_generic_player.js" from Sensible Cinema

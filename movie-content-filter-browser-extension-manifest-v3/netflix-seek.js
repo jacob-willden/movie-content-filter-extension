@@ -1,4 +1,5 @@
-// Netflix will crash with the normal seek instruction. Modified from code by Dmitry Paloskin at StackOverflow. Must be executed in page context
+// Netflix will crash with the normal seek instruction. Must be executed in page context. Modified from code by Dmitry Paloskin (DimaOverflow) at StackOverflow
+// https://stackoverflow.com/questions/42105028/netflix-video-player-in-chrome-how-to-seek
 (function() {
     let videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;
     let sessions = videoPlayer.getAllPlayerSessionIds();

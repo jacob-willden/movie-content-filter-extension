@@ -28,6 +28,8 @@
     labled as so. Some of the code below is provided by users from 
     StackOverflow, and is explicitly stated as so. Such code is released
     under either the Creative Commons Attribution Share-Alike 3.0 or 4.0.
+    I specify Creative Commons as my proxy to make the contributions from
+    StackOverflow compatible with future versions of the GPL.
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020

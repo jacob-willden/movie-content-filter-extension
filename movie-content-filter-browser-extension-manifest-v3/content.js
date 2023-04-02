@@ -25,7 +25,9 @@
     "contentscript.js" source code files in the "chrome_extension" folder 
     in the "html5_javascript" folder from the Sensible Cinema 
     (Play It My Way) repository (source link above), and it is explicitly 
-    labled as so.
+    labled as so. Some of the code below is provided by users from 
+    StackOverflow, and is explicitly stated as so. Such code is released
+    under either the Creative Commons Attribution Share-Alike 3.0 or 4.0.
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020

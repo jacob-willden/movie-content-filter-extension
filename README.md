@@ -52,6 +52,8 @@ Credit to the [Can I Use](https://caniuse.com/) and [Mozilla Developer Network](
 
 ## Legal
 
+This project is provided under the GNU General Public License (GNU GPL) version 3 or any later version.
+
 The extension does not alter video files at all, but instead lets "users choose to see or not to see parts of the content, and the app remembers their choice" (quoted from the Read Me file for the VideoSkip extension [here](https://github.com/fruiz500/VideoSkip-extension/blob/master/README.md), which extension's code this extension is built on). It also does not enable unauthorized access to video files.
 
 The streaming services that our extension supports and the content from these streaming services belong to their respective copyright holders. We claim no affliation or endorsement from any of these copyright holders.

@@ -38,6 +38,12 @@ body {
     margin: 0;
 }
 
+a {
+    display: block;
+    margin: 1rem 1rem 2rem 1rem;
+    font-size: 1rem;
+}
+
 h1 {
     padding: 1.5rem 1rem 0.5rem 1rem;
     margin: 0;
@@ -65,6 +71,7 @@ input#toggle-filters-checkbox {
     height: 1rem;
     margin-bottom: 1rem;
     margin-right: 0;
+    margin-left: 0;
 }
 
 label#user-preferences-id-label {
@@ -74,6 +81,12 @@ label#user-preferences-id-label {
 input#user-preferences-id {
     font-size: 1rem;
     padding: 0.25rem;
+}
+
+#user-preferences-id-error {
+    display: block;
+    margin-top: 0.25rem;
+    color: red;
 }
 
 input#find-user-preferences {

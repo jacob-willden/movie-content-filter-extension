@@ -1,0 +1,1 @@
+Mention in next commit message about unsurety of the CC-BY-SA 2.5's compatibility with the GPL (thinking that being more cautious than less cautious is better)

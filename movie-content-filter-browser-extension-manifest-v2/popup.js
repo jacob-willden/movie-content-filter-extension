@@ -60,13 +60,13 @@
 
 'use strict';
 
-var popupTitle = document.getElementById("popupTitle");
+var popupTitle = document.getElementById("popup-title");
 popupTitle.textContent = chrome.i18n.getMessage("extensionName");
 
-var toggleFiltersText = document.getElementById("toggleFiltersText");
+var toggleFiltersText = document.getElementById("toggle-filters-label");
 toggleFiltersText.textContent = chrome.i18n.getMessage("toggleFilters");
 
-var yourPreferencesIDText = document.getElementById("yourPreferencesIDText");
+var yourPreferencesIDText = document.getElementById("user-preferences-id-label");
 yourPreferencesIDText.textContent = chrome.i18n.getMessage("yourPreferencesID");
 
 var findUserButton = document.querySelector("#find-user-preferences");
@@ -79,6 +79,22 @@ var preferencesMessageArea = document.getElementById("user-preferences-message-a
 //var safeSeekDisplayValueArea = document.getElementById("safe-seek-display-value");
 
 var findPreferencesForm = document.querySelector("form");
+
+function checkForBlankID() {
+    var yourPreferencesIDError = document.getElementById("user-preferences-id-error");
+    if(!userIDTextbox.value) {
+        userIDTextbox.setAttribute('aria-invalid', 'true');
+        userIDTextbox.setAttribute('aria-describedby', 'user-preferences-id-error');
+        yourPreferencesIDError.textContent = 'Error: ' + chrome.i18n.getMessage("blankID");
+    }
+    else {
+        userIDTextbox.setAttribute('aria-invalid', 'false');
+        userIDTextbox.removeAttribute('aria-describedby');
+        yourPreferencesIDError.textContent = '';
+    }
+}
+
+userIDTextbox.addEventListener('blur', checkForBlankID);
 
 var userPrefs = [ // dummy values for now
     {"id": "PmrqC", "gambling": 3, "tedious": 2, "warfare": 1},
@@ -138,6 +154,7 @@ function restoreSettingsFormOptions() {
 
 function setFilterActions(event) {
     event.preventDefault();
+    checkForBlankID();
     var myUserID = findUserID();
     if(myUserID) {
         preferencesMessageArea.textContent = chrome.i18n.getMessage("foundTheID"); // Found the entered ID
@@ -148,8 +165,11 @@ function setFilterActions(event) {
             chrome.tabs.sendMessage(tabs[0].id, {message: "set_filter_actions"});
         });
     }
-    else {
+    else if(userIDTextbox.value) {
         preferencesMessageArea.textContent = chrome.i18n.getMessage("failedToFindID"); // Could not find the entered ID
+    }
+    else {
+        preferencesMessageArea.textContent = chrome.i18n.getMessage("blankID"); // No ID entered
     }
 }
 
@@ -199,7 +219,7 @@ function requestDuration() {
     });
 }
 
-var isSafeSeekSliderBeingDragged = false; // see the seek_dragger_being_dragged variable from "edited_generic_player.js"
+var isSafeSeekSliderBeingDragged = false; // Derived from the seek_dragger_being_dragged variable from "edited_generic_player.js"
 
 // Derived and Modified from "edited_generic_player.js"
 function updateSafeSeekTime() {

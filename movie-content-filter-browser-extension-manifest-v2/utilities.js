@@ -4,7 +4,7 @@ function validateIDInput(input) {
     if(typeof(input) !== 'string') {
         return null;
     }
-    // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow
+    // Basic ASCII alphanumeric santization, from AD7six on Stack Overflow (CC BY-SA 3.0)
     // Source: https://stackoverflow.com/questions/9364400/remove-not-alphanumeric-characters-from-string
     var santizedIDValue = (input).replace(/[^0-9a-z]/gi, '');
 

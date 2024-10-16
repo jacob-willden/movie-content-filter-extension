@@ -7,29 +7,30 @@
     JavaScript code in this page.
 
     This file is part of the Movie Content Filter Browser Extension Project.
-    
+
     Movie Content Filter Browser Extension Project Copyright (C) 2020, 2021 Jacob Willden
     (Released under the GNU General Public License (GNU GPL) Version 3.0 or later)
 
     VideoSkip Source Code Copyright (C) 2020, 2021 Francisco Ruiz
     (Released under the GNU General Public License (GNU GPL))
-    
-    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack 
+
+    Sensible Cinema (Play It My Way) Source Code Copyright (C) 2016, 2017, 2018 Roger Pack
     (Released under the Lesser General Public License (LGPL))
 
-    Most of the code below was derived and modified from several source 
-    code files in the VideoSkip extension repository (source link above), 
-    including "content1.js", "content2.js", and "videoskip.js", and 
-    it is explicitly labled as so. Various other parts of the code below 
-    were derived and modified from the "edited_generic_player.js" and 
-    "contentscript.js" source code files in the "chrome_extension" folder 
-    in the "html5_javascript" folder from the Sensible Cinema 
-    (Play It My Way) repository (source link above), and it is explicitly 
-    labled as so. Some of the code below is provided by users from 
+    Most of the code below was derived and modified from several source
+    code files in the VideoSkip extension repository (source link above),
+    including "content1.js", "content2.js", and "videoskip.js", and
+    it is explicitly labled as so. Various other parts of the code below
+    were derived and modified from the "edited_generic_player.js" and
+    "contentscript.js" source code files in the "chrome_extension" folder
+    in the "html5_javascript" folder from the Sensible Cinema
+    (Play It My Way) repository (source link above), and it is explicitly
+    labled as so. Some of the code below is provided by users from
     StackOverflow, and is explicitly stated as so. Such code is released
-    under either the Creative Commons Attribution Share-Alike 3.0 or 4.0.
-    I specify Creative Commons as my proxy to make the contributions from
-    StackOverflow compatible with future versions of the GPL.
+    under either the Creative Commons Attribution Share-Alike (CC BY-SA)
+    3.0 or 4.0. I specify Creative Commons as my proxy to make the
+    contributions from StackOverflow compatible with future versions of
+    the GPL.
 
     Afformentioned source code derived and modified by Jacob Willden
     Start Date of Derivation/Modification: November 20, 2020
@@ -38,7 +39,7 @@
     "Movie Content Filter" Website Copyright (C) delight.im
     Website Link: https://www.moviecontentfilter.com/
 
-    The Movie Content Filter Browser Extension Project is free software: 
+    The Movie Content Filter Browser Extension Project is free software:
     you can redistribute it and/or modify it under the terms of the GNU
     General Public License (GNU GPL) as published by the Free Software
     Foundation, either version 3 of the License, or (at your option)
@@ -55,7 +56,7 @@
     You should have recieved a copy of the GNU General Public License
     along with this project. Otherwise, see: https://www.gnu.org/licenses/
 
-    @licend  The above is the entire license notice for the 
+    @licend  The above is the entire license notice for the
     JavaScript code in this page.
 */
 
@@ -127,7 +128,7 @@ function filterScript() {
             for(var i = 0, len = all.length; i < len; i++) {
                 if (all[i].currentTime > 0) {
                     return all[i];
-                } 
+                }
             }
             // don't *want* to work with iframes from the plugin side since they'll get their own edited playback copy
             // hopefully this is enough to prevent double loading (once windows.document, one iframe if they happen to be allowed :|
@@ -149,7 +150,7 @@ function filterScript() {
                     myPreferences = userPrefs[i];
                 }
             }
-            
+
             // Modified from isSkipped function from "videoskip.js" from VideoSkip
             activeCuts = allCuts.filter(function(tag) {
                 return tag.severity >= myPreferences[tag.category];
@@ -183,7 +184,7 @@ function filterScript() {
             var x = document.getElementsByClassName("webPlayerUIContainer");
             if (x.length > 0) {
                 return false; // new
-            } 
+            }
             else {
                 return true; // old
             }
@@ -239,7 +240,7 @@ function filterScript() {
         }
 
         var timeIndicator = null;
-        
+
         // Function source: https://www.includehelp.com/code-snippets/get-the-decimal-part-of-a-floating-number-in-javascript.aspx
         function getDecimalFromFloat(number) {
             return (number - Math.floor(number));
@@ -281,12 +282,12 @@ function filterScript() {
             }
         }
 
-        // By Naveen at StackOverflow, we use it to execute seek on Netflix (derived from "content2.js" from VideoSkip)
+        // By Naveen on StackOverflow (CC BY-SA 4.0), we use it to execute seek on Netflix (derived from "content2.js" from VideoSkip)
         // https://stackoverflow.com/questions/9602022/chrome-extension-retrieving-global-variable-from-webpage
         function executeOnPageSpace(code) {
             var script = document.createElement('script');
             script.id = 'tmpScript';
-            script.textContent = 
+            script.textContent =
             'document.getElementById("tmpScript").textContent = ' + String(code);
             document.documentElement.appendChild(script);
             var result = document.getElementById("tmpScript").textContent;
@@ -296,10 +297,10 @@ function filterScript() {
 
         // Moves play to requested time, function derived and modified from "content2.js" from VideoSkip
         function goToTime(time) {
-            if(isThisNetflix()) { 
+            if(isThisNetflix()) {
                 // In case the user seeks within a skip (?)
                 //myVideo.style.opacity = 0;
-                // Netflix will crash with the normal seek instruction. Must be executed in page context. Modified from code by Dmitry Paloskin (DimaOverflow) at StackOverflow
+                // Netflix will crash with the normal seek instruction. Must be executed in page context. Modified from code by Dmitry Paloskin (DimaOverflow) on StackOverflow (CC BY-SA 3.0)
                 // https://stackoverflow.com/questions/42105028/netflix-video-player-in-chrome-how-to-seek
                 executeOnPageSpace('videoPlayer = netflix.appContext.state.playerApp.getAPI().videoPlayer;sessions = videoPlayer.getAllPlayerSessionIds();player = videoPlayer.getVideoPlayerBySessionId(sessions[sessions.length-1]);player.pause();player.seek(' + time*1000 + ');player.play();');
             }
@@ -326,7 +327,7 @@ function filterScript() {
                         }
                     });
                 }
-                
+
                 if(request.message === "filter_checkbox_changed") {
                     chrome.storage.sync.get(['mcfFilterOn'], function(result) {
                         if(result.mcfFilterOn === true) {
@@ -360,7 +361,7 @@ function filterScript() {
                 endTime = activeCuts[i].endTime;
                 if((getCurrentTime() > startTime) && (getCurrentTime() < endTime)) {
                     tempAction = activeCuts[i].action;
-                } 
+                }
                 else {
                     tempAction = '';
                 }
@@ -390,11 +391,11 @@ function filterScript() {
 
             if(action === prevAction) { //only apply action to the Document Object Model (DOM) if there's a change
                 return;
-            } 
+            }
             else if(action === 'skip') { //skip range
                 console.log("skipping from: " + getCurrentTime());
                 goToTime(endTime);
-            } 
+            }
             else if(action === 'blank') { //blank screeen
                 console.log("blanking: " + getCurrentTime());
                 myVideo.style.opacity = 0;
@@ -410,7 +411,7 @@ function filterScript() {
             else if(action === 'mute') { //mute sound (and subtitles?)
                 console.log("muting: " + getCurrentTime());
                 myVideo.muted = true;
-            } 
+            }
             else { //back to normal
                 // Check if videoNotBuffering (or for seek event) before unhiding video?
                 myVideo.style.opacity =  '';
@@ -428,7 +429,7 @@ function filterScript() {
         // Displays a notice to comply with the United States Family Movie Act of 2005
         function displayLegalNotice() {
             console.log("display notice");
-        
+
             var duplicateDisclaimer = document.querySelector(".family-movie-act-of-2005-disclaimer");
             if(duplicateDisclaimer) {
                 duplicateDisclaimer.remove();
@@ -487,7 +488,7 @@ function filterScript() {
                 displayLegalNotice();
             }
         }
-        
+
         if(isThisAmazon()) {
             setInterval(checkIfVideoElementChanged, 1000); // Only once per second is enough, based on Sensible Cinema (also saves bandwidth)
         }

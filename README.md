@@ -1,7 +1,7 @@
 # Movie Content Filter Extension
-Browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
+GitHub mirror for the browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
-[Project Source Code Link](https://github.com/jacob-willden/movie-content-filter-extension/)
+[Project Source Code](https://codeberg.org/jacobwillden/movie-content-filter-extension)
 
 [Movie Content Filter Website](https://www.moviecontentfilter.com/)
 

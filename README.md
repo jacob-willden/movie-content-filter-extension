@@ -1,9 +1,9 @@
 # Movie Content Filter Extension
 GitHub mirror for the browser extension project for Movie Content Filter, to allow users to skip objectionable content on streaming services, based on their preferences.
 
-[Project Source Code](https://codeberg.org/jacobwillden/movie-content-filter-extension)
-
 [Movie Content Filter Website](https://www.moviecontentfilter.com/)
+
+Note: This repository will continue to be [available on Codeberg](https://codeberg.org/jacobwillden/movie-content-filter-extension) after I delete my GitHub account.
 
 ## General Information
 This project is in very early development right now, and there are many features to add (and some bugs to fix). It is built on the source code from the open-source VideoSkip and Play It My Way extensions (linked below). The source code is freely available to copy and build on, released under the GNU General Public License (GNU GPL).
